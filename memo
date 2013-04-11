@@ -1,0 +1,96 @@
+
+for each 
+	for( auto HOGE : HOGEs){}
+	
+変換
+atoi
+stoi
+stol
+
+std::to_string
+
+例外 stdexcept
+ @throw std::invalid_argument
+ @throw std::runtime_error
+
+
+// 年明けあと
+//* Option parserのすべてに config
+//* parser のどれかに(たぶん、いちばんでかいの)、state おぷしょんをつくる。その場合に、途中読み込み。引数は、ファイル名
+
+// (一応できた)
+//* player に linkTo と resetLink をつけて、こっちでせつぞく管理をおこなう。
+//* Player くらすへ propaty をつけて、いろいろ属性とかをルールによって追加できるようにする(jsのようなイメージで、property くらすのvectorとか?　雑にやるなら、string,string のpair (ついでに。)
+//* とぽろじでの、せつぞくとかのめそっどは分離させる。
+//* space の初期化とかをきれいにちゃんとかく
+//* 初期化の時spd ルールの initも呼び、プレイヤのプロパティの初期化をおこなう
+//* initiation の作成
+
+// (一応できた)
+//これは、gexf からよみこめばいいや
+//* ヘルパーでの、xml の方は、 space もわたして、そこで、simcount とか、endstep のせっていをやる。simcount はいらんか。
+//* xml でのほうは、構造を読んで置きたい。そして、オプションの入れ替えをしたい。
+//* もし、xml が network なのに、オプションで、moore 渡したときとかに対応するように。
+//* あと、戦略も読み込まない。プレイヤの戦略がずれるから。
+//* メモリは、もし、PCの方がすくなかったら、そっち優先
+
+//* 乱数の部分を、引数と、generated の2つにわけて、表示は、引数の方のみにする
+//* generated のは、 gexf にのみかく
+
+//* xmlでのresetは、構造はファイルからよんで、近傍の再接続というかたち。
+//* toplogyのresetを呼ばない。
+
+//* space で、beforeRule をよばないように、ふらぐをつける
+
+//* sim がかわるときに、initと、再接続。ただ、一回目では再接続呼ばないようにする。(space での話)
+
+* ノードの数がかわるシミュレーションとかはtopology のresetTopology もしくは、ルールで対応する(コマンドラインから)
+** ルールがいいかな。後で追加した プレイヤってラベルをプレイヤにつけて、ついかする。で、最終ステップで、そのノードを削除しておく感じで。
+//** 現状だと、gexf or mpac のメーカーでの reset で、これは変になるので注意。(たぶんOK)
+
+//* strategy をつくるときに、 min, max をあたえて、渡すのは、max で、0だったら、与えたものをぜんぶやる
+
+//* output file, まずは txt
+//* output file, txt で シミュレーション条件の表示
+//* output file, image
+//* output file, xml (gephi 系) 
+//* output のときに、最後のステップをいれる
+//* binaryoutput 遅い
+//** シリアライズ用のコピーに時間がかる。(プレイヤのリンクを片側だけどかにして、コピー要素をへらした)
+//** 容量が多い, gexf と binary は圧縮
+* output の property 系統
+* ouput image のカラー化
+
+* property をクラスにして、なかに、name(std::string), value(boost::any), outputType の enum
+ (たとえば、 countOutput, ignoreOutput, typeOutput) 
+** かぞえるやつ、むしするやつ、たいぷ(タイプA, タイプB) とかもつ-> タイプごとカウント?
+value が string だと、数えるのは、無理だろうが、、その他はできる。
+てか、boolean ってのをわすれてたね。
+
+* output option の説明文 (help 文) の対応
+
+//* そのとき、maker, gexfOutput をチェック
+
+//* bestStrategy で id のチェックにした.
+
+
+//* Neumann の作成
+//* Hexagon の作成
+//ここまで作った。まだ未確認(たぶんOK)
+
+* Network の作成
+* HauertRule の作成(名前をかんがえる、確率的遷移)
+
+* const とか、doxygen のチェック
+
+* auto hoge = space.getPlayer()
+　と
+  auto& hoge = space.getPlayer では 後者のほうがかなりはやい
+  
+//* 対戦のとき、両方をいっぺんにけいさんする??
+// あんまり変わらないのでやめる。ソースがきたなかったし。
+
+ 
+
+//* OpenGL での高速化???
+// (thread したからいいか)
