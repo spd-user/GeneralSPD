@@ -18,5 +18,4 @@ enum NeighborhoodType {
 	TYPE_NUM, /**< タイプの数 */
 };
 
-
 #endif /* NEIGHBORHOODTYPE_H_ */

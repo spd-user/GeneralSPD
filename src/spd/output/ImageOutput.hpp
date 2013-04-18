@@ -8,6 +8,8 @@
 #ifndef IMAGEOUTPUT_H_
 #define IMAGEOUTPUT_H_
 
+#include <png.h>
+
 #include "OutputVisitor.hpp"
 
 namespace spd {
@@ -83,15 +85,31 @@ public:
 
 private:
 
+	// 色のタイプ
+	static const int COLOR_TYPE = PNG_COLOR_TYPE_RGB;
+	//const int COLOR_TYPE = PNG_COLOR_TYPE_GRAY;
+
+	static const int BYTE_PER_PIXEL = (COLOR_TYPE == PNG_COLOR_TYPE_RGB) ? 3 : 1;
+
+
+private:
 	// 色定義
-	static const unsigned char BLACK = 0x00;
-	static const unsigned char GRAY = 0x80;
-	static const unsigned char WHITE = 0xFF;
+	static constexpr int RGB = 3;
+
+	const png_byte BLACK[RGB] = {0, 0, 0};
+	const png_byte GRAY[RGB] = {0x80, 0x80, 0x80};
+	const png_byte WHITE[RGB] = {0xFF, 0xFF, 0xFF};
+
+	const png_byte MAGENTA[RGB] = {0xFF, 0x00, 0xFF};
+	const png_byte GREEN[RGB] = {0x00, 0x80, 0x00};
+
 
 	// 配置定義
-	static const unsigned char C_COLOR = WHITE;
-	static const unsigned char D_COLOR = BLACK;
-	static const unsigned char KD_COLOR = GRAY;
+	const png_byte (&ALLD_COLOR)[RGB] = BLACK;
+	const png_byte (&ALLC_COLOR)[RGB] = WHITE;
+	const png_byte (&MEMBRANE_COLOR)[RGB] = (COLOR_TYPE == PNG_COLOR_TYPE_RGB) ? MAGENTA : GRAY;
+	const png_byte (&C_COLOR)[RGB] = GREEN;
+
 
 	// 接頭辞
 	const std::string PREFIX = "/image/spd_image_";
@@ -99,7 +117,8 @@ private:
 	const std::string SUFFIX = ".png";
 
 	// 空間画像サイズ
-	unsigned char **image;
+	//unsigned char **image;
+	png_bytepp image;
 
 	// 確保している画像の一辺の長さ
 	int imageSide;
@@ -123,11 +142,19 @@ private:
 	// 1プレイヤ分を指定した色で書く
 	void writePlayer(
 			int x, int y,
-			unsigned char color,
+			const png_byte* color,
 			bool isHexagonLattice);
 
 	// 0 埋め用のマニピュレータ
 	void setZeroPadding(std::ostringstream& oss, int width, int val);
+
+	// 画像領域の開放
+	void freeImage() {
+		for (int y = 0; y < imageSide; ++y) {
+			delete[] image[y];
+		}
+		delete[] image;
+	}
 };
 
 } /* namespace output */

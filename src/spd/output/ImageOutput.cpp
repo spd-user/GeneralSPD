@@ -12,7 +12,6 @@
 #include <stdexcept>
 #include <iostream>
 #include <fstream>
-#include <png.h>
 
 #include "../topology/AllTopology.hpp"
 #include "../core/Space.hpp"
@@ -31,10 +30,9 @@ ImageOutput::ImageOutput() : image(nullptr), imageSide(0), cellSize(DEFAULT_CELL
 ImageOutput::~ImageOutput() {
 
 	// 開放
-	for (int y = 0; y < imageSide; ++y) {
-		delete[] image[y];
+	if (image != nullptr) {
+		freeImage();
 	}
-	delete[] image;
 }
 
 /*
@@ -119,10 +117,7 @@ void ImageOutput::createImageFile(
 	// サイズが変わっていたら、リセット
 	if (image != nullptr && imageSide != sideY) {
 		// 開放
-		for (int y = 0; y < imageSide; ++y) {
-			delete[] image[y];
-		}
-		delete[] image;
+		freeImage();
 
 		image = nullptr;
 	}
@@ -131,9 +126,10 @@ void ImageOutput::createImageFile(
 	if (image == nullptr) {
 
 		// 確保
-		image = new unsigned char*[sideY];
+		image = new png_bytep[sideY];
+
 		for (int y = 0; y < sideY; ++y) {
-			image[y] = new unsigned char[sideY];
+			image[y] = new png_byte[sideY * BYTE_PER_PIXEL];
 		}
 		imageSide = sideY;
 	}
@@ -185,9 +181,9 @@ void ImageOutput::outputPngFile(
 	// libpngにfpを教える
 	png_init_io(png_ptr, fp);
 
-	// HDRチャンク情報を設定
-	png_set_IHDR(png_ptr, info_ptr, sizeX, sizeY, 8, PNG_COLOR_TYPE_GRAY,
-			PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
+	// HDRチャンク情報を設定 (8 bit color depth)
+	png_set_IHDR(png_ptr, info_ptr, sizeX, sizeY, 8, COLOR_TYPE,
+			PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
 
 	// PNGファイルのヘッダを書き込む
 	png_write_info(png_ptr, info_ptr);
@@ -220,23 +216,31 @@ void ImageOutput::writeSpace(
 	
 	auto& allPlayer = space.getPlayers();
 	
+
+	png_byte* color;// = const_cast<unsigned char*>(this->ar);
+
 	for (int y = 0, side = lattice.getSide(); y < side; ++y) {
 		for (int x = 0; x < side; ++x) {
 			
-			auto player = allPlayer.at(y * side + x);
+			auto& player = allPlayer.at(y * side + x);
 			
-			if (player->getAction() == Action::ACTION_C) {
-				// C プレイヤ
-				writePlayer(x, y, C_COLOR, isHexagonLattice);
+
+			if (player->getStrategy()->isAll(Action::ACTION_C)) {
+				// allC 戦略
+				color = const_cast<unsigned char*>(ALLC_COLOR);
+			} else if (player->getStrategy()->isAll(Action::ACTION_D)) {
+				// allD 戦略
+				color =  const_cast<png_byte*>(ALLD_COLOR);
+			} else if (player->getAction() == Action::ACTION_C) {
+				// c
+				color =  const_cast<png_byte*>(C_COLOR);
 			} else {
-				// D プレイヤ
-				if (player->getStrategy()->isAll(Action::ACTION_D)) {
-					// all-D 戦略
-					writePlayer(x, y, D_COLOR, isHexagonLattice);
-				} else {
-					writePlayer(x, y, KD_COLOR, isHexagonLattice);
-				}
+				// membarane
+				color =  const_cast<png_byte*>(MEMBRANE_COLOR);
 			}
+
+			writePlayer(x, y, color, isHexagonLattice);
+
 		}
 	}
 }
@@ -244,7 +248,7 @@ void ImageOutput::writeSpace(
 // 1プレイヤを書く
 void ImageOutput::writePlayer(
 		int x, int y,
-		unsigned char color, bool isHexagonLattice) {
+		const png_byte* color, bool isHexagonLattice) {
 
 	int dx = 0;
 	// 六角の奇数番目(偶数行)は半分ずらす
@@ -253,10 +257,16 @@ void ImageOutput::writePlayer(
 		dx = cellSize / 2;
 	}
 	
-	/* 1セルを描く */
+	// 1セルを描く
 	for (int y0 = y * cellSize, yMax = y * cellSize + cellSize; y0 < yMax; ++y0) {
-		for (int x0 = x * cellSize, xMax = x * cellSize + cellSize; x0 < xMax; ++x0) {
-			image[y0][x0 + dx] = color;
+		for (int x0 = x * cellSize * BYTE_PER_PIXEL, xMax = (x * cellSize  + cellSize) * BYTE_PER_PIXEL; x0 < xMax; x0 += BYTE_PER_PIXEL) {
+			if (COLOR_TYPE == PNG_COLOR_TYPE_RGB) {
+				image[y0][x0 + dx] = color[0];
+				image[y0][x0 + dx + 1] = color[1];
+				image[y0][x0 + dx + 2] = color[2];
+			} else {
+				image[y0][x0 + dx] = color[0];
+			}
 		}
 	}
 }

@@ -46,8 +46,7 @@ public:
 	 * プロパティの名前を取得
 	 * @return プロパティの名前
 	 */
-	const std::string& getName() const
-	{
+	const std::string& getName() const {
 		return name;
 	}
 
