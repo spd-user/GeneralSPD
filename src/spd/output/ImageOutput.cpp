@@ -217,7 +217,7 @@ void ImageOutput::writeSpace(
 	auto& allPlayer = space.getPlayers();
 	
 
-	png_byte* color;// = const_cast<unsigned char*>(this->ar);
+	png_byte* color;
 
 	for (int y = 0, side = lattice.getSide(); y < side; ++y) {
 		for (int x = 0; x < side; ++x) {
@@ -227,7 +227,7 @@ void ImageOutput::writeSpace(
 
 			if (player->getStrategy()->isAll(Action::ACTION_C)) {
 				// allC 戦略
-				color = const_cast<unsigned char*>(ALLC_COLOR);
+				color = const_cast<png_byte*>(ALLC_COLOR);
 			} else if (player->getStrategy()->isAll(Action::ACTION_D)) {
 				// allD 戦略
 				color =  const_cast<png_byte*>(ALLD_COLOR);
@@ -240,7 +240,6 @@ void ImageOutput::writeSpace(
 			}
 
 			writePlayer(x, y, color, isHexagonLattice);
-
 		}
 	}
 }

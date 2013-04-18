@@ -132,7 +132,6 @@ private:
 
 	// 出力情報
 	OutputType type;
-
 };
 
 } /* namespace core */

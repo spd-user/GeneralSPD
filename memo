@@ -58,8 +58,8 @@ std::to_string
 //* binaryoutput 遅い
 //** シリアライズ用のコピーに時間がかる。(プレイヤのリンクを片側だけどかにして、コピー要素をへらした)
 //** 容量が多い, gexf と binary は圧縮
+//* ouput image のカラー化
 * output の property 系統
-* ouput image のカラー化
 
 * property をクラスにして、なかに、name(std::string), value(boost::any), outputType の enum
  (たとえば、 countOutput, ignoreOutput, typeOutput) 

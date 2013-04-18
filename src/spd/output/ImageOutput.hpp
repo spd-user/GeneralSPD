@@ -132,7 +132,6 @@ private:
 	// pngファイルの作成
 	void outputPngFile(spd::core::Space& space, int sizeX, int sizeY);
 
-
 	// 盤面状態のイメージ化
 	void writeSpace(
 			const spd::topology::Lattice& lattice,
