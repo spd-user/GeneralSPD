@@ -41,15 +41,20 @@ OutputParser::OutputParser(const std::shared_ptr<OutputParameter>& outParam) : o
 
 	// オプションの設定
 	// 出力オプション用の説明
-	std::string outputDescription = "Output patterns. You can set the following pattern(s).";
-	outputDescription += " To also set a output interval, input a colon, followed by a number.";
-	outputDescription += " If you do not set a interval, a data is dumped at every step.\n";
+	std::string outputDescription = "Output method. You can set the following pattern(s).\n"
+			"If you want to control an output, also input a beginning and ending step and,"
+			" generating interval as indicated in the following examples."
+			"\n\t   -o method:begin:end+1:interval\n\n"
+			"To use a default value, do not input anything, or input a colon for next optional value."
+			"\n\t   -o method1:::interval -o method2:begin\n"
+			"Default value\n\t  begin - first(0), end - final(-1), interval - every(1)\n"
+			"Settable method\n";
 
 	auto outputMap = generator->getOutputMap();
 	for (auto output : outputMap) {
 		outputDescription += "\t-- " + output.first + "\n";
 	}
-	outputDescription += "\n  Example:\n\t   -o Console -o console:10 ...\nNote this option is case-insensitive.";
+	outputDescription += "\nNote this option is case-insensitive.";
 
 	options->add_options()
 		("dir,d", 		po::value<std::string>()->default_value(op->getDirectory()),

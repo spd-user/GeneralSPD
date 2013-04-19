@@ -67,7 +67,7 @@ std::pair<std::string, bool> PropertyOutput::output(spd::core::Space& space) {
 			outputFile << std::setw(5) << std::setfill('0') << space.getStep() << ":<" <<
 					propertyMap.begin()->first << ":" << propertyMap.begin()->second << ">";
 
-			for (auto& it = std::begin(propertyMap) + 1; it != std::end(propertyMap); it++){
+			for (auto it = ++(std::begin(propertyMap)); it != std::end(propertyMap); it++){
 					outputFile << ",<" <<
 							it->first << ":" << it->second << ">";
 			}
@@ -78,6 +78,7 @@ std::pair<std::string, bool> PropertyOutput::output(spd::core::Space& space) {
 	} catch (std::out_of_range& oor) {
 		std::cerr << "Out of Range error: " << oor.what() << '\n';
 	}
+
 
 	return std::pair<std::string, bool> {std::string(""), false};
 }

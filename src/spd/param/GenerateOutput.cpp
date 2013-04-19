@@ -48,10 +48,16 @@ GenerateOutput::GenerateOutput() {
 	auto binaryName = binary->toString();
 	transform(binaryName.begin(), binaryName.end(), binaryName.begin(), ::tolower);
 
-	// GEXF 出力
+	// GEXF の出力
 	shared_ptr<spd::output::Output> gexf = make_shared<spd::output::GEXFOutput>();
 	auto gexfName = gexf->toString();
 	transform(gexfName.begin(), gexfName.end(), gexfName.begin(), ::tolower);
+
+	// Property の出力
+	shared_ptr<spd::output::Output> property = make_shared<spd::output::PropertyOutput>();
+	auto propertyName = property->toString();
+	transform(propertyName.begin(), propertyName.end(), propertyName.begin(), ::tolower);
+
 
 
 	map<string, shared_ptr<spd::output::Output>> m {
@@ -60,7 +66,8 @@ GenerateOutput::GenerateOutput() {
 		{payoffName, 	payoff},
 		{imageName, 	image},
 		{binaryName, 	binary},
-		{gexfName, 	gexf}
+		{gexfName, 	gexf},
+		{propertyName, 	property}
 	};
 
 	this->outputMap = m;
@@ -89,8 +96,10 @@ tuple<shared_ptr<output::Output>, int, int, int> GenerateOutput::generate(const 
 		outputMethod = itr->second;
 
 		start = outputSetting.at(1).empty()? 0 : abs(std::stoi(outputSetting.at(1)));
+
 		// これだけはマイナスでも構わない
 		end = outputSetting.at(2).empty()? -1 : std::stoi(outputSetting.at(2));
+
 		interval = outputSetting.at(3).empty()? 1 : abs(std::stoi(outputSetting.at(3)));
 	} catch (std::exception& e) {
 		throw std::invalid_argument("Could not generate output for " + output + "."
@@ -101,9 +110,9 @@ tuple<shared_ptr<output::Output>, int, int, int> GenerateOutput::generate(const 
 }
 
 /*
- * 文字列を、出力方法と間隔に分割する
- * @param[in] output 出力方法と間隔の文字列
- * @return 方法と間隔のペア
+ * 文字列を、出力方法と初期ステップ、終了ステップ、間隔に分割する
+ * @param[in] output 最低でも出力方法がある文字列
+ * @return 分割されたタプル
  */
 std::vector<std::string> GenerateOutput::separateOutputString(std::string output) const {
 

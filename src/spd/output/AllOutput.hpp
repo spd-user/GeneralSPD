@@ -14,6 +14,7 @@
 #include "ImageOutput.hpp"
 #include "BinaryOutput.hpp"
 #include "GEXFOutput.hpp"
+#include "PropertyOutput.hpp"
 
 
 #endif /* ALLOUTPUT_H_ */

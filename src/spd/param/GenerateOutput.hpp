@@ -59,9 +59,9 @@ private:
 	std::map<std::string, std::shared_ptr<spd::output::Output>> outputMap;
 
 	/**
-	 * 文字列を、出力方法と各ステップに分割する
-	 * @param[in] output 出力方法と各ステップ
-	 * @return 分割した各値を示す文字列のvector
+	 * 文字列を、出力方法と初期ステップ、終了ステップ、間隔に分割する
+	 * @param[in] output 最低でも出力方法がある文字列
+	 * @return 分割されたタプル
 	 */
 	std::vector<std::string> separateOutputString(std::string output) const;
 
