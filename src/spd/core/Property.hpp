@@ -30,8 +30,7 @@ public:
 	 */
 	enum class OutputType { // 種類が2桁を越えるようになると、gexfOutput とかでエラーが起こる
 		NOT, /**< 出力しない */
-		COUNTABLE, /**< 値を加算し出力 */
-		CLASSIFIABLE, /**< 値で分類し出力 */
+		CLASSIFIABLE, /**< それぞれの値で分類し、それプレイヤ全体での数を求める */
 	};
 
 	/**
@@ -72,7 +71,7 @@ public:
 	 * @throw boost::bad_any_cast 取得する時の型が適切でない場合
 	 */
 	template<typename T>
-	T getValueAs() {
+	T getValueAs() const {
 		try {
 			return boost::any_cast<T>(value);
 		} catch (std::exception& e) {
@@ -88,7 +87,7 @@ public:
 	 * @retval 指定した型でない場合
 	 */
 	template<typename T>
-	bool isValue() {
+	bool isValue() const {
 		if (value.type() == typeid(T)) {
 			return true;
 		}
@@ -102,7 +101,7 @@ public:
 	 * BoostAnyConverter の一覧にしたがう
 	 * @return 型の名前
 	 */
-	std::string valueType() {
+	std::string valueType() const {
 		return converter::getTypeName(value.type());
 	}
 
@@ -111,7 +110,7 @@ public:
 	 * @return 文字列にした値
 	 * @throw std::runtime_error 文字列にできない場合
 	 */
-	std::string valueToString() {
+	std::string valueToString() const {
 
 		std::string result;
 		try {

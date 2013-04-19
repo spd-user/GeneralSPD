@@ -90,7 +90,7 @@ void NumberOutput::init(spd::core::Space& space, spd::param::Parameter& param) {
 
 	// ディレクトリの作成
 	FileSystemOperation fso;
-	if (!fso.createDirectory(filename) ) {
+	if (!fso.createDirectory(filename)) {
 		throw std::runtime_error("Could not create a directory for Number Output.");
 	}
 
