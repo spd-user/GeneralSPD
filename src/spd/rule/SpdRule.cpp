@@ -28,7 +28,6 @@ void SpdRule::init(
 		const AllPlayer& allPlayers,
 		const spd::param::Parameter& param) {
 
-	//
 	for (auto rule : this->rulesBeforeOutput) {
 		for (auto& player : allPlayers) {
 			rule->initialize(player, allPlayers, param);

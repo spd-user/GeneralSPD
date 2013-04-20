@@ -212,11 +212,26 @@ public:
 	}
 
 	/**
-	 * プレイヤのプロパティを取得
-	 * @return プロパティ
+	 * プレイヤの全てのプロパティを取得
+	 * @return 全てのプロパティ
 	 */
 	const std::vector<Property>& getProperties() const {
 		return properties;
+	}
+
+	/**
+	 * 指定する名前のプロパティを取得
+	 * @return プロパティ
+	 * @throw std::invalid_argument 指定するプロパティがない場合
+	 */
+	Property& getProperty(std::string name) {
+
+		for (auto& property : properties) {
+			if (property.getName() == name) {
+				return property;
+			}
+		}
+		throw std::invalid_argument("Could not found a property [" + name + "]");
 	}
 
 	/**

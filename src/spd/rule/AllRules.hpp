@@ -17,4 +17,8 @@
 // 戦略ルール
 #include "strategy/BestStrategyRule.hpp"
 
+
+// TODO プロパティのテスト
+#include "property/PropertyTest.hpp"
+
 #endif /* ALLRULES_H_ */

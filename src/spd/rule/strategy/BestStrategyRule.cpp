@@ -22,9 +22,9 @@ namespace spd {
 namespace rule {
 
 void BestStrategyRule::initialize(
-								const std::shared_ptr<Player>& player,
-			const AllPlayer& allPlayers,
-			const spd::param::Parameter& param) {
+		const std::shared_ptr<Player>& player,
+		const AllPlayer& allPlayers,
+		const spd::param::Parameter& param) {
 	return;
 }
 

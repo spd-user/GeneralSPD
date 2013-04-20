@@ -10,6 +10,7 @@ RM := rm -rf
 -include sources.mk
 -include src/spd/topology/subdir.mk
 -include src/spd/rule/strategy/subdir.mk
+-include src/spd/rule/property/subdir.mk
 -include src/spd/rule/game/subdir.mk
 -include src/spd/rule/action/subdir.mk
 -include src/spd/rule/subdir.mk

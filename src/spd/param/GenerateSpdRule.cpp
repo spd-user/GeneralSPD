@@ -25,6 +25,10 @@ GenerateSpdRule::GenerateSpdRule() {
 	bestRule->addRuleBeforeOutput(make_shared<spd::rule::SimpleSumGameRule>());
 	bestRule->addRuleAfterOutput(make_shared<spd::rule::BestStrategyRule>());
 
+	// TODO
+	// testProp ルールを加える
+	bestRule->addRuleBeforeOutput(make_shared<spd::rule::PropertyTest>());
+
 	transform(bestRuleName.begin(), bestRuleName.end(), bestRuleName.begin(), ::tolower);
 
 	// ルールの追加

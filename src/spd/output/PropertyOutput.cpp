@@ -39,46 +39,47 @@ std::pair<std::string, bool> PropertyOutput::output(spd::core::Space& space) {
 	try {
 
 		// プロパティ別に数える
-		for (int i, propNum = properties.size(); i < propNum; ++i) {
+		for (int i = 0, propNum = properties.size(); i < propNum; ++i) {
+			// 出力するもののみ
+			if (properties.at(i).getType() != core::Property::OutputType::NOT) {
 
-			// プロパティの情報
-			std::map<std::string, int> propertyMap;
+				// プロパティの情報
+				std::map<std::string, int> propertyMap;
 
-			// 分類するプロパティ
-			if (properties.at(i).getType() == core::Property::OutputType::CLASSIFIABLE) {
+				// 分類するプロパティ
+				if (properties.at(i).getType() == core::Property::OutputType::CLASSIFIABLE) {
 
-				for (auto player : allPlayers) {
+					for (auto player : allPlayers) {
 
-					auto propertyVal = player->getProperties().at(i).valueToString();
+						auto propertyVal = player->getProperties().at(i).valueToString();
 
-					auto result = propertyMap.insert(
-							std::pair<std::string, int>(
-									propertyVal, 1));
-					if (!(result.second)) {
-						propertyMap[propertyVal] += 1;
+						auto result = propertyMap.insert(
+								std::pair<std::string, int>(
+										propertyVal, 1));
+						if (!(result.second)) {
+							propertyMap[propertyVal] += 1;
+						}
 					}
 				}
-			}
 
+				auto& outputFile = *(outputFiles.at(outputFileIndex).get());
 
-			auto& outputFile = *(outputFiles.at(outputFileIndex).get());
+				// 計算結果を出力
+				outputFile << std::setw(5) << std::setfill('0') << space.getStep() << ":<" <<
+						propertyMap.begin()->first << ":" << propertyMap.begin()->second << ">";
 
-			// 計算結果を出力
-			outputFile << std::setw(5) << std::setfill('0') << space.getStep() << ":<" <<
-					propertyMap.begin()->first << ":" << propertyMap.begin()->second << ">";
-
-			for (auto it = ++(std::begin(propertyMap)); it != std::end(propertyMap); it++){
+				for (auto it = ++(std::begin(propertyMap)); it != std::end(propertyMap); it++){
 					outputFile << ",<" <<
 							it->first << ":" << it->second << ">";
-			}
-			outputFile << "\n";
+				}
+				outputFile << std::endl;
 
-			outputFileIndex++;
+				outputFileIndex++;
+			}
 		}
 	} catch (std::out_of_range& oor) {
 		std::cerr << "Out of Range error: " << oor.what() << '\n';
 	}
-
 
 	return std::pair<std::string, bool> {std::string(""), false};
 }
@@ -134,7 +135,6 @@ void PropertyOutput::init(spd::core::Space& space, spd::param::Parameter& param)
 		}
 	}
 }
-
 
 
 } /* namespace output */

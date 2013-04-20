@@ -63,7 +63,7 @@ std::pair<std::string, bool> NumberOutput::output(spd::core::Space& space) {
 				strategyList.at(i).first->getShortStrategy() << "-D:" <<
 				countList.at(i * 2 +  static_cast<int>(Action::ACTION_D)) << ">";
 	}
-	this->outputFile << "\n";
+	this->outputFile << std::endl;
 
 	return std::pair<std::string, bool> {std::string(""), false};
 }
