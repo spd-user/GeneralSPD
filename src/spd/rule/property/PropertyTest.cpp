@@ -13,7 +13,6 @@
 #include "../../param/Parameter.hpp"
 #include "../../param/InitParameter.hpp"
 
-
 namespace spd {
 namespace rule {
 
@@ -63,7 +62,6 @@ void PropertyTest::runRule(
 	}
 
 	prop.setValue(val);
-
 
 }
 

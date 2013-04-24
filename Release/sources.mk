@@ -25,6 +25,7 @@ C_UPPER_DEPS :=
 SUBDIRS := \
 src/spd/topology \
 src/spd/rule/strategy \
+src/spd/rule/property \
 src/spd/rule/game \
 src/spd/rule/action \
 src/spd/rule \

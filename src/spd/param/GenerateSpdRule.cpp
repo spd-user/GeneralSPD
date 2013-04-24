@@ -27,7 +27,7 @@ GenerateSpdRule::GenerateSpdRule() {
 
 	// TODO
 	// testProp ルールを加える
-	bestRule->addRuleBeforeOutput(make_shared<spd::rule::PropertyTest>());
+	//bestRule->addRuleBeforeOutput(make_shared<spd::rule::PropertyTest>());
 
 	transform(bestRuleName.begin(), bestRuleName.end(), bestRuleName.begin(), ::tolower);
 

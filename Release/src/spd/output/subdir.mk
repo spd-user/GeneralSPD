@@ -10,7 +10,8 @@ CPP_SRCS += \
 ../src/spd/output/ImageOutput.cpp \
 ../src/spd/output/NumberOutput.cpp \
 ../src/spd/output/OutputVisitor.cpp \
-../src/spd/output/PayoffOutput.cpp 
+../src/spd/output/PayoffOutput.cpp \
+../src/spd/output/PropertyOutput.cpp 
 
 OBJS += \
 ./src/spd/output/BinaryOutput.o \
@@ -19,7 +20,8 @@ OBJS += \
 ./src/spd/output/ImageOutput.o \
 ./src/spd/output/NumberOutput.o \
 ./src/spd/output/OutputVisitor.o \
-./src/spd/output/PayoffOutput.o 
+./src/spd/output/PayoffOutput.o \
+./src/spd/output/PropertyOutput.o 
 
 CPP_DEPS += \
 ./src/spd/output/BinaryOutput.d \
@@ -28,7 +30,8 @@ CPP_DEPS += \
 ./src/spd/output/ImageOutput.d \
 ./src/spd/output/NumberOutput.d \
 ./src/spd/output/OutputVisitor.d \
-./src/spd/output/PayoffOutput.d 
+./src/spd/output/PayoffOutput.d \
+./src/spd/output/PropertyOutput.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
