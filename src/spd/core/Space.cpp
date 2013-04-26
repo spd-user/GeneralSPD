@@ -137,7 +137,6 @@ inline Space::OutputResultType Space::output() {
 
 	for (int i = 0; i < outputsNum; ++i) {
 		auto& output = outputs.at(i);
-	//for (auto& output : outputs) {
 		thr[i] = std::thread(
 					[&, i]{
 				if ((step == 0) ||
