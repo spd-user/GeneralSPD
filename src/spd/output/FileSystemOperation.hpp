@@ -57,7 +57,7 @@ public:
 	 * @retval true 削除に成功または、元からファイルがない場合
 	 * @retval false 削除に失敗
 	 */
-	bool removeFile(const std::string& fileName) {
+	bool removeFile(const std::string fileName) {
 		namespace fs = boost::filesystem;
 		const fs::path file (fileName);
 

@@ -52,18 +52,18 @@ std::pair<std::string, bool> PayoffOutput::output(spd::core::Space& space) {
 	}
 
 	// 出力
-	this->outputFile << std::setw(5) << std::setfill('0') << space.getStep() << ":<" <<
+	*(this->outputFile.get()) << std::setw(5) << std::setfill('0') << space.getStep() << ":<" <<
 			strategyList.front().first->getShortStrategy() << "-C:" << countList.front() << ">,<" <<
 			strategyList.front().first->getShortStrategy() << "-D:" << countList.at(1) << ">";
 
 	for (int i = 1; i < strategyListSize; ++i) {
-		this->outputFile << ",<" <<
+		*(this->outputFile.get()) << ",<" <<
 				strategyList.at(i).first->getShortStrategy() << "-C:" <<
 				countList.at(i * 2 +  static_cast<int>(Action::ACTION_C)) << ">,<" <<
 				strategyList.at(i).first->getShortStrategy() << "-D:" <<
 				countList.at(i * 2 +  static_cast<int>(Action::ACTION_D)) << ">";
 	}
-	this->outputFile << std::endl;
+	*(this->outputFile.get()) << std::endl;
 
 	return std::pair<std::string, bool> {std::string(""), false};
 }
@@ -81,25 +81,28 @@ void PayoffOutput::init(spd::core::Space& space, spd::param::Parameter& param) {
 	simCount.width(3); // 桁数は3
 	simCount << space.getSimCount();
 
-	if (this->outputFile.is_open()) {
-		this->outputFile.close();
+	if (this->outputFile->is_open()) {
+		this->outputFile->close();
 	}
 
 	std::string filename;
 	filename = param.getOutputParameter()->getDirectory() + PREFIX + simCount.str() + SUFFIX;
 
 	// ディレクトリの作成
-	FileSystemOperation fso;
-	if (!fso.createDirectory(filename) ) {
-		throw std::runtime_error("Could not create a directory for Payoff Output.");
+	if (space.getSimCount() == 0) {
+		FileSystemOperation fso;
+		if (!fso.createDirectory(filename) ) {
+			throw std::runtime_error("Could not create a directory for Payoff Output.");
+		}
 	}
 
-	this->outputFile.open(filename.c_str(), std::ios::out);
-	if (this->outputFile.fail()) {
+	this->outputFile.reset(new std::ofstream());
+	this->outputFile->open(filename.c_str(), std::ios::out);
+	if (this->outputFile->fail()) {
 		throw std::runtime_error("Could not open a file (" + filename + ").");
 	}
 
-	param.showParameter(this->outputFile);
+	param.showParameter(*(this->outputFile.get()));
 }
 
 

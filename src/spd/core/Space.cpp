@@ -4,6 +4,10 @@
  * @date 2012/09/08
  * @author katsumata
  */
+ 
+ // ///////////////////////////
+#include <unistd.h>
+// ///////////////////////////
 
 #include "Space.hpp"
 
@@ -126,24 +130,26 @@ inline Space::OutputResultType Space::output() {
 	int outputsNum = outputs.size();
 
 	// 出力のスレッド化
-	std::vector<std::thread> thr;
+	std::vector<std::thread> thr(outputsNum);
 
 	// 出力結果を圧縮するかどうか
 	OutputResultType outputResults (outputsNum);
 
-	for (auto& output : outputs) {
-		thr.push_back(std::thread(
-				[&]{
-			if ((step == 0) ||
+	for (int i = 0; i < outputsNum; ++i) {
+		auto& output = outputs.at(i);
+	//for (auto& output : outputs) {
+		thr[i] = std::thread(
+					[&, i]{
+				if ((step == 0) ||
 					// 開始ステップ以上、終了ステップ未満(整数の場合)かつ、間隔のステップの場合
 					((std::get<1>(output) <= step) &&
-							((std::get<2>(output) < 0) || (std::get<2>(output) > step)) &&
-							((step - std::get<1>(output)) % std::get<3>(output) == 0))) {
+						((std::get<2>(output) < 0) || (std::get<2>(output) > step)) &&
+						((step - std::get<1>(output)) % std::get<3>(output) == 0))) {
 				// 出力
-				outputResults.push_back(std::get<0>(output)->output(*this));
+				outputResults.at(i) = std::get<0>(output)->output(*this);
 			}
 		}
-		));
+		);
 	}
 	for (std::thread& t : thr) {
 		t.join();
@@ -168,6 +174,7 @@ inline void Space::execStep() {
 
 		// 出力
 		outputResults = output();
+		
 		// 進捗の表示
 		printProgress();
 
@@ -189,23 +196,22 @@ inline void Space::execStep() {
 		}
 		));
 	}
-
+	
 	skipBeforeRules = false;
 
 	// 過去の保存
-	for (auto player : players) {
+	for (auto& player : players) {
 		player->storePreviousStates();
 	}
 
 	// 表示後処理
 	this->spdRule->runRulesAfterOutput(players, parameter, step);
 
-
 	// 圧縮はここまでに終わればいい
 	for (std::thread& t : thr) {
 		t.join();
 	}
-
+	
 }
 
 /*

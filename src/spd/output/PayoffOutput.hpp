@@ -10,6 +10,7 @@
 
 #include <fstream>
 #include <string>
+#include <memory>
 #include "Output.hpp"
 
 namespace spd {
@@ -20,6 +21,8 @@ namespace output {
  */
 class PayoffOutput : public Output {
 public:
+
+	PayoffOutput() : outputFile(new std::ofstream) {};
 
 	/**
 	 * 空間の情報を出力する
@@ -53,7 +56,7 @@ private:
 	const std::string SUFFIX = ".txt";
 
 	// 出力ファイル
-	std::ofstream outputFile;
+	std::unique_ptr<std::ofstream> outputFile;
 };
 
 } /* namespace output */
