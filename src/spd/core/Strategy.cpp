@@ -112,7 +112,7 @@ std::vector<Action> Strategy::toLongStrategy(const char* cStrategy, int iMinLen,
 	if (longStrategy.size() < minLen) {
 		std::string errStrategy = cStrategy;
 		throw std::invalid_argument("A strategy [" + errStrategy + "] is short. "
-				"Please set a strategy that lenght is at least " + minLen + ".");
+				"Please set a strategy that lenght is at least " + std::to_string(minLen) + ".");
 	}
 
 	return longStrategy;
