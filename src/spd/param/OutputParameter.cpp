@@ -52,6 +52,8 @@ void OutputParameter::showParameter(std::ostream& out) const {
 	} else {
 		out << "# Do not output\n";
 	}
+
+	out << "cell = " << cellSize << "\n";
 }
 
 } /* namespace param */
