@@ -198,11 +198,6 @@ inline void Space::execStep() {
 	
 	skipBeforeRules = false;
 
-	// 過去の保存
-	for (auto& player : players) {
-		player->storePreviousStates();
-	}
-
 	// 表示後処理
 	this->spdRule->runRulesAfterOutput(players, parameter, step);
 

@@ -22,7 +22,9 @@ GenerateSpdRule::GenerateSpdRule() {
 	string bestRuleName = "SimpleBestRule";
 	auto bestRule = make_shared<spd::rule::SpdRule>(bestRuleName);
 	bestRule->addRuleBeforeOutput(make_shared<spd::rule::SimpleActionRule>());
-	bestRule->addRuleBeforeOutput(make_shared<spd::rule::SimpleSumGameRule>());
+
+	bestRule->addRuleAfterOutput(make_shared<spd::rule::SimpleSumGameRule>());
+	bestRule->addRuleAfterOutput(make_shared<spd::rule::PromoteStateRule>());
 	bestRule->addRuleAfterOutput(make_shared<spd::rule::BestStrategyRule>());
 
 	// TODO

@@ -8,6 +8,9 @@
 #ifndef ALLRULES_H_
 #define ALLRULES_H_
 
+// 状態のストアルール
+#include "PromoteStateRule.hpp"
+
 // 行動ルール
 #include "action/SimpleActionRule.hpp"
 
