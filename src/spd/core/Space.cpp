@@ -227,18 +227,16 @@ inline void Space::printProgress() const {
 	// 進捗度
 	double progress = 100.0 * step / endStep;
 
-	std::cout << std::setw(5) << std::setfill('0') << step << " Step  ";
+	std::cout << std::setw(5) << std::setfill('0') << step << " Step  [";
 
-	for (int i = 0; i < sim; i++) {
-		std::cout << "....:....|";
+	int remain = 20 - static_cast<int>(progress / 5);
+	for (int j = 0; j < (20 - remain); ++j) {
+		std::cout << "=";
 	}
-	for (int j = 1; j <= progress / 10; ++j) {
-		if (j % 10 == 0) {
-			std::cout << "|";
-		} else if (j % 5 == 0) {
-			std::cout << ":";
-		} else {
-			std::cout << ".";
+	if (remain != 0) {
+		std::cout << ">";
+		for (int i = 1; i < remain; ++i) {
+			std::cout << "-";
 		}
 	}
 
@@ -257,14 +255,13 @@ inline void Space::printProgress() const {
 			);
 
 	// 改行は行わずに復帰する
-	std::cout << " [ ETC " <<
+	std::cout << "] " << std::setprecision(2) << std::setiosflags(std::ios::fixed)
+			<< progress << "% (" << sim + 1 << "/" << simCount << ") @ ETC " <<
 			duration_cast<hours>(estimatedTimeToComplete).count() << ":" <<
 			duration_cast<minutes>(estimatedTimeToComplete).count() % 60 << ":" <<
 			duration_cast<seconds>(estimatedTimeToComplete).count() % 60 << " (" <<
 			duration_cast<minutes>(oneStepTime).count() << "m" <<
-			duration_cast<seconds>(oneStepTime).count() % 60 << "s/step) @ " <<
-			std::setprecision(2) << std::setiosflags(std::ios::fixed) << progress <<
-			"% (" << sim + 1 << "/" << simCount << ") ]       \r" << std::flush;
+			duration_cast<seconds>(oneStepTime).count() % 60 << "s/step)        \r" << std::flush;
 
 }
 
