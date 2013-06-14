@@ -222,7 +222,7 @@ inline void Space::printProgress() const {
 	// 進捗度
 	double progress = 100.0 * step / endStep;
 
-	std::cout << std::setw(5) << std::setfill('0') << step << " Step  [";
+	std::cout << std::setw(5) << std::setfill('0') << step << " [";
 
 	int remain = 20 - static_cast<int>(progress / 5);
 	for (int j = 0; j < (20 - remain); ++j) {
@@ -256,7 +256,7 @@ inline void Space::printProgress() const {
 			duration_cast<minutes>(estimatedTimeToComplete).count() % 60 << ":" <<
 			duration_cast<seconds>(estimatedTimeToComplete).count() % 60 << " (" <<
 			duration_cast<minutes>(oneStepTime).count() << "m" <<
-			duration_cast<seconds>(oneStepTime).count() % 60 << "s/step)        \r" << std::flush;
+			duration_cast<seconds>(oneStepTime).count() % 60 << "s/step)    \r" << std::flush;
 
 }
 
