@@ -51,7 +51,7 @@ void ParseParam::parse(int argc, char* argv[], Parameter& param) const {
 
 	generalOpt.add_options()
 		("config", 	po::value<std::string>(), 	"Loading the configurations from the specified file."
-				"But, an option is overridden by command line.")
+				" But, an option is overridden by command line.")
 		("state", 		po::value<std::string>(), 	"Loading the states of all players from the specified"
 				" gexf or mpac file or these gziped file.")
 		("core", 		po::value<int>()->default_value(param.getCore()),
