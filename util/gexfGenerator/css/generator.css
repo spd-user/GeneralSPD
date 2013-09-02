@@ -1,0 +1,32 @@
+
+div#jquery-ui-accordion div.jquery-ui-accordion-title {
+	
+	margin: 1px 0 0 0;
+	padding: 0.7em 0.5em 0.5em 2em;
+	font-size: 16px;
+	font-weight: bold;
+	overflow: hidden;
+}
+
+div#jquery-ui-accordion div.jquery-ui-accordion-contents {
+	margin: -2px 0 2px 0;
+	padding: 0.5em 2em 1.5em 2em;
+	font-size: 15px;
+	clear: both;
+}
+
+
+span.accordion-del-btn {
+	float: right;
+}
+
+.visible-del-img {
+	display : inline-block;
+	visibility : visible;
+}
+
+.hidden-del-img  {
+	display : inline-block;
+	visibility : hidden;
+}
+
