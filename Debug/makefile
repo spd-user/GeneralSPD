@@ -20,6 +20,7 @@ RM := rm -rf
 -include src/spd/core/maker/subdir.mk
 -include src/spd/core/subdir.mk
 -include src/spd/subdir.mk
+-include src/subdir.mk
 -include lib/msgpack-0.5.7/src/subdir.mk
 -include subdir.mk
 -include objects.mk

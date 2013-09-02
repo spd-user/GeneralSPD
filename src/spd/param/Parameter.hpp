@@ -128,7 +128,7 @@ public:
 
 	/**
 	 * シミュレーションで使用するコア数
-	 * @param[in] シミュレーションで使用するコア数
+	 * @param[in] core シミュレーションで使用するコア数
 	 */
 	void setCore(int core) {
 		this->core = core;

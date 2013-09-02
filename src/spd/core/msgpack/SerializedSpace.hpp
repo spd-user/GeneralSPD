@@ -40,7 +40,7 @@ public:
 
 	/**
 	 * 空間クラスからのコピーコンストラクタ
-	 * @param[in] 元となる空間
+	 * @param[in] space 元となる空間
 	 */
 	SerializedSpace (Space& space) {
 

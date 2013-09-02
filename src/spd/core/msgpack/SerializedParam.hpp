@@ -41,7 +41,7 @@ public:
 
 	/**
 	 * パラメタクラスからのコピーコンストラクタ
-	 * @param[in] 元となるパラメタ
+	 * @param[in] param 元となるパラメタ
 	 */
 	SerializedParam(spd::param::Parameter& param) {
 

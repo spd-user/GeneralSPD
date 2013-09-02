@@ -37,7 +37,7 @@ public :
 
 	/**
 	 * プレイヤクラスからのコピーコンストラクタ
-	 * @param[in] 元となるプレイヤ
+	 * @param[in] player 元となるプレイヤ
 	 */
 	SerializedPlayer(const std::shared_ptr<Player>& player) {
 		id = player->getId();

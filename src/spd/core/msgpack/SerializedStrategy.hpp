@@ -31,7 +31,7 @@ public:
 
 	/**
 	 * 戦略クラスからのコピーコンストラクタ
-	 * @param[in] 元となる戦略
+	 * @param[in] strategy 元となる戦略
 	 */
 	SerializedStrategy(const std::shared_ptr<Strategy>& strategy) {
 		id = strategy->getId();

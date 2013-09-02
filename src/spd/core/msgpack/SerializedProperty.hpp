@@ -28,7 +28,7 @@ public:
 
 	/**
 	 * プロパティクラスからのコピーコンストラクタ
-	 * @param[in] 元となるプロパティ
+	 * @param[in] prop 元となるプロパティ
 	 */
 	SerializedProperty(Property& prop) {
 

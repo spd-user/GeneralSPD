@@ -35,5 +35,6 @@ src/spd/output \
 src/spd/core/maker \
 src/spd/core \
 src/spd \
+src \
 lib/msgpack-0.5.7/src \
 
