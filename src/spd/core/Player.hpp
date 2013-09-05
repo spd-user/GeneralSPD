@@ -64,14 +64,14 @@ public:
 	}
 
 	/**
-	 * このプレイヤからの接続をなくす。
+	 * このプレイヤからの接続をなくす
 	 */
 	void resetLink() {
 		this->linkedPlayers = std::make_shared<std::vector<std::weak_ptr<Player>>>();
 	}
 
 	/**
-	 * 接続リストを削除する。
+	 * 接続リストを削除する
 	 */
 	void deleteLink() {
 		this->linkedPlayers = nullptr;
