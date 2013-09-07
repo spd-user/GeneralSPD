@@ -107,7 +107,7 @@ protected:
 
 private:
 
-	// 隣接プレイヤ数
+	/** 隣接プレイヤ数 */
 	static const int ADJACENCE = 8;
 
 	/**

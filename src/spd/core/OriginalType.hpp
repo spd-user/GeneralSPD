@@ -18,6 +18,8 @@ class Player;
 
 /**
  * プレイヤの持つ近傍の型
+ *
+ * 半径ごとに、対応するプレイヤ群のvector を入れる。半径は0から始まるため、一つ目のサイズは半径+1
  */
 typedef std::shared_ptr<std::vector<std::shared_ptr<std::vector<std::weak_ptr<Player>>>>> Neighbors;
 

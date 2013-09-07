@@ -129,7 +129,7 @@ private:
 	 * @param[in] minLen 最低限の戦略長
 	 * @param[in] maxLen 最大の戦略長
 	 * @return 冗長な列挙型戦略列
-	 * @throw std::invalid_argument 先頭が数字の戦略の場合または、最低限の長さを満たせない場合場合
+	 * @throw std::invalid_argument 先頭が数字の戦略の場合または、最低限の長さを満たせない場合
 	 */
 	std::vector<Action> toLongStrategy(const char* strategy, int minLen, int maxLen);
 

@@ -238,7 +238,7 @@ void Moore::setNeighborsOf(
 	// 使用可能メモリ
 	auto availableMemory = initParam->getMemory();
 
-	// 接続近傍の設定
+	// 近傍の設定
 	// 1プレイヤの接続近接に関わるメモリ量
 	auto neighborsSize = sizeof(std::shared_ptr<std::vector<std::shared_ptr<std::vector<std::weak_ptr<Player>>>>>)
 							+ sizeof(std::vector<std::shared_ptr<std::vector<std::weak_ptr<Player>>>>)

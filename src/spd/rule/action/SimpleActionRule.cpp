@@ -117,7 +117,7 @@ inline int SimpleActionRule::adjustToStrategyLength(
 
 	// 正規乱数の生成
 	// 中央値(dNum + 0.5), 標準偏差(0.25) とする
-	// 二項分布の0未満、試行回数以上ならば、やりなおす。
+	// 二項分布の0未満、dNum+1以上ならば、やりなおす。
 	std::normal_distribution<double> normalDistribution (0.5 + dNum, 0.25);
 	do {
 		normalRandom = normalDistribution(engine);
