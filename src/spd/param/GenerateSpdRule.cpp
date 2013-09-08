@@ -18,7 +18,8 @@ using namespace std;
 
 GenerateSpdRule::GenerateSpdRule() {
 
-	// 作成可能ルールを設定
+	// ルールを設定
+	// シンプルな総和・最高利得ゲーム
 	string bestRuleName = "SimpleBestRule";
 	auto bestRule = make_shared<spd::rule::SpdRule>(bestRuleName);
 	bestRule->addRuleBeforeOutput(make_shared<spd::rule::SimpleActionRule>());
@@ -26,16 +27,28 @@ GenerateSpdRule::GenerateSpdRule() {
 	bestRule->addRuleAfterOutput(make_shared<spd::rule::SimpleSumGameRule>());
 	bestRule->addRuleAfterOutput(make_shared<spd::rule::PromoteStateRule>());
 	bestRule->addRuleAfterOutput(make_shared<spd::rule::BestStrategyRule>());
-
 	// TODO
 	// testProp ルールを加える
 	//bestRule->addRuleBeforeOutput(make_shared<spd::rule::PropertyTest>());
 
 	transform(bestRuleName.begin(), bestRuleName.end(), bestRuleName.begin(), ::tolower);
 
+
+	// 平均・最高利得ゲーム
+	string aveRuleName = "AveRule";
+	auto aveRule = make_shared<spd::rule::SpdRule>(aveRuleName);
+	aveRule->addRuleBeforeOutput(make_shared<spd::rule::SimpleActionRule>());
+
+	aveRule->addRuleAfterOutput(make_shared<spd::rule::AverageGameRule>());
+	aveRule->addRuleAfterOutput(make_shared<spd::rule::PromoteStateRule>());
+	aveRule->addRuleAfterOutput(make_shared<spd::rule::BestStrategyRule>());
+
+	transform(aveRuleName.begin(), aveRuleName.end(), aveRuleName.begin(), ::tolower);
+
 	// ルールの追加
 	map<string, shared_ptr<spd::rule::SpdRule>> m {
-		{bestRuleName, bestRule}
+		{bestRuleName, bestRule},
+		{aveRuleName, aveRule}
 	};
 
 	this->spdRuleMap = m;

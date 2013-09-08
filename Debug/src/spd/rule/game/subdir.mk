@@ -4,12 +4,15 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
+../src/spd/rule/game/AverageGameRule.cpp \
 ../src/spd/rule/game/SimpleSumGameRule.cpp 
 
 OBJS += \
+./src/spd/rule/game/AverageGameRule.o \
 ./src/spd/rule/game/SimpleSumGameRule.o 
 
 CPP_DEPS += \
+./src/spd/rule/game/AverageGameRule.d \
 ./src/spd/rule/game/SimpleSumGameRule.d 
 
 
