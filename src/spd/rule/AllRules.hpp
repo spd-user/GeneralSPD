@@ -16,6 +16,7 @@
 
 // ゲームルール
 #include "game/SimpleSumGameRule.hpp"
+#include "game/AverageGameRule.hpp"
 
 // 戦略ルール
 #include "strategy/BestStrategyRule.hpp"
