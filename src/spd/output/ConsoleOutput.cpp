@@ -105,7 +105,37 @@ void ConsoleOutput::printPlayer(const std::shared_ptr<spd::core::Player> player)
 void ConsoleOutput::output(const spd::topology::Network& topology,
 	spd::core::Space& space) {
 
+#ifdef DEBUG
+	// Debug では詳しく全て表示
+	auto& allPlayers = space.getPlayers();
+
+	for (auto& player : allPlayers) {
+		try {
+			// id の表示
+			std::cout << "ID: " << player->getId() << " [";
+
+			// 接続の表示
+			auto& linkedPlayers = player->getLinkedPlayers();
+			for (auto& linkedPlayer : *linkedPlayers) {
+				std::cout << " " << linkedPlayer.lock()->getId() << ",";
+			}
+
+			// 状態の表示
+			std::cout << "preAct(" << spd::core::converter::actionToChar(player->getPreAction())
+			<< "), act(" << spd::core::converter::actionToChar(player->getAction())
+			<< "), preSocre(" << player->getPreScore() << "), socre(" << player->getScore()
+			<< "), preStrategy(" << player->getPreStrategy()->getShortStrategy()
+			<< "), strategy(" << player->getStrategy()->getShortStrategy()
+			<< ")\n";
+
+		} catch (std::invalid_argument& e) {
+			std::cout << "\n[id: " << player->getId() << "]'s err. Maybe related action.\n";
+		}
+	}
+#else
+	// Relese ではなにも表示しない
 	std::cerr << "Could not output on a console without a lattice.\n";
+#endif
 }
 
 } /* namespace output */
