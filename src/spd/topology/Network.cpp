@@ -77,10 +77,14 @@ spd::core::Neighbors Network::getNeighbors(
 				throw std::runtime_error("Could not find a neighbor of a player.");
 			}
 
-			auto opponentId = opponent->getId();
-			// 今までにはない場合、追加
-			if (!existOnNeighbors(result, opponentId)) {
-				result->at(r)->push_back(players.at(opponentId));
+			// 対戦者のリンクをたどる
+			auto linkedPlayer = opponent->getLinkedPlayers();
+			for (auto opponentLink : *(linkedPlayer)) {
+				auto opponentLinkId = opponentLink.lock()->getId();
+				// 今までにはない場合、追加
+				if (!existOnNeighbors(result, opponentLinkId)) {
+					result->at(r)->push_back(players.at(opponentLinkId));
+				}
 			}
 		}
 	}

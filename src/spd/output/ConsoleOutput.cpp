@@ -109,6 +109,7 @@ void ConsoleOutput::output(const spd::topology::Network& topology,
 	// Debug では詳しく全て表示
 	auto& allPlayers = space.getPlayers();
 
+	std::cout << "step:" << space.getStep() << "\n";
 	for (auto& player : allPlayers) {
 		try {
 			// id の表示
@@ -132,6 +133,7 @@ void ConsoleOutput::output(const spd::topology::Network& topology,
 			std::cout << "\n[id: " << player->getId() << "]'s err. Maybe related action.\n";
 		}
 	}
+	std::cout << "--------------------------------" << std::endl;
 #else
 	// Relese ではなにも表示しない
 	std::cerr << "Could not output on a console without a lattice.\n";

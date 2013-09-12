@@ -119,6 +119,7 @@ void Topology::copyConnectors(NeighborhoodType destType, const spd::core::AllPla
 		if (playersLink == nullptr) {
 			// null の場合は自分とのリンクを作ろうと試みることで、null でないようにする
 			player->linkTo(player);
+			playersLink = player->getLinkedPlayers();
 		}
 
 		neighbors->push_back(own);
