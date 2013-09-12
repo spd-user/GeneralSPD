@@ -23,12 +23,9 @@ class Random: public spd::topology::Network {
 public :
 
 	/**
-	 * 接続確率を設定し、生成
-	 *
-	 * @note 接続確率が指定されていない場合は、デフォルトの値で設定する
-	 * @param[in] probability 接続確率
+	 * デフォルトの接続確率でクラス生成
 	 */
-	Random(double probability = 0.01);
+	Random();
 
 	/**
 	 * すべてのプレイヤの接続を作成する。
@@ -76,6 +73,15 @@ public :
 //	int maxStrategyLength(int actionRadius);
 
 	/**
+	 * トポロジのプロパティ(接続確率)を設定する
+	 *
+	 * もし複数のプロパティが渡されても、一つ目しか使用しない
+	 * @param[in] properties プロパティ
+	 * @throw std::runtime_error プロパティの数が1未満の場合
+	 */
+	void setProp(std::vector<double> properties);
+
+	/**
 	 * 空間構図構造名の出力
 	 * @return 空間構図構造名(Random)
 	 */
@@ -87,6 +93,8 @@ public :
 	}
 
 private :
+
+	static constexpr double DEFAULT_CONNECTION_PROBABILITY = 0.01;
 
 	/**
 	 * 接続確率

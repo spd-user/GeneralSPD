@@ -81,6 +81,15 @@ public:
 	void accept(spd::output::OutputVisitor& visitor, spd::core::Space& space);
 
 	/**
+	 * トポロジのプロパティを設定する
+	 * @note プロパティはないのでなにもしない
+	 * @param[in] properties プロパティ
+	 */
+	void setProp(std::vector<double> properties) {
+		return;
+	};
+
+	/**
 	 * 空間構図構造名の出力
 	 * @return 空間構図構造名(Moore)
 	 */

@@ -100,6 +100,12 @@ public:
 	 */
 	virtual void accept(spd::output::OutputVisitor& visitor, spd::core::Space& space) = 0;
 
+	/**
+	 * トポロジのプロパティを設定する
+	 * @param[in] properties プロパティ
+	 */
+	virtual void setProp(std::vector<double>  properties) = 0;
+
 private:
 
 	/**

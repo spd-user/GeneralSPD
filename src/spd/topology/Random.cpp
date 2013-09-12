@@ -28,9 +28,8 @@ using spd::core::Player;
 
 /**
  * 接続確率を設定するコンストラクタ
- * @param[in] probability 接続確率
  */
-Random::Random(double probability) : connectionProbability(probability) {};
+Random::Random() : connectionProbability(DEFAULT_CONNECTION_PROBABILITY) {};
 
 /*
  * すべてのプレイヤの接続を作成する。
@@ -204,6 +203,19 @@ void Random::connectPlayers(const spd::core::AllPlayer& players,
 //		NeighborhoodType neighborType,
 //		const spd::core::AllPlayer& players,
 //		const spd::param::Parameter& param);
+
+/*
+ * トポロジのプロパティ(接続確率)を設定する
+ * @param[in] properties プロパティ
+ */
+void Random::setProp(std::vector<double> properties) {
+
+	if (properties.size() < 1) {
+		throw std::runtime_error("The propery is nothing");
+	}
+
+	this->connectionProbability = properties[0];
+};
 
 } /* namespace topology */
 } /* namespace spd */

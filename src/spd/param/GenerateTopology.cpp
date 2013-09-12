@@ -7,6 +7,8 @@
 
 #include <stdexcept>
 #include <algorithm>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/classification.hpp> // is_any_of
 #include "GenerateTopology.hpp"
 #include "../topology/AllTopology.hpp"
 
@@ -35,10 +37,17 @@ GenerateTopology::GenerateTopology() {
 	auto hexName = hex->toString();
 	std::transform(hexName.begin(), hexName.end(), hexName.begin(), ::tolower);
 
+	// ランダムネットワーク
+	shared_ptr<spd::topology::Topology> random = make_shared<spd::topology::Random>();
+	auto randomName = random->toString();
+	std::transform(randomName.begin(), randomName.end(), randomName.begin(), ::tolower);
+
+
 	map<string, shared_ptr<spd::topology::Topology>> m {
 		{mooreName, 	moore},
 		{neumannName, neumann},
-		{hexName, 		hex}
+		{hexName, 		hex},
+		{randomName, 	random}
 	};
 
 	this->topologyMap = m;
@@ -54,13 +63,28 @@ shared_ptr<spd::topology::Topology> GenerateTopology::generate(const string& top
 		throw std::invalid_argument("Topology strings could not to be empty string.");
 	}
 
-	// エラー用に残したいのでコピーしておく
-	std::string topologyName = topology;
+	std::vector<std::string> topoStrings;
+	// コロンで分割
+	boost::algorithm::split(topoStrings, topology, boost::is_any_of(":"));
+
+	// 構造名
+	std::string topologyName = topoStrings.at(0);
 	std::transform(topologyName.begin(), topologyName.end(), topologyName.begin(), ::tolower);
 	auto itr = this->topologyMap.find(topologyName);
 	if (itr != this->topologyMap.end()) {
-		return itr->second;
+
+		auto& result = itr->second;
+
+		// プロパティを取得し、設定
+		std::vector<double> properties(topoStrings.size() - 1);
+		for (int i = 1, max = topoStrings.size(); i < max; ++i) {
+			properties[i - 1] = std::stod(topoStrings[i]);
+		}
+		result->setProp(properties);
+
+		return result;
 	}
+
 
 
 	std::string err = "";

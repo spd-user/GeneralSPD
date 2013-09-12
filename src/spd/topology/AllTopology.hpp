@@ -13,5 +13,6 @@
 #include "Neumann.hpp"
 #include "Hexagon.hpp"
 #include "Network.hpp"
+#include "Random.hpp"
 
 #endif /* ALLTOPOLOGY_H_ */
