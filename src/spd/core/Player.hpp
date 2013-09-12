@@ -49,6 +49,7 @@ public:
 	 *
 	 * @note
 	 * 双方向接続ではない、また多重接続はしない
+	 * nullの場合は必ず作成し、自分との接続は行わない
 	 * @param[in] player 接続相手
 	 */
 	void linkTo(const std::weak_ptr<Player>& player);

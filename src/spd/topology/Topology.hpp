@@ -123,7 +123,6 @@ private:
 	 * プレイヤの接続近傍を、指定した近傍タイプにおける近傍として、コピーする
 	 * @param[in] destType コピー先
 	 * @param[in] players 全てのプレイヤ
-	 * @throw std::runtime_error 接続近傍にnullptrがある場合発生
 	 */
 	void copyConnectors(NeighborhoodType destType, const spd::core::AllPlayer& players) const;
 

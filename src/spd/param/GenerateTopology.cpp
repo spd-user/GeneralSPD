@@ -39,9 +39,7 @@ GenerateTopology::GenerateTopology() {
 
 	// ランダムネットワーク
 	shared_ptr<spd::topology::Topology> random = make_shared<spd::topology::Random>();
-	auto randomName = random->toString();
-	std::transform(randomName.begin(), randomName.end(), randomName.begin(), ::tolower);
-
+	auto randomName = "random";
 
 	map<string, shared_ptr<spd::topology::Topology>> m {
 		{mooreName, 	moore},
@@ -93,7 +91,6 @@ shared_ptr<spd::topology::Topology> GenerateTopology::generate(const string& top
 	}
 	throw std::invalid_argument("Could not generate topology for " + topology + ".\n"
 			"Settable rule(s): [" + err + " ]");
-
 }
 
 /*

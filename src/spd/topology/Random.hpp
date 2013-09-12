@@ -75,9 +75,9 @@ public :
 	/**
 	 * トポロジのプロパティ(接続確率)を設定する
 	 *
-	 * もし複数のプロパティが渡されても、一つ目しか使用しない
+	 * もし複数のプロパティが渡されても、一つ目しか使用しない<br>
+	 * また、無い場合は変更しないまま
 	 * @param[in] properties プロパティ
-	 * @throw std::runtime_error プロパティの数が1未満の場合
 	 */
 	void setProp(std::vector<double> properties);
 
@@ -94,6 +94,9 @@ public :
 
 private :
 
+	/**
+	 * デフォルトの接続確率
+	 */
 	static constexpr double DEFAULT_CONNECTION_PROBABILITY = 0.01;
 
 	/**

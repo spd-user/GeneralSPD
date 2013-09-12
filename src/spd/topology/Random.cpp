@@ -211,7 +211,7 @@ void Random::connectPlayers(const spd::core::AllPlayer& players,
 void Random::setProp(std::vector<double> properties) {
 
 	if (properties.size() < 1) {
-		throw std::runtime_error("The propery is nothing");
+		return;
 	}
 
 	this->connectionProbability = properties[0];
