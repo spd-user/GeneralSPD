@@ -41,7 +41,12 @@ NeighborParser::NeighborParser(const std::shared_ptr<NeighborhoodParameter>& nei
 	std::string topologyDescription = "Space topology. You can set the following topology(ies).\n";
 	auto topologyMap = generator->getTopologyMap();
 	for (auto topology : topologyMap) {
-		topologyDescription += "\t-- " + topology.first + "\n";
+		topologyDescription += "\t-- " + topology.first;
+		// 説明の付け足し
+		if (topology.first == "random") {
+			topologyDescription += "[:(connection probability)]";
+		}
+		topologyDescription += "\n";
 	}
 	topologyDescription += "Note this option is case-insensitive.";
 

@@ -10,6 +10,8 @@
 #include <random>
 #include <stdexcept>
 
+#include <thread>
+
 #include "../core/OriginalType.hpp"
 #include "../core/Player.hpp"
 #include "../core/Space.hpp"
@@ -20,6 +22,8 @@
 #include "../param/RandomParameter.hpp"
 
 #include "../output/OutputVisitor.hpp"
+
+#include <iostream>
 
 namespace spd {
 namespace topology {
@@ -46,37 +50,132 @@ void Random::connectPlayers(const spd::core::AllPlayer& players,
 	// 使用可能メモリ
 	auto availableMemory = iniParam->getMemory();
 
-	// プレイヤ数
-	auto playerNum = iniParam->getPlayerNum();
-
 	// 0以上1未満の一様分布
 	std::uniform_real_distribution<> dist(0.0, 1.0);
 
 	auto randParam = param.getRandomParameter();
-	auto engine = randParam->getEngine();
 
-	// 全ての組み合わせをみる
-	for (int i = 0; i < playerNum - 1; ++i) {
-		for (int j = i + 1; j < playerNum; ++j) {
+	int core = param.getCore();
+	std::vector<std::thread> thr(core + 1);
 
-			// 接続
-			if (dist(engine) < this->connectionProbability) {
-				// メモリの計算
-				availableMemory -= static_cast<long int>(sizeof(std::weak_ptr<Player>));
-				if (availableMemory < 0) {
-					std::runtime_error("Could not construct a spatial structure due to insufficient memory.");
+	// 全プレイヤ数
+	int allPlayerNum = players.size();
+	// 半分のプレイヤ数(総プレイヤ数が奇数の場合は半分に満たない数になる)
+	int halfPlayerNum = allPlayerNum / 2;
+	//(allPlayerNum % 2 == 0) ? allPlayerNum / 2 : (allPlayerNum + 1) / 2;
+	// 1コアが担当するプレイヤ数
+	int breadth = halfPlayerNum / core;
+
+	// プレイヤの設定状況の進捗
+	int playerProgress = 0;
+
+	for (int i = 0, size = thr.size(); i < size; ++i) {
+		thr[i] = std::thread(
+				[&, i]{
+
+			// 乱数生成器の作成
+			std::mt19937_64 engine (randParam->getSeed());
+			engine.discard(randParam->getDiscardNum());
+
+			// 中央以外の計算部分
+			if (i != core) {
+
+				int from = breadth * i;
+				int to = (i + 1 < core) ? breadth * (i + 1) : halfPlayerNum;
+
+				// 乱数の調整
+				unsigned long long discardNum =
+						(((allPlayerNum - 1) + (allPlayerNum - from)) * from) / 2;
+				engine.discard(discardNum);
+
+				// 前半部分
+				for (int id = from; id < to; ++id) {
+					for (int destPlayer = id + 1; destPlayer < allPlayerNum; ++destPlayer) {
+
+						// 接続
+						if (dist(engine) < this->connectionProbability) {
+							// メモリの計算
+							availableMemory -= static_cast<long int>(sizeof(std::weak_ptr<Player>));
+							if (availableMemory < 0) {
+								std::runtime_error("Could not construct a spatial structure due to insufficient memory.");
+							}
+
+							players.at(id)->linkTo(players.at(destPlayer));
+							players.at(destPlayer)->linkTo(players.at(id));
+						}
+
+					}
 				}
 
-				players.at(i)->linkTo(players.at(j));
-				players.at(j)->linkTo(players.at(i));
+				playerProgress += to - from;
+				int progress = (playerProgress * 100) / allPlayerNum;
+				std::string msg = "connetion ";
+				msg += std::to_string(progress) + "% finished (thr " + std::to_string(i) + ")";
+				std::cout << msg << std::endl;
+
+				discardNum = ((allPlayerNum - 1) * ((halfPlayerNum - to) * 2 + (allPlayerNum % 2))) / 2;
+				engine.discard(discardNum);
+				// 後半部分
+				for (int id = allPlayerNum - to; id < allPlayerNum - from; ++id) {
+					for (int destPlayer = id + 1; destPlayer < allPlayerNum; ++destPlayer) {
+
+						// 接続
+						if (dist(engine) < this->connectionProbability) {
+							// メモリの計算
+							availableMemory -= static_cast<long int>(sizeof(std::weak_ptr<Player>));
+							if (availableMemory < 0) {
+								std::runtime_error("Could not construct a spatial structure due to insufficient memory.");
+							}
+
+							players.at(id)->linkTo(players.at(destPlayer));
+							players.at(destPlayer)->linkTo(players.at(id));
+						}
+					}
+				}
+			} else {
+				// 最後のスレッドは真ん中だけ専用
+				if (allPlayerNum % 2 == 1) {
+					// プレイヤ数が奇数であるとき、最後のスレッドで真ん中の分を行う
+					int centerPlayer = (allPlayerNum - 1) / 2;
+
+					// 乱数の調整
+					unsigned long long discardNum =
+							(((allPlayerNum - 1) + (allPlayerNum - centerPlayer)) * centerPlayer) / 2;
+					engine.discard(discardNum);
+
+					for (int destPlayer = centerPlayer + 1; destPlayer < allPlayerNum; ++destPlayer) {
+
+						// 接続
+						if (dist(engine) < this->connectionProbability) {
+							// メモリの計算
+							availableMemory -= static_cast<long int>(sizeof(std::weak_ptr<Player>));
+							if (availableMemory < 0) {
+								std::runtime_error("Could not construct a spatial structure due to insufficient memory.");
+							}
+
+							players.at(centerPlayer)->linkTo(players.at(destPlayer));
+							players.at(destPlayer)->linkTo(players.at(centerPlayer));
+						}
+
+					}
+				}
 			}
-			randParam->addGenerated(1);
 		}
+		);
 	}
 
+	// ネットワークの構築完了
+	for (std::thread& t : thr) {
+		t.join();
+	}
+
+	// 生成に必要な乱数の数
+	unsigned long long genRand = ((allPlayerNum * allPlayerNum) - allPlayerNum) / 2;
+
+	randParam->addGenerated(genRand);
 	iniParam->setMemory(availableMemory);
 }
-//
+
 ///**
 // * 指定したプレイヤの、指定近傍半径のプレイヤを取得する
 // * @param[in] players すべてのプレイヤ
