@@ -44,7 +44,7 @@ void Player::init(Action action, const std::shared_ptr<Strategy>& strategy) {
 /*
  * 相手のプレイヤに一方的に接続
  */
-void Player::linkTo(const std::weak_ptr<Player>& player) {
+bool Player::linkTo(const std::weak_ptr<Player>& player) {
 	if (linkedPlayers == nullptr) {
 		linkedPlayers = std::make_shared<std::vector<std::weak_ptr<Player>>>();
 	}
@@ -53,17 +53,18 @@ void Player::linkTo(const std::weak_ptr<Player>& player) {
 
 	// 相手先が自分の場合は、なにもしない
 	if (opponentId == id) {
-		return;
+		return false;
 	}
 
 	for (auto& linkedPlayer : *(linkedPlayers)) {
 		// すでに接続している場合は、なにもしない
 		if (opponentId == linkedPlayer.lock()->getId()) {
-			return;
+			return false;
 		}
 	}
 
 	linkedPlayers->push_back(player);
+	return true;
 }
 
 

@@ -4,5 +4,5 @@
 
 USER_OBJS :=
 
-LIBS := -lpng -lboost_system -lboost_filesystem -lboost_iostreams -lboost_program_options
+LIBS := -lpng -lpthread -lboost_system -lboost_filesystem -lboost_iostreams -lboost_program_options
 

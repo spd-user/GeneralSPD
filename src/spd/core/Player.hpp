@@ -51,8 +51,11 @@ public:
 	 * 双方向接続ではない、また多重接続はしない
 	 * nullの場合は必ず作成し、自分との接続は行わない
 	 * @param[in] player 接続相手
+	 * @return 接続できたかどうか
+	 * @retval true 接続に成功した場合
+	 * @retval false 接続に失敗した場合
 	 */
-	void linkTo(const std::weak_ptr<Player>& player);
+	bool linkTo(const std::weak_ptr<Player>& player);
 
 	/**
 	 * プレイヤの状態を進める
