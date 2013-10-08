@@ -70,8 +70,11 @@ void ImageOutput::output(const spd::topology::Hexagon& topology, spd::core::Spac
  */
 void ImageOutput::output(const spd::topology::Network& topology, spd::core::Space& space) {
 
-	std::cerr << "Could not output on a console without a lattice.\n"
-			"For making a image, please use gephi.\n";
+	// 始めのステップだけエラー表示
+	if (space.getStep() == 0) {
+		std::cerr << "\nCould not output on a console without a lattice.\n"
+				"For making a image, please use gephi.\n";
+	}
 }
 
 /*
