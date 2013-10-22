@@ -49,7 +49,7 @@ void Random::connectPlayers(const spd::core::AllPlayer& players,
 	auto iniParam = param.getInitialParameter();
 
 	// 使用可能メモリ
-	auto availableMemory = iniParam->getMemory();
+	long long int availableMemory = iniParam->getMemory();
 
 	// プレイヤ数の一様分布
 	std::uniform_int_distribution<> dist(0, allPlayerNum - 1);
@@ -58,10 +58,13 @@ void Random::connectPlayers(const spd::core::AllPlayer& players,
 	auto& engine = randParam->getEngine();
 
 	// 総当たりでの最大エッジ数
-	unsigned long long maxEdge = ((allPlayerNum * allPlayerNum) - allPlayerNum) / 2;
+	unsigned long long maxEdge = (
+			static_cast<unsigned long long>(allPlayerNum) *
+			(static_cast<unsigned long long>(allPlayerNum) - 1)
+				) / 2;
 
 	// 生成するエッジ数
-	unsigned long long generateEdge = maxEdge * this->connectionProbability;
+	unsigned long long generateEdge = maxEdge * (this->connectionProbability * 100) / 100;
 
 	// 生成する乱数の数(最低数はエッジの数 * 2)
 	unsigned long long genRnd = generateEdge * 2;
@@ -71,11 +74,19 @@ void Random::connectPlayers(const spd::core::AllPlayer& players,
 	auto displayUnit = generateEdge / (100 / persent);
 	auto displayTiming = displayUnit;
 
-	// メモリの確認
-	long int requiredMemory = sizeof(std::weak_ptr<Player>) * generateEdge;
+	// メモリの確認(双方向分)
+	unsigned long int requiredMemory = sizeof(std::weak_ptr<Player>) * generateEdge * 2;
+
+
 	availableMemory -= requiredMemory;
+
 	if (availableMemory < 0) {
-		std::cerr << "This program could not construct a spatial structure due to insufficient memory.\n"
+
+		std::cerr << "maxEdge : " << maxEdge << "\nconnection probability : " << this->connectionProbability <<
+				"\ngenerateEdge : " <<  generateEdge << "\nrequired memory : " << requiredMemory << std::endl;
+
+
+		std::cerr << "\nThis program could not construct a spatial structure due to insufficient memory.\n"
 				<< "Please input a sufficient available memory size or run on other machines.\n\n"
 				<< "To simulate this setting, add more than "
 				<< std::abs(availableMemory) << " byte(s) of memory.\n";
