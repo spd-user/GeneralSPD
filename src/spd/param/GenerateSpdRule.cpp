@@ -23,9 +23,9 @@ GenerateSpdRule::GenerateSpdRule() {
 	string bestRuleName = "SimpleBestRule";
 	auto bestRule = make_shared<spd::rule::SpdRule>(bestRuleName);
 	bestRule->addRuleBeforeOutput(make_shared<spd::rule::SimpleActionRule>());
+	bestRule->addRuleBeforeOutput(make_shared<spd::rule::SimpleSumGameRule>());
+	bestRule->addRuleBeforeOutput(make_shared<spd::rule::PromoteStateRule>());
 
-	bestRule->addRuleAfterOutput(make_shared<spd::rule::SimpleSumGameRule>());
-	bestRule->addRuleAfterOutput(make_shared<spd::rule::PromoteStateRule>());
 	bestRule->addRuleAfterOutput(make_shared<spd::rule::BestStrategyRule>());
 	// TODO
 	// testProp ルールを加える
@@ -38,9 +38,9 @@ GenerateSpdRule::GenerateSpdRule() {
 	string aveRuleName = "AveRule";
 	auto aveRule = make_shared<spd::rule::SpdRule>(aveRuleName);
 	aveRule->addRuleBeforeOutput(make_shared<spd::rule::SimpleActionRule>());
+	aveRule->addRuleBeforeOutput(make_shared<spd::rule::AverageGameRule>());
+	aveRule->addRuleBeforeOutput(make_shared<spd::rule::PromoteStateRule>());
 
-	aveRule->addRuleAfterOutput(make_shared<spd::rule::AverageGameRule>());
-	aveRule->addRuleAfterOutput(make_shared<spd::rule::PromoteStateRule>());
 	aveRule->addRuleAfterOutput(make_shared<spd::rule::BestStrategyRule>());
 
 	transform(aveRuleName.begin(), aveRuleName.end(), aveRuleName.begin(), ::tolower);

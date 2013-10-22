@@ -39,9 +39,9 @@ std::pair<std::string, bool> PayoffOutput::output(spd::core::Space& space) {
 			if (strategyList.at(i).first->equals(*(player->getStrategy()))) {
 				// 行動によって数え分ける
 				if (player->getAction() == Action::ACTION_C) {
-					countList.at(i * 2 + static_cast<int>(Action::ACTION_C)) += player->getPreScore();
+					countList.at(i * 2 + static_cast<int>(Action::ACTION_C)) += player->getScore();
 				} else if (player->getAction() == Action::ACTION_D) {
-					countList.at(i * 2 + static_cast<int>(Action::ACTION_D)) += player->getPreScore();
+					countList.at(i * 2 + static_cast<int>(Action::ACTION_D)) += player->getScore();
 				}
 				break;
 			}
