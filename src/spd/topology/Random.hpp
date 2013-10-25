@@ -62,7 +62,7 @@ private :
 	/**
 	 * 追加生成か減少生成かの閾値
 	 */
-	static constexpr double DIVIDE_POINT = 0.5;
+	static constexpr double DIVIDE_POINT = 0.3;
 
 	/**
 	 * デフォルトの接続確率
