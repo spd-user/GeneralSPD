@@ -60,14 +60,45 @@ public :
 private :
 
 	/**
+	 * 追加生成か減少生成かの閾値
+	 */
+	static constexpr double DIVIDE_POINT = 0.5;
+
+	/**
 	 * デフォルトの接続確率
 	 */
 	static constexpr double DEFAULT_CONNECTION_PROBABILITY = 0.01;
 
 	/**
+	 * ノードの追加型接続生成
+	 *
+	 * メモリ容量が足りない場合、プログラムを終了する。
+	 * @param[in] players すべてのプレイヤ
+	 * @param[in] param パラメタ
+	 */
+	void incrementCreate(const spd::core::AllPlayer& players,
+			const spd::param::Parameter& param);
+
+
+	/**
+	 * ノードの減少生成型接続生成
+	 *
+	 * メモリ容量が足りない場合、追加型生成に切り替える
+	 * @param[in] players すべてのプレイヤ
+	 * @param[in] param パラメタ
+	 */
+	void decrementCreate(const spd::core::AllPlayer& players,
+			const spd::param::Parameter& param);
+
+	/**
 	 * 接続確率
 	 */
 	double connectionProbability;
+
+	/**
+	 * 接続に使用したメモリ
+	 */
+	unsigned long int usedMemory;
 
 };
 

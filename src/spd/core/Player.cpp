@@ -67,6 +67,28 @@ bool Player::linkTo(const std::weak_ptr<Player>& player) {
 	return true;
 }
 
+/*
+ * 特定の相手との接続を削除
+ */
+bool Player::deleteLinkTo(const std::weak_ptr<Player>& player) {
+
+	int id = player.lock()->getId();
+
+	bool result = false;
+
+	for (auto it = std::begin(*(linkedPlayers)); it != std::end(*(linkedPlayers)); ++it) {
+		// すでに接続している場合は、なにもしない
+		if (id == it->lock()->getId()) {
+			linkedPlayers->erase(it);
+			result = true;
+			break;
+		}
+	}
+
+	linkedPlayers->shrink_to_fit();
+	return result;
+}
+
 
 } /* namespace core */
 } /* namespace spd */

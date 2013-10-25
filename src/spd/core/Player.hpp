@@ -82,6 +82,16 @@ public:
 	}
 
 	/**
+	 * IDに対する接続を削除し、削除できたかどうかを返す
+	 *
+	 * @param id 削除する相手
+	 * @return 削除できたかどうか
+	 * @retval ture 削除できた場合
+	 * @retval false 削除できない場合(すでに無かった場合も含む)
+	 */
+	bool deleteLinkTo(const std::weak_ptr<Player>& player);
+
+	/**
 	 * プレイヤのIDを取得
 	 * @return プレイヤのID
 	 */
