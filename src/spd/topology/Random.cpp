@@ -28,8 +28,8 @@ namespace topology {
 
 using spd::core::Player;
 
-/**
- * 接続確率を設定するコンストラクタ
+/*
+ * コンストラクタ
  */
 Random::Random() : connectionProbability(DEFAULT_CONNECTION_PROBABILITY),
 		usedMemory(0) {};
