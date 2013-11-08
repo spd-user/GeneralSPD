@@ -104,8 +104,15 @@ void Random::incrementCreate(const spd::core::AllPlayer& players,
 	// 生成するエッジ数
 	unsigned long long generateEdge = maxEdge * (this->connectionProbability * 100) / 100;
 
+	// プレイヤ数-1 より少ないエッジでは、接続グラフを作れないので修了
+	if (generateEdge < allPlayerNum - 1) {
+		std::cerr << "Could not generate a connected graph by a probability " << this->connectionProbability
+				<< "\nPlease set larger probability." << std::endl;
+		std::exit(EXIT_FAILURE);
+	}
+
 	// 生成する乱数の数(最低数はエッジの数 * 2)
-	unsigned long long genRnd = generateEdge * 2;
+	unsigned long long genRnd = 0;
 
 	// 接続したら表示する単位(5%ごと)
 	auto persent = 5;
@@ -140,25 +147,74 @@ void Random::incrementCreate(const spd::core::AllPlayer& players,
 	auto randParam = param.getRandomParameter();
 	auto& engine = randParam->getEngine();
 
-	unsigned long long edge = 0;
+
+	// ノードの接続を管理する配列
+	// 中央のグラフに接続されているノード
+	std::vector<int> connectedNodes;
+	connectedNodes.reserve(allPlayerNum);
+	// 中央グラフに入っていないノード
+	std::vector<int> unconnectedNodes;
+	unconnectedNodes.reserve(allPlayerNum - 1);
+
+	// あるノードを選択し、接続グラフへ入れる
+	int firstNode = dist(engine);
+	genRnd++;
+	connectedNodes.push_back(firstNode);
+	// 残りを未接続にする
+	for (int i = 0; i < allPlayerNum; ++i) {
+		if (i != firstNode) {
+			unconnectedNodes.push_back(i);
+		}
+	}
+
+
+	// 最初に必ず一つのランダムグラフを作る
+	while (unconnectedNodes.size() != 0) {
+
+		std::uniform_int_distribution<> connectDist(0, connectedNodes.size() - 1);
+		std::uniform_int_distribution<> unconnectDist(0, unconnectedNodes.size() - 1);
+
+		int src = connectDist(engine);
+		int dest = unconnectDist(engine);
+
+		int srcPlayer = connectedNodes.at(src);
+		int destPlayer = unconnectedNodes.at(dest);
+
+		players.at(srcPlayer)->linkTo(players.at(destPlayer));
+		players.at(destPlayer)->linkTo(players.at(srcPlayer));
+
+		// 接続したのを接続済みへ設定し、未接続から削除
+		connectedNodes.push_back(unconnectedNodes.at(dest));
+		unconnectedNodes.erase(std::begin(connectedNodes) + dest);
+	}
+
+	// 接続エッジ数
+	// この時点、プレイヤ数-1 のエッジが作成済み
+	unsigned long long edge = allPlayerNum - 1;
+
+	genRnd += 2 * (allPlayerNum - 1);
+
+
+	// あとは適当に接続
 	while(edge < generateEdge) {
 
 		int src = dist(engine);
 		int dest = dist(engine);
+
+		genRnd += 2;
 
 		if (players.at(src)->linkTo(players.at(dest))) {
 			players.at(dest)->linkTo(players.at(src));
 			++edge;
 
 			if (edge > displayTiming) {
-				std::cout << "connect: " << displayTiming / displayUnit * persent << "% finish" << "   \r" << std::flush;
+				std::cout << "Stage 1/1: connect " << displayTiming / displayUnit * persent << "% finish" << "   \r" << std::flush;
 				displayTiming += displayUnit;
 			}
-		} else {
-			// 接続出来ないときは、今の分の乱数が増える
-			genRnd += 2;
 		}
 	}
+
+	randParam->addGenerated(genRnd);
 }
 
 /*
@@ -181,9 +237,9 @@ void Random::decrementCreate(const spd::core::AllPlayer& players,
 
 	// 総当たりでの最大エッジ数
 	unsigned long long maxEdge = (
-			static_cast<unsigned long long>(allPlayerNum) *
-			(static_cast<unsigned long long>(allPlayerNum) - 1)
-	) / 2;
+				static_cast<unsigned long long>(allPlayerNum) *
+				(static_cast<unsigned long long>(allPlayerNum) - 1)
+			) / 2;
 
 	// 最大のメモリ(双方向分)
 	unsigned long long int maxMemory = sizeof(std::weak_ptr<Player>) * maxEdge * 2;
@@ -223,6 +279,7 @@ void Random::decrementCreate(const spd::core::AllPlayer& players,
 	auto& engine = randParam->getEngine();
 
 	// 完全グラフの生成
+	std::cout << "Stage 1/2: Generating a perfect graph\r" << std::flush;
 	for (int i = 0; i < allPlayerNum - 1; ++i) {
 		for (int j = i + 1; j < allPlayerNum; ++j) {
 			// 接続
@@ -236,20 +293,27 @@ void Random::decrementCreate(const spd::core::AllPlayer& players,
 
 		int src = dist(engine);
 		int dest = dist(engine);
+		genRnd += 2;
 
-		if (players.at(src)->deleteLinkTo(players.at(dest))) {
-			players.at(dest)->deleteLinkTo(players.at(src));
-			++edge;
+		// 削除したときに、未連結グラフにならないようにする
+		if ((players.at(src)->getLinkedPlayers()->size() <= 1)
+				|| (players.at(dest)->getLinkedPlayers()->size() <= 1)) {
 
-			if (edge > displayTiming) {
-				std::cout << "connect: " << displayTiming / displayUnit * persent << "% finish" << "   \r" << std::flush;
-				displayTiming += displayUnit;
+			if (players.at(src)->deleteLinkTo(players.at(dest))) {
+				players.at(dest)->deleteLinkTo(players.at(src));
+				++edge;
+
+				if (edge > displayTiming) {
+					std::cout << "Stage 2/2: disconnect " << displayTiming / displayUnit * persent << "% finish" << "   \r" << std::flush;
+					displayTiming += displayUnit;
+				}
+				continue;
 			}
-		} else {
-			// 接続出来ないときは、今の分の乱数が増える
-			genRnd += 2;
 		}
+
 	}
+
+	randParam->addGenerated(genRnd);
 }
 
 

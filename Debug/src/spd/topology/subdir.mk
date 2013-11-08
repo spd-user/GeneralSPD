@@ -10,6 +10,7 @@ CPP_SRCS += \
 ../src/spd/topology/Network.cpp \
 ../src/spd/topology/Neumann.cpp \
 ../src/spd/topology/Random.cpp \
+../src/spd/topology/Regular.cpp \
 ../src/spd/topology/Topology.cpp 
 
 OBJS += \
@@ -19,6 +20,7 @@ OBJS += \
 ./src/spd/topology/Network.o \
 ./src/spd/topology/Neumann.o \
 ./src/spd/topology/Random.o \
+./src/spd/topology/Regular.o \
 ./src/spd/topology/Topology.o 
 
 CPP_DEPS += \
@@ -28,6 +30,7 @@ CPP_DEPS += \
 ./src/spd/topology/Network.d \
 ./src/spd/topology/Neumann.d \
 ./src/spd/topology/Random.d \
+./src/spd/topology/Regular.d \
 ./src/spd/topology/Topology.d 
 
 
