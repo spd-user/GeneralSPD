@@ -77,7 +77,7 @@ bool Player::deleteLinkTo(const std::weak_ptr<Player>& player) {
 	bool result = false;
 
 	for (auto it = std::begin(*(linkedPlayers)); it != std::end(*(linkedPlayers)); ++it) {
-		// すでに接続している場合は、なにもしない
+		// ない場合は、なにもしない
 		if (id == it->lock()->getId()) {
 			linkedPlayers->erase(it);
 			result = true;
