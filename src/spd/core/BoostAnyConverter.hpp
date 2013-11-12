@@ -31,7 +31,7 @@ namespace converter {
  * 4つ目は、boost::any を文字列にする変換式。
  */
 typedef std::tuple<std::string, std::string, std::function<boost::any(std::string)>,
-		std::function<std::string(boost::any)> > AnyTypeTuple;
+		std::function<std::string(boost::any)>> AnyTypeTuple;
 
 /**
  * 組み合わせ一覧
