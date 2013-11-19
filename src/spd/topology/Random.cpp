@@ -200,7 +200,6 @@ void Random::incrementCreate(const spd::core::AllPlayer& players,
 
 		int src = dist(engine);
 		int dest = dist(engine);
-
 		genRnd += 2;
 
 		if (players.at(src)->linkTo(players.at(dest))) {
@@ -254,8 +253,8 @@ void Random::decrementCreate(const spd::core::AllPlayer& players,
 	// 削除するエッジ数
 	unsigned long long deleteEdge = maxEdge * (100 - (this->connectionProbability * 100)) / 100;
 
-	// 生成する乱数の数(最低数はエッジの数 * 2)
-	unsigned long long genRnd = deleteEdge * 2;
+	// 生成する乱数の数
+	unsigned long long genRnd = 0;
 
 	// 削除したら表示する単位(5%ごと)
 	auto persent = 5;
