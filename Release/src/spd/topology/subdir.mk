@@ -10,6 +10,7 @@ CPP_SRCS += \
 ../src/spd/topology/Network.cpp \
 ../src/spd/topology/Neumann.cpp \
 ../src/spd/topology/Random.cpp \
+../src/spd/topology/Regular.cpp \
 ../src/spd/topology/Topology.cpp 
 
 OBJS += \
@@ -19,6 +20,7 @@ OBJS += \
 ./src/spd/topology/Network.o \
 ./src/spd/topology/Neumann.o \
 ./src/spd/topology/Random.o \
+./src/spd/topology/Regular.o \
 ./src/spd/topology/Topology.o 
 
 CPP_DEPS += \
@@ -28,6 +30,7 @@ CPP_DEPS += \
 ./src/spd/topology/Network.d \
 ./src/spd/topology/Neumann.d \
 ./src/spd/topology/Random.d \
+./src/spd/topology/Regular.d \
 ./src/spd/topology/Topology.d 
 
 
@@ -35,7 +38,7 @@ CPP_DEPS += \
 src/spd/topology/%.o: ../src/spd/topology/%.cpp
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C++ Compiler'
-	g++ -D__GXX_EXPERIMENTAL_CXX0X__ -I/home/katsumata/workspace/General_SPD/lib/include/libxml2 -I/home/katsumata/workspace/General_SPD/lib/include -O3 -Wall -c -fmessage-length=0 -std=c++0x -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
+	g++ -D__GXX_EXPERIMENTAL_CXX0X__ -I/usr/include/c++/4.7 -I/usr/include/c++/4.7/backward -I/usr/include/c++/4.7/x86_64-suse-linux -I/usr/lib64/gcc/x86_64-suse-linux/4.7/include -I/usr/lib64/gcc/x86_64-suse-linux/4.7/include-fixed -I/usr/local/include -O3 -Wall -c -fmessage-length=0 -std=c++0x -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
