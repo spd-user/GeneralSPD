@@ -163,14 +163,14 @@ void ImageOutput::outputPngFile(
 	FILE *fp;
 	fp = fopen(filename.c_str(), "w");
 	if (fp == NULL) {
-		std::runtime_error("Could not file create or open.\nFile name is " + filename);
+		throw std::runtime_error("Could not file create or open.\nFile name is " + filename);
 	}
 
 	// png_ptr構造体を確保・初期化
 	auto png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 	if (png_ptr == NULL) {
 		fclose(fp);
-		std::runtime_error("Cannot create png_ptr struct.");
+		throw std::runtime_error("Cannot create png_ptr struct.");
 	}
 
 	// png_infop構造体を確保・初期化
@@ -178,7 +178,7 @@ void ImageOutput::outputPngFile(
 	if (info_ptr == NULL) {
 		fclose(fp);
 		png_destroy_write_struct(&png_ptr, (png_infopp)NULL);
-		std::runtime_error("Cannot create info_ptr struct.");
+		throw std::runtime_error("Cannot create info_ptr struct.");
 	}
 
 	// libpngにfpを教える
