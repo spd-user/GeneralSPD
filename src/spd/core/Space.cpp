@@ -81,6 +81,17 @@ bool Space::run() {
 		std::get<0>(output)->init(*this, parameter);
 	}
 
+
+#ifdef DEBUG
+	for (int i = 0; i < players.size(); ++i) {
+		std::cout << "player: " << players[i]->getId() << ", degree: " << players[i]->getLinkedPlayers()->size() << "\n";
+	}
+	std::cout << std::endl;
+#endif
+
+
+
+
 	// 開始前の出力
 	auto outputResults = output();
 	// 圧縮
