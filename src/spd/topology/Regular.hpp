@@ -20,6 +20,7 @@ namespace topology {
  * 次数2以上のレギュラーグラフを表すクラス
  */
 class Regular: public spd::topology::Network {
+public:
 
 	/**
 	 * コンストラクタ

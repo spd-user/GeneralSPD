@@ -14,5 +14,6 @@
 #include "Hexagon.hpp"
 #include "Network.hpp"
 #include "Random.hpp"
+#include "Regular.hpp"
 
 #endif /* ALLTOPOLOGY_H_ */

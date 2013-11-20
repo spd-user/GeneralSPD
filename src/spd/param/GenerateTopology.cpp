@@ -41,11 +41,17 @@ GenerateTopology::GenerateTopology() {
 	shared_ptr<spd::topology::Topology> random = make_shared<spd::topology::Random>();
 	auto randomName = "random";
 
+	// レギュラー
+	shared_ptr<spd::topology::Topology> regular = make_shared<spd::topology::Regular>();
+	auto regularName = "regular";
+
+
 	map<string, shared_ptr<spd::topology::Topology>> m {
 		{mooreName, 	moore},
 		{neumannName, neumann},
 		{hexName, 		hex},
-		{randomName, 	random}
+		{randomName, 	random},
+		{regularName, regular}
 	};
 
 	this->topologyMap = m;
