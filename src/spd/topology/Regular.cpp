@@ -55,7 +55,7 @@ void Regular::connectPlayers(const spd::core::AllPlayer& players,
 	if (((allPlayerNum * this->degree) % 2 == 1)
 			|| (this->degree >= allPlayerNum)) {
 		std::cerr << "degree: " << this->degree << std::endl;
-		std::runtime_error("Could not create regular graph for this degree");
+		throw std::runtime_error("Could not create regular graph for this degree. (node * degree) must be even number.");
 	}
 
 
@@ -113,6 +113,9 @@ void Regular::connectPlayers(const spd::core::AllPlayer& players,
 	// 0が未配置プレイヤであり、1 以降がクリークID
 	std::vector<std::vector<int>> nodes;
 	nodes.reserve(k + 1);
+	for (int i = 0; i < k + 1; ++i) {
+		nodes.push_back(std::vector<int>());
+	}
 	nodes.at(0).reserve(allPlayerNum);
 	for (int i = 0; i < allPlayerNum; ++i) {
 		nodes[0].push_back(i);
@@ -126,7 +129,8 @@ void Regular::connectPlayers(const spd::core::AllPlayer& players,
 	// 初期クリークの作成
 	for (int i = 0; i < k; ++i) {
 		// クリークに入れるもの
-		std::vector<int> initClique(this->degree + 1);
+		std::vector<int> initClique;
+		initClique.reserve(this->degree + 1);
 		for (int n = 0; n < this->degree + 1; ++n) {
 			std::uniform_int_distribution<> dist(0, nodes[0].size() - 1);
 			int node = dist(engine);
@@ -144,11 +148,17 @@ void Regular::connectPlayers(const spd::core::AllPlayer& players,
 		edges.insert(std::end(edges), std::begin(cliqueEdges), std::end(cliqueEdges));
 	}
 
+
 	// クリーク挿入
 	cliqueInsertion(players, param, k, nodes, edges);
 
+
 	// 頂点挿入
 	vertexInsertion(players, param, nodes, edges);
+
+	// 一つのグラフにする
+	composeToOne(players, nodes);
+
 
 	randParam->addGenerated(genRnd);
 }
@@ -158,38 +168,50 @@ void Regular::connectPlayers(const spd::core::AllPlayer& players,
  * 端同士つなげて一つのグラフにする
  */
 void Regular::composeToOne(const spd::core::AllPlayer& players,
-		const spd::param::Parameter& param,
 		std::vector<std::vector<int>>& nodes) {
 
 	// 未配置があったらエラー
 	if (nodes.at(0).size() != 0) {
-		std::runtime_error("Unassigned players are exist.");
+		throw std::runtime_error("Unassigned players are exist.");
 	}
 
-	while(! isOneGraph(nodes, players.size())) {
-		auto firstIt = std::find_if_not(
-				std::begin(nodes),
-				std::end(nodes),
-				[](std::vector<int> v){return v.empty();});
+	// vector<vector>の空でない番号を取得
+	// 流れは、前からは0, 後ろからはそれ以外を指定する
+	auto findUnemptyGroup = [](std::vector<std::vector<int>>& v, int flow){
+		if (flow == 0) {
+			for (int i = 0, vecMax = v.size(); i < vecMax; ++i) {
+				if (! v[i].empty()) {
+					return i;
+				}
+			}
+		} else {
+			for (int i = v.size() - 1; i >= 0; --i) {
+				if (! v[i].empty()) {
+					return i;
+				}
+			}
+		}
+		throw std::runtime_error("all vectors are empty");
+	};
 
-		auto secondIt = std::find_if_not(
-				++firstIt,
-				std::end(nodes),
-				[](std::vector<int> v){return v.empty();});
-		if ((firstIt == std::end(nodes)) || (secondIt == std::end(nodes))) {
-			// どっちかが無いのはおかしい
-			std::runtime_error("Nothing nodes, or uncomplete graph.");
+	while(! isOneGraph(nodes, players.size())) {
+		int firstPos = findUnemptyGroup(nodes, 0);
+		int lastPos = findUnemptyGroup(nodes, 1);
+
+		if (firstPos == lastPos) {
+			// どっちも同じはおかしい
+			throw std::runtime_error("Graph is uncomplete graph.");
 		}
 
 		// グループ
-		auto group1 = *firstIt;
-		auto group2 = *secondIt;
+		auto group1 = nodes[firstPos];
+		auto group2 = nodes[lastPos];
 
 		// ノード
 		int g1e1 = group1[0];
-		int g1e2 = group1[1];
+		int g1e2 = players[group1[0]]->getLinkedPlayers()->front().lock()->getId();
 		int g2e1 = group2[0];
-		int g2e2 = group2[1];
+		int g2e2 = players[group2[0]]->getLinkedPlayers()->front().lock()->getId();
 
 		// 接続を削除
 		players[g1e1]->deleteLinkTo(players[g1e2]);
@@ -203,10 +225,8 @@ void Regular::composeToOne(const spd::core::AllPlayer& players,
 		players[g1e2]->linkTo(players[g2e2]);
 		players[g2e2]->linkTo(players[g1e2]);
 
-		for (auto it = std::begin(*secondIt); it != std::end(*secondIt); ++it) {
-			(*firstIt).push_back(*it);
-		}
-		(*secondIt).clear();
+		nodes[firstPos].insert(std::end(nodes[firstPos]), std::begin(nodes[lastPos]), std::end(nodes[lastPos]));
+		nodes[lastPos].clear();
 	}
 }
 
@@ -217,7 +237,7 @@ bool Regular::isOneGraph(std::vector<std::vector<int>>& nodes, int playerNum) {
 
 	// 未配置があったらエラー
 	if (nodes.at(0).size() != 0) {
-		std::runtime_error("Unassigned players are exist.");
+		throw std::runtime_error("Unassigned players are exist.");
 	}
 
 	for (auto v : nodes) {
@@ -260,7 +280,8 @@ void Regular::vertexInsertion(const spd::core::AllPlayer& players,
 				sameGraphVertex.push_back(delEdge.getNode1());
 			}
 			remanageCliqueID(allNodes, sameGraphVertex);
-			allNodes.at(disjointEdges[0].getNode1()).push_back(node);
+			// 一つ目のノードがあるところへ挿入
+			allNodes.at(getCliqueID(allNodes, disjointEdges[0].getNode1())).push_back(node);
 
 
 		} else {
@@ -316,7 +337,7 @@ std::vector<Regular::Edge> Regular::selectPath(const spd::core::AllPlayer& playe
 		auto playerLink = players[node]->getLinkedPlayers();
 
 		if (playerLink->size() != static_cast<unsigned int>(this->degree)) {
-			std::runtime_error("Already not regular graph.");
+			throw std::runtime_error("Already not regular graph.");
 		}
 
 		int adNodeID = ((playerLink->at(dist(engine))).lock())->getId();
@@ -365,7 +386,7 @@ std::vector<Regular::Edge> Regular::selectDisjointEdge(int n,
 	std::vector<Edge> result;
 	result.reserve(n);
 
-	for (int i = 0; i < n; ++i) {
+	while(result.size() < static_cast<unsigned int>(n)) {
 		std::uniform_int_distribution<> dist(0, allEdges.size() - 1);
 
 		int selectEdgeID = dist(engine);
@@ -433,8 +454,9 @@ void Regular::cliqueInsertion(const spd::core::AllPlayer& players,
 	for (int i = 0; i < l; ++i) {
 
 		// 挿入するクリーク
-		std::vector<int> insCliqueNode(this->degree - 1);
-		for (int n = 0, nMax = insCliqueNode.size(); n < nMax; ++n) {
+		std::vector<int> insCliqueNode;
+		insCliqueNode.reserve(this->degree - 1);
+		for (int n = 0; n < this->degree - 1; ++n) {
 			std::uniform_int_distribution<> dist(0, allNodes[0].size() - 1);
 			int node = dist(engine);
 			++genRnd;
@@ -447,12 +469,15 @@ void Regular::cliqueInsertion(const spd::core::AllPlayer& players,
 
 		// 挿入する先のエッジを選択
 		std::vector<Edge> deleteEdges;
-		for (int e = 0; e < this->degree - 1; ++e) {
+		while (deleteEdges.size() < static_cast<unsigned int>(this->degree - 1)) {
 			std::uniform_int_distribution<> edgeDist(0, allEdges.size() -1);
-			int edge = edgeDist(engine);
+			int edgeID = edgeDist(engine);
 			++genRnd;
 
-			deleteEdges.push_back(allEdges.at(edge));
+			auto edge = allEdges.at(edgeID);
+			if (std::find(std::begin(deleteEdges), std::end(deleteEdges), edge) == std::end(deleteEdges)) {
+				deleteEdges.push_back(allEdges.at(edgeID));
+			}
 		}
 
 		// クリークの挿入
@@ -495,7 +520,7 @@ void Regular::addVertexOn(Edge edge, int vertex,
 	auto delLink2 = players.at(node2)->deleteLinkTo(players.at(node1));
 	if (!(delLink1 && delLink2)) {
 		std::cerr << "node1: " << node1 << ", node2: " << node2 << std::endl;
-		std::runtime_error("Missed a delete edge in Regular::addVertexOn");
+		throw std::runtime_error("Missed a delete edge in Regular::addVertexOn");
 	}
 	// 管理リスト
 	auto edgePosition = std::find(std::begin(allEdges), std::end(allEdges), edge);
@@ -503,7 +528,7 @@ void Regular::addVertexOn(Edge edge, int vertex,
 		allEdges.erase(edgePosition);
 	} else {
 		// ないのはおかしい
-		std::runtime_error("Could not find a delete edge in all edges.");
+		throw std::runtime_error("Could not find a delete edge in all edges.");
 	}
 
 
@@ -514,7 +539,7 @@ void Regular::addVertexOn(Edge edge, int vertex,
 			&& players.at(node2)->linkTo(players.at(vertex))
 			&& players.at(vertex)->linkTo(players.at(node2)))) {
 		std::cerr << "new vertex: " << vertex << std::endl;
-		std::runtime_error("Missed a insert new vertex.");
+		throw std::runtime_error("Missed a insert new vertex.");
 	}
 	// 管理リスト
 	allEdges.push_back(Edge(node1, vertex));
@@ -531,7 +556,7 @@ std::vector<Regular::Edge> Regular::createClique(std::vector<int>& nodes,
 	std::vector<Regular::Edge> result;
 
 	if (nodes.size() == 0) {
-		std::runtime_error("Could not create NULL clique.");
+		throw std::runtime_error("Could not create NULL clique.");
 	}
 
 	for (int i = 0, iMax = nodes.size() - 1; i < iMax; ++i) {
@@ -542,14 +567,14 @@ std::vector<Regular::Edge> Regular::createClique(std::vector<int>& nodes,
 			if (!(link1 && link2)) {
 				std::cerr << "src: " << i << ", dest: " << j << ", result: s->d("
 						<< link1 << "), d->s(" << link2 << ")" << std::endl;
-				std::runtime_error("Clique generate err.");
+				throw std::runtime_error("Clique generate err.");
 			}
 			result.push_back(Edge(nodes[i], nodes[j]));
 		}
 	}
 
 	if (result.size() != (nodes.size() * (nodes.size() - 1) / 2)) {
-		std::runtime_error("Missed a create clique.");
+		throw std::runtime_error("Missed a create clique.");
 	}
 
 	return result;
@@ -573,7 +598,7 @@ void Regular::remanageCliqueID(std::vector<std::vector<int>>& allNodes,
 
 	// 必ず属しているはずなので 0 以下にはならない
 	if (firstNodeCliqueID < 1) {
-		std::runtime_error("first node clique ID err.");
+		throw std::runtime_error("first node clique ID err.");
 	}
 
 
@@ -584,7 +609,7 @@ void Regular::remanageCliqueID(std::vector<std::vector<int>>& allNodes,
 		int cliqueID = getCliqueID(allNodes, node);
 		if (cliqueID < 1) {
 			// クリークに属していない
-			std::runtime_error("clique ID err.");
+			throw std::runtime_error("clique ID err.");
 		}
 
 		if ((cliqueID != firstNodeCliqueID) && (! allNodes.at(cliqueID).empty())) {

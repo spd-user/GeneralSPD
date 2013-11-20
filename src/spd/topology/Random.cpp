@@ -185,7 +185,7 @@ void Random::incrementCreate(const spd::core::AllPlayer& players,
 
 		// 接続したのを接続済みへ設定し、未接続から削除
 		connectedNodes.push_back(unconnectedNodes.at(dest));
-		unconnectedNodes.erase(std::begin(connectedNodes) + dest);
+		unconnectedNodes.erase(std::begin(unconnectedNodes) + dest);
 	}
 
 	// 接続エッジ数
@@ -278,15 +278,18 @@ void Random::decrementCreate(const spd::core::AllPlayer& players,
 	auto& engine = randParam->getEngine();
 
 	// 完全グラフの生成
-	std::cout << "Stage 1/2: Generating a perfect graph\r" << std::flush;
+	std::cout << "Stage 1/2: Generating a perfect graph\n";
 	for (int i = 0; i < allPlayerNum - 1; ++i) {
 		for (int j = i + 1; j < allPlayerNum; ++j) {
 			// 接続
 			players.at(i)->linkTo(players.at(j));
 			players.at(j)->linkTo(players.at(i));
 		}
+		std::cout << (static_cast<double>((allPlayerNum - 1) + (allPlayerNum - i - 1)) * (i + 1) / 2) / (maxEdge) * 100 <<
+				"% finish\r" << std::flush;
 	}
 
+	std::cout << "Stage 2/2: disconnect the edges\n";
 	unsigned long long edge = 0;
 	while(edge < deleteEdge) {
 
@@ -295,15 +298,15 @@ void Random::decrementCreate(const spd::core::AllPlayer& players,
 		genRnd += 2;
 
 		// 削除したときに、未連結グラフにならないようにする
-		if ((players.at(src)->getLinkedPlayers()->size() <= 1)
-				|| (players.at(dest)->getLinkedPlayers()->size() <= 1)) {
+		if ((players.at(src)->getLinkedPlayers()->size() > 1)
+				&& (players.at(dest)->getLinkedPlayers()->size() > 1)) {
 
 			if (players.at(src)->deleteLinkTo(players.at(dest))) {
 				players.at(dest)->deleteLinkTo(players.at(src));
 				++edge;
 
 				if (edge > displayTiming) {
-					std::cout << "Stage 2/2: disconnect " << displayTiming / displayUnit * persent << "% finish" << "   \r" << std::flush;
+					std::cout << displayTiming / displayUnit * persent << "% finish" << "      \r" << std::flush;
 					displayTiming += displayUnit;
 				}
 				continue;

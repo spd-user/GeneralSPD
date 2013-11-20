@@ -145,33 +145,19 @@ void test(int target, int radius) {
 
 int main(int argc, char* argv[]) {
 
-	std::vector<int> test;
-	test.reserve(100);
-
-
-	cout << "reserve size:" << test.size() << "\n";
 
 
 
 
+//	auto show = [] (std::vector<int> x) -> void {
+//		for (auto i : x) {
+//			cout << i << ", ";
+//		}
+//		cout << "\n";
+//	};
 
+	//show(test);
 
-	auto show = [] (std::vector<int> x) -> void {
-		for (auto i : x) {
-			cout << i << ", ";
-		}
-		cout << "\n";
-	};
-
-	show(test);
-
-	test.push_back(22);
-	cout << "af push size:" << test.size() << "\n";
-	show(test);
-
-
-
-	exit (1);
 
 
 //	{

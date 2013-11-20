@@ -125,6 +125,7 @@ private:
 
 	/**
 	 * クリーク番号の再管理を行う
+	 * 渡されたエッジのうち、一つ目のエッジを含むクリークにまとめる
 	 */
 	void remanageCliqueID(std::vector<std::vector<int>>& allNodes,
 			const std::vector<int>& nodes) const;
@@ -169,9 +170,11 @@ private:
 	 * 一つのグラフにする
 	 */
 	void composeToOne(const spd::core::AllPlayer& players,
-			const spd::param::Parameter& param,
 			std::vector<std::vector<int>>& nodes);
 
+	/**
+	 * 一つのグラフかどうか
+	 */
 	bool isOneGraph(std::vector<std::vector<int>>& nodes, int playerNum);
 
 
