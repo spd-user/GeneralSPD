@@ -82,9 +82,9 @@ public:
 	}
 
 	/**
-	 * IDに対する接続を削除し、削除できたかどうかを返す
+	 * 指定のプレイヤに対する接続を削除し、削除できたかどうかを返す
 	 *
-	 * @param id 削除する相手
+	 * @param[in] player 削除する相手
 	 * @return 削除できたかどうか
 	 * @retval ture 削除できた場合
 	 * @retval false 削除できない場合(すでに無かった場合も含む)
@@ -250,7 +250,7 @@ public:
 
 	/**
 	 * プロパティを追加
-	 * @param prop 追加するプロパティ
+	 * @param[in] prop 追加するプロパティ
 	 */
 	void addProperty(Property prop) {
 		this->properties.push_back(prop);
@@ -265,12 +265,12 @@ public:
 
 	/**
 	 * 指定した名前の初めに見つかったプロパティの位置を取得する
-	 * @param name 検索するプロパティの名前
-	 * @param pos 開始する位置
+	 * @param[in] name 検索するプロパティの名前
+	 * @param[in] pos 開始する位置
 	 * @return 位置
 	 * @retval プロパティが見つからない場合 -1
 	 */
-	int find(const std::string& name, int pos = 0) {
+	int find(const std::string& name, int pos = 0) const {
 
 		if (name.empty()) {
 			return -1;

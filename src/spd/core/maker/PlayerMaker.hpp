@@ -36,7 +36,7 @@ public:
 	 * プレイヤの初期化を行う
 	 * @note
 	 * プレイヤの近傍設定については操作しない。操作する場合は、resetTopology()を呼ぶ。
-	 * @param[in, out] players すべてのプレイヤ
+	 * @param[in] players すべてのプレイヤ
 	 * @param[in, out] space 盤面
 	 */
 	virtual void initPlayer(const AllPlayer& players, spd::core::Space& space) = 0;

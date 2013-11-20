@@ -35,7 +35,7 @@ public:
 	 */
 	void init(
 		const AllPlayer& allPlayers,
-		const spd::param::Parameter& param);
+		const spd::param::Parameter& param) const;
 
 	/**
 	 * 前処理ルールを順番に実行
@@ -46,7 +46,7 @@ public:
 	void runRulesBeforeOutput(
 		const AllPlayer& allPlayers,
 		const spd::param::Parameter& param,
-		int step) {
+		int step) const {
 
 		int core = param.getCore();
 		std::vector<std::thread> thr(core);
@@ -86,7 +86,7 @@ public:
 	void runRulesAfterOutput(
 		const AllPlayer& allPlayers,
 		const spd::param::Parameter& param,
-		int step) {
+		int step) const {
 
 		int core = param.getCore();
 		std::vector<std::thread> thr(core);

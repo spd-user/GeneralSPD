@@ -26,7 +26,7 @@ SpdRule::SpdRule(std::string name) : name(name) {
  */
 void SpdRule::init(
 		const AllPlayer& allPlayers,
-		const spd::param::Parameter& param) {
+		const spd::param::Parameter& param) const {
 
 	for (auto rule : this->rulesBeforeOutput) {
 		for (auto& player : allPlayers) {
