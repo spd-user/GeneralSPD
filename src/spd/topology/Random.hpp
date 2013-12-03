@@ -44,7 +44,7 @@ public :
 	 * また、無い場合は変更しないまま
 	 * @param[in] properties プロパティ
 	 */
-	void setProp(std::vector<double> properties);
+	void setProp(std::vector<std::string> properties);
 
 	/**
 	 * 空間構図構造名の出力

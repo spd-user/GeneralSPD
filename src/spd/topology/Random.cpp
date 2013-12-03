@@ -62,13 +62,13 @@ void Random::connectPlayers(const spd::core::AllPlayer& players,
  * トポロジのプロパティ(接続確率)を設定する
  * @param[in] properties プロパティ
  */
-void Random::setProp(std::vector<double> properties) {
+void Random::setProp(std::vector<std::string> properties) {
 
 	if (properties.size() < 1) {
 		return;
 	}
 
-	double cp = properties[0];
+	double cp = std::stod(properties[0]);
 	if (cp < 0) {
 		cp = 0;
 	} else if (cp > 1) {
@@ -105,7 +105,7 @@ void Random::incrementCreate(const spd::core::AllPlayer& players,
 	unsigned long long generateEdge = maxEdge * (this->connectionProbability * 100) / 100;
 
 	// プレイヤ数-1 より少ないエッジでは、接続グラフを作れないので修了
-	if (generateEdge < allPlayerNum - 1) {
+	if (generateEdge < static_cast<unsigned int>(allPlayerNum - 1)) {
 		std::cerr << "Could not generate a connected graph by a probability " << this->connectionProbability
 				<< "\nPlease set larger probability." << std::endl;
 		std::exit(EXIT_FAILURE);

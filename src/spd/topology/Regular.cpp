@@ -653,12 +653,12 @@ int Regular::getCliqueID(std::vector<std::vector<int>>& allNodes,
  * また、無い場合は変更しないまま
  * @param[in] properties プロパティ
  */
-void Regular::setProp(std::vector<double> properties) {
+void Regular::setProp(std::vector<std::string> properties) {
 	if (properties.size() < 1) {
 		return;
 	}
 
-	int dg = static_cast<int>(properties[0]);
+	int dg = std::stoi(properties[0]);
 	if (dg < 2) {
 		return;
 	}

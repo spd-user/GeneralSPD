@@ -104,7 +104,7 @@ public:
 	 * トポロジのプロパティを設定する
 	 * @param[in] properties プロパティ
 	 */
-	virtual void setProp(std::vector<double>  properties) = 0;
+	virtual void setProp(std::vector<std::string>  properties) = 0;
 
 private:
 

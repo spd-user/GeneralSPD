@@ -80,9 +80,9 @@ shared_ptr<spd::topology::Topology> GenerateTopology::generate(const string& top
 		auto& result = itr->second;
 
 		// プロパティを取得し、設定
-		std::vector<double> properties(topoStrings.size() - 1);
+		std::vector<std::string> properties(topoStrings.size() - 1);
 		for (int i = 1, max = topoStrings.size(); i < max; ++i) {
-			properties[i - 1] = std::stod(topoStrings[i]);
+			properties[i - 1] = topoStrings[i];
 		}
 		result->setProp(properties);
 

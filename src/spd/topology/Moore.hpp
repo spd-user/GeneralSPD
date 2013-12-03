@@ -85,7 +85,7 @@ public:
 	 * @note プロパティはないのでなにもしない
 	 * @param[in] properties プロパティ
 	 */
-	void setProp(std::vector<double> properties) {
+	void setProp(std::vector<std::string> properties) {
 		return;
 	};
 
