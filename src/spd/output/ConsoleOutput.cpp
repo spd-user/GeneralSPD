@@ -124,7 +124,7 @@ void ConsoleOutput::output(const spd::topology::Network& topology,
 			// 状態の表示
 			std::cout << "preAct(" << spd::core::converter::actionToChar(player->getPreAction())
 			<< "), act(" << spd::core::converter::actionToChar(player->getAction())
-			<< "), preSocre(" << player->getPreScore() << "), socre(" << player->getScore()
+			<< "), preSocre(" << player->getPreScore() << "), score(" << player->getScore()
 			<< "), preStrategy(" << player->getPreStrategy()->getShortStrategy()
 			<< "), strategy(" << player->getStrategy()->getShortStrategy()
 			<< ")\n";
