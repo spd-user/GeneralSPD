@@ -169,17 +169,6 @@ int Hexagon::maxStrategyLength(int actionRadius) {
 }
 
 /*
- * ムーア用の出力を行う
- * @param[in] visitor 構造に対する出力の処理方法
- * @param[in] space 空間
- */
-void Hexagon::accept(spd::output::OutputVisitor& visitor, spd::core::Space& space) {
-
-	this->side = static_cast<int>(std::sqrt(space.getPlayers().size()));
-	visitor.output(*this, space);
-}
-
-/*
  * 再設定はしない
  */
 void Hexagon::reSetting(const spd::core::AllPlayer& players,

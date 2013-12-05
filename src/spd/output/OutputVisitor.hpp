@@ -21,6 +21,7 @@ class Neumann;
 class Hexagon;
 class Moore;
 class Network;
+class Cube;
 }
 
 namespace output {
@@ -43,26 +44,20 @@ public:
 	 */
 	std::pair<std::string, bool> output(spd::core::Space& space);
 
-	/**
-	 * ムーア近傍に即した出力
-	 * @param[in] topology 空間構造
-	 * @param[in] space 空間状態
-	 */
-	virtual void output(const spd::topology::Moore& topology, spd::core::Space& space) = 0;
 
 	/**
-	 * ノイマン近傍に即した出力
+	 * 二次元格子に即した出力
 	 * @param[in] topology 空間構造
 	 * @param[in] space 空間状態
 	 */
-	virtual void output(const spd::topology::Neumann& topology, spd::core::Space& space) = 0;
+	virtual void output(const spd::topology::Lattice& topology, spd::core::Space& space) = 0;
 
 	/**
-	 * 六角格子に即した出力
+	 * 立方体に即した出力
 	 * @param[in] topology 空間構造
 	 * @param[in] space 空間状態
 	 */
-	virtual void output(const spd::topology::Hexagon& topology, spd::core::Space& space) = 0;
+	virtual void output(const spd::topology::Cube& topology, spd::core::Space& space) = 0;
 
 	/**
 	 * ネットワーク構造に即した出力

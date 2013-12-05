@@ -25,7 +25,7 @@ std::pair<std::string, bool> OutputVisitor::output(spd::core::Space& space) {
 	space.getParameter().getNeighborhoodParameter()->getTopology()->accept(*this, space);
 
 
-	// いまのとこないので空
+	// 圧縮する必要がないので空を返す
 	return std::pair<std::string, bool> {std::string(""), false};
 }
 

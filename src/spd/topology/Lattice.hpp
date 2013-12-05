@@ -37,6 +37,13 @@ public:
 	 */
 	int getSide() const;
 
+	/**
+	 * 二次元格子用の出力を行う
+	 * @param[in] visitor 構造に対する出力の処理方法
+	 * @param[in] space 空間
+	 */
+	virtual void accept(spd::output::OutputVisitor& visitor, spd::core::Space& space);
+
 protected:
 	/**
 	 * 空間条件が適合しているか調べる

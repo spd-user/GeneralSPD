@@ -4,6 +4,7 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
+../src/spd/topology/Cube.cpp \
 ../src/spd/topology/Hexagon.cpp \
 ../src/spd/topology/Lattice.cpp \
 ../src/spd/topology/Moore.cpp \
@@ -14,6 +15,7 @@ CPP_SRCS += \
 ../src/spd/topology/Topology.cpp 
 
 OBJS += \
+./src/spd/topology/Cube.o \
 ./src/spd/topology/Hexagon.o \
 ./src/spd/topology/Lattice.o \
 ./src/spd/topology/Moore.o \
@@ -24,6 +26,7 @@ OBJS += \
 ./src/spd/topology/Topology.o 
 
 CPP_DEPS += \
+./src/spd/topology/Cube.d \
 ./src/spd/topology/Hexagon.d \
 ./src/spd/topology/Lattice.d \
 ./src/spd/topology/Moore.d \

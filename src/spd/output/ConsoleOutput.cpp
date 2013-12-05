@@ -27,28 +27,10 @@ void ConsoleOutput::init(spd::core::Space& space, spd::param::Parameter& param) 
 	return;
 }
 
-
-void ConsoleOutput::output(const spd::topology::Moore& topology,
-	spd::core::Space& space) {
-	// たらい回し
-	outputLattice(topology, space);
-}
-void ConsoleOutput::output(const spd::topology::Neumann& topology,
-	spd::core::Space& space) {
-	// たらい回し
-	outputLattice(topology, space);
-}
-void ConsoleOutput::output(const spd::topology::Hexagon& topology,
-	spd::core::Space& space) {
-	// たらい回し
-	outputLattice(topology, space);
-}
-
 /*
  * 格子空間への処理
  */
-void ConsoleOutput::outputLattice(const spd::topology::Lattice& lattice,
-	spd::core::Space& space) {
+void ConsoleOutput::output(const spd::topology::Lattice& lattice, spd::core::Space& space) {
 
 	auto side = lattice.getSide();
 
@@ -64,6 +46,16 @@ void ConsoleOutput::outputLattice(const spd::topology::Lattice& lattice,
 	}
 
 }
+
+
+// TODO
+/*
+ * 立体格子に即した出力
+ * @param[in] topology 空間構造
+ * @param[in] space 空間状態
+ */
+void ConsoleOutput::output(const spd::topology::Cube& topology, spd::core::Space& space) {}
+
 
 /*
  * 1プレイヤを出力する

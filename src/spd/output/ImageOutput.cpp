@@ -36,28 +36,22 @@ ImageOutput::~ImageOutput() {
 }
 
 /*
- * ムーア
+ * 二次元格子
  */
-void ImageOutput::output(const spd::topology::Moore& topology, spd::core::Space& space) {
-	createImageFile(topology, space, false);
+void ImageOutput::output(const spd::topology::Lattice& topology, spd::core::Space& space) {
+
+	bool isHex = (typeid(topology) == typeid(spd::topology::Hexagon)) ? true : false;
+	createImageFile(topology, space, isHex);
 }
 
 /*
- * ノイマン近傍に即した出力
+ * 立体格子に即した出力
  * @param[in] topology 空間構造
  * @param[in] space 空間状態
  */
-void ImageOutput::output(const spd::topology::Neumann& topology, spd::core::Space& space) {
-	createImageFile(topology, space, false);
-}
+void ImageOutput::output(const spd::topology::Cube& topology, spd::core::Space& space) {
+	// TODO
 
-/*
- * 六角格子に即した出力
- * @param[in] topology 空間構造
- * @param[in] space 空間状態
- */
-void ImageOutput::output(const spd::topology::Hexagon& topology, spd::core::Space& space) {
-	createImageFile(topology, space, true);
 }
 
 /*
@@ -107,7 +101,7 @@ void ImageOutput::createImageFile(
 	auto sideY = lattice.getSide() * cellSize;
 	auto sideX = sideY;
 
-	// 六角ならしっかりチェック
+	// 六角ならセルサイズをチェック
 	if (isHexagonLattice) {
 		// セルサイズを偶数にする
 		cellSize = (cellSize % 2 == 0) ? cellSize : cellSize + 1;
@@ -117,7 +111,7 @@ void ImageOutput::createImageFile(
 	}
 
 
-	// サイズが変わっていたら、リセット
+	// 幅のサイズが変わっていたら、リセット
 	if (image != nullptr && imageSide != sideY) {
 		// 開放
 		freeImage();
@@ -220,26 +214,48 @@ void ImageOutput::writeSpace(
 	auto& allPlayer = space.getPlayers();
 	
 
-	png_byte* color;
+	// 指定したピクセル範囲を透過処理する
+	auto transparentPixel = [this](int x0, int x1, int y0, int y1){
+		for (int y = y0; y < y1; ++y) {
+			for (int x = x0 * BYTE_PER_PIXEL; x < x1 * BYTE_PER_PIXEL; x += BYTE_PER_PIXEL) {
+				if (COLOR_TYPE == PNG_COLOR_TYPE_RGB_ALPHA) {
+					image[y][x] = 0x0;
+					image[y][x + 1] = 0x0;
+					image[y][x + 2] = 0x0;
+					image[y][x + 3] = 0x0; // 透明
+				} else {
+					image[y][x] = 0x0;
+					image[y][x + 1] = 0x0; // 透明
+				}
+			}
+		}
+	};
+
+
+	const png_byte* color;
 
 	for (int y = 0, side = lattice.getSide(); y < side; ++y) {
+
+		// 必ず、両端サイズ分は透過処理を行う
+		transparentPixel(0, cellSize, y * cellSize, (y + 1) * cellSize); // 左端
+		transparentPixel((imageSide - cellSize) * BYTE_PER_PIXEL, imageSide * BYTE_PER_PIXEL, y * cellSize, (y + 1) * cellSize); // 右端
+
 		for (int x = 0; x < side; ++x) {
 			
 			auto& player = allPlayer.at(y * side + x);
-			
 
 			if (player->getStrategy()->isAll(Action::ACTION_C)) {
 				// allC 戦略
-				color = const_cast<png_byte*>(ALLC_COLOR);
+				color = ALLC_COLOR;
 			} else if (player->getStrategy()->isAll(Action::ACTION_D)) {
 				// allD 戦略
-				color =  const_cast<png_byte*>(ALLD_COLOR);
+				color = ALLD_COLOR;
 			} else if (player->getAction() == Action::ACTION_C) {
 				// c
-				color =  const_cast<png_byte*>(C_COLOR);
+				color = C_COLOR;
 			} else {
 				// membarane
-				color =  const_cast<png_byte*>(MEMBRANE_COLOR);
+				color = D_COLOR;
 			}
 
 			writePlayer(x, y, color, isHexagonLattice);
@@ -256,18 +272,21 @@ void ImageOutput::writePlayer(
 	// 六角の奇数番目(偶数行)は半分ずらす
 	if (isHexagonLattice && y % 2 == 1) {
 		// 六角のときは既に偶数のセルサイズにしてある
-		dx = cellSize / 2;
+		dx = (cellSize / 2) * BYTE_PER_PIXEL;
 	}
 	
 	// 1セルを描く
 	for (int y0 = y * cellSize, yMax = y * cellSize + cellSize; y0 < yMax; ++y0) {
 		for (int x0 = x * cellSize * BYTE_PER_PIXEL, xMax = (x * cellSize  + cellSize) * BYTE_PER_PIXEL; x0 < xMax; x0 += BYTE_PER_PIXEL) {
-			if (COLOR_TYPE == PNG_COLOR_TYPE_RGB) {
+			if (COLOR_TYPE == PNG_COLOR_TYPE_RGB_ALPHA) {
 				image[y0][x0 + dx] = color[0];
 				image[y0][x0 + dx + 1] = color[1];
 				image[y0][x0 + dx + 2] = color[2];
+				image[y0][x0 + dx + 3] = color[3];
 			} else {
-				image[y0][x0 + dx] = color[0];
+				// rgb -> grayscale
+				image[y0][x0 + dx] = (2 * color[0] + 4 * color[1] + color[2]) / 7;
+				image[y0][x0 + dx + 1] = color[3];
 			}
 		}
 	}

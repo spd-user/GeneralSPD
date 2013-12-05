@@ -38,25 +38,18 @@ public:
 	~ImageOutput();
 
 	/**
-	 * ムーア近傍に即した出力
+	 * 二次元格子に即した出力
 	 * @param[in] topology 空間構造
 	 * @param[in] space 空間状態
 	 */
-	void output(const spd::topology::Moore& topology, spd::core::Space& space);
+	void output(const spd::topology::Lattice& topology, spd::core::Space& space);
 
 	/**
-	 * ノイマン近傍に即した出力
+	 * 立体格子に即した出力
 	 * @param[in] topology 空間構造
 	 * @param[in] space 空間状態
 	 */
-	void output(const spd::topology::Neumann& topology, spd::core::Space& space);
-
-	/**
-	 * 六角格子に即した出力
-	 * @param[in] topology 空間構造
-	 * @param[in] space 空間状態
-	 */
-	void output(const spd::topology::Hexagon& topology, spd::core::Space& space);
+	void output(const spd::topology::Cube& topology, spd::core::Space& space);
 
 	/**
 	 * ネットワーク構造に即した出力
@@ -85,45 +78,65 @@ public:
 
 private:
 
-	// 色のタイプ
-	static const int COLOR_TYPE = PNG_COLOR_TYPE_RGB;
-	//const int COLOR_TYPE = PNG_COLOR_TYPE_GRAY;
+	/**
+	 * 色のタイプ(RGBA または、GRAY_ALPHA)
+	 */
+	static const int COLOR_TYPE = PNG_COLOR_TYPE_RGB_ALPHA;
+#ifdef GRAY
+	COLOR_TYPE = PNG_COLOR_TYPE_GRAY_ALPHA;
+#endif
 
-	static const int BYTE_PER_PIXEL = (COLOR_TYPE == PNG_COLOR_TYPE_RGB) ? 3 : 1;
+	/**
+	 * 1ピクセル辺りに必要なバイト数
+	 */
+	static const int BYTE_PER_PIXEL = (COLOR_TYPE == PNG_COLOR_TYPE_RGB_ALPHA) ? 4 : 2;
+
+	/**
+	 * RGBAに必要な情報の種類
+	 */
+	static constexpr int RGBA = 4;
+
+	// 色指定
+	const png_byte BLACK[RGBA] = {0, 0, 0, 0xFF}; /**< 黒色 */
+	const png_byte GRAY[RGBA] = {0x80, 0x80, 0x80, 0xFF}; /**< 灰色 */
+	const png_byte WHITE[RGBA] = {0xFF, 0xFF, 0xFF, 0xFF}; /**< 白色 */
+
+	const png_byte DARK_GRAY[RGBA] = {0xA9, 0xA9, 0xA9, 0xFF}; /**< 濃い灰色 */
+	const png_byte LIGHT_GRAY[RGBA] = {0xD3, 0xD3, 0xD3, 0xFF}; /**< 薄い灰色 */
+
+	const png_byte MAGENTA[RGBA] = {0xFF, 0x00, 0xFF, 0xFF}; /**< マゼンタ */
+	const png_byte GREEN[RGBA] = {0x00, 0x80, 0x00, 0xFF}; /**< 緑 */
 
 
-private:
-	// 色定義
-	static constexpr int RGB = 3;
-
-	const png_byte BLACK[RGB] = {0, 0, 0};
-	const png_byte GRAY[RGB] = {0x80, 0x80, 0x80};
-	const png_byte WHITE[RGB] = {0xFF, 0xFF, 0xFF};
-
-	const png_byte MAGENTA[RGB] = {0xFF, 0x00, 0xFF};
-	const png_byte GREEN[RGB] = {0x00, 0x80, 0x00};
+	// 配色定義
+	const png_byte *ALLD_COLOR = BLACK; /**< All-Dを表す色 */
+	const png_byte *ALLC_COLOR = WHITE; /**< All-Cを表す色 */
+	const png_byte *D_COLOR = (COLOR_TYPE == PNG_COLOR_TYPE_RGB_ALPHA) ? MAGENTA : DARK_GRAY; /**< All-DでないDプレイヤを表す色 */
+	const png_byte *C_COLOR = (COLOR_TYPE == PNG_COLOR_TYPE_RGB_ALPHA) ? GREEN : LIGHT_GRAY; /**< All-CでないCプレイヤを表す色 */
 
 
-	// 配置定義
-	const png_byte (&ALLD_COLOR)[RGB] = BLACK;
-	const png_byte (&ALLC_COLOR)[RGB] = WHITE;
-	const png_byte (&MEMBRANE_COLOR)[RGB] = (COLOR_TYPE == PNG_COLOR_TYPE_RGB) ? MAGENTA : GRAY;
-	const png_byte (&C_COLOR)[RGB] = GREEN;
-
-
-	// 接頭辞
+	/*
+	 * 出力ディレクトリからの接頭辞
+	 */
 	const std::string PREFIX = "/image/spd_image_";
-	// 接尾辞
+	/*
+	 * ファイルの接尾辞
+	 */
 	const std::string SUFFIX = ".png";
 
-	// 空間画像サイズ
-	//unsigned char **image;
+	/*
+	 * 空間画像
+	 */
 	png_bytepp image;
 
-	// 確保している画像の一辺の長さ
+	/*
+	 *  確保している画像の幅
+	 */
 	int imageSide;
 
-	// セルサイズ
+	/*
+	 * セルサイズ
+	 */
 	int cellSize;
 
 	// 画像の生成

@@ -23,26 +23,20 @@ namespace output {
 class ConsoleOutput: public OutputVisitor {
 public:
 
-	/**
-	 * ムーア近傍に即した出力
-	 * @param[in] topology 空間構造
-	 * @param[in] space 空間状態
-	 */
-	void output(const spd::topology::Moore& topology, spd::core::Space& space);
 
 	/**
-	 * ノイマン近傍に即した出力
+	 * 二次元格子に即した出力
 	 * @param[in] topology 空間構造
 	 * @param[in] space 空間状態
 	 */
-	void output(const spd::topology::Neumann& topology, spd::core::Space& space);
+	void output(const spd::topology::Lattice& topology, spd::core::Space& space);
 
 	/**
-	 * 六角格子に即した出力
+	 * 立体格子に即した出力
 	 * @param[in] topology 空間構造
 	 * @param[in] space 空間状態
 	 */
-	void output(const spd::topology::Hexagon& topology, spd::core::Space& space);
+	void output(const spd::topology::Cube& topology, spd::core::Space& space);
 
 	/**
 	 * ネットワーク構造に即した出力
@@ -70,13 +64,6 @@ public:
 	}
 
 private:
-
-	/**
-	 * 格子構造の処理
-	 * @param[in] lattice 格子空間構造
-	 * @param[in] space 空間状態
-	 */
-	void outputLattice(const spd::topology::Lattice& lattice, spd::core::Space& space);
 
 	/**
 	 * 1プレイヤを出力する

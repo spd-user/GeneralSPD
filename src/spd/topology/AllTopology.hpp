@@ -15,5 +15,6 @@
 #include "Network.hpp"
 #include "Random.hpp"
 #include "Regular.hpp"
+#include "Cube.hpp"
 
 #endif /* ALLTOPOLOGY_H_ */
