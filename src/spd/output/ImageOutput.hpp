@@ -35,7 +35,7 @@ public:
 	/**
 	 * デストラクタ
 	 */
-	~ImageOutput();
+	virtual ~ImageOutput();
 
 	/**
 	 * 二次元格子に即した出力
