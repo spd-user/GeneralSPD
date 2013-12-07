@@ -72,7 +72,7 @@ void ImageOutput::output(const spd::topology::Network& topology, spd::core::Spac
 }
 
 /*
- * 初期化ではなし
+ * 初期化
  * @param[in, out] space 空間
  * @param[in, out] param パラメタ
  */
