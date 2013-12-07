@@ -9,6 +9,7 @@
 #include <iostream>
 #include <iomanip>
 #include <stdexcept>
+#include <cmath>
 
 #include "../core/Space.hpp"
 #include "../core/Player.hpp"
@@ -36,6 +37,7 @@ void ConsoleOutput::output(const spd::topology::Lattice& lattice, spd::core::Spa
 
 	auto allPlayers = space.getPlayers();
 
+	std::cout << "step:" << space.getStep() << "\n";
 	for (int y = 0; y < side; ++y) {
 		for (int x = 0; x < side; ++x) {
 
@@ -48,13 +50,31 @@ void ConsoleOutput::output(const spd::topology::Lattice& lattice, spd::core::Spa
 }
 
 
-// TODO
 /*
  * 立体格子に即した出力
- * @param[in] topology 空間構造
+ * @param[in] cube 空間構造
  * @param[in] space 空間状態
  */
-void ConsoleOutput::output(const spd::topology::Cube& topology, spd::core::Space& space) {}
+void ConsoleOutput::output(const spd::topology::Cube& cube, spd::core::Space& space) {
+
+	auto& allPlayers = space.getPlayers();
+	auto side = std::cbrt(allPlayers.size());
+
+	std::cout << "step:" << space.getStep() << "\n";
+
+	for (int z = 0; z < side; ++z) {
+		for (int y = 0; y < side; ++y) {
+			for (int x = 0; x < side; ++x) {
+				std::shared_ptr<spd::core::Player> player = allPlayers.at(z*side*side+y*side + x);
+				printPlayer(player);
+			}
+			std::cout << "\n";
+		}
+		std::cout << "-------------------------------\n";
+	}
+	std::cout << std::endl;
+
+}
 
 
 /*

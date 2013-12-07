@@ -45,6 +45,10 @@ NeighborParser::NeighborParser(const std::shared_ptr<NeighborhoodParameter>& nei
 		// 説明の付け足し
 		if (topology.first == "random") {
 			topologyDescription += "[:(connection probability)]";
+		} else if (topology.first == "regular") {
+			topologyDescription += "[:(degree)]";
+		} else if (topology.first == "cube") {
+			topologyDescription += "[:\"moore\" or \"neumann\"]";
 		}
 		topologyDescription += "\n";
 	}

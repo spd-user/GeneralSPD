@@ -81,9 +81,8 @@ bool Space::run() {
 		std::get<0>(output)->init(*this, parameter);
 	}
 
-
 #ifdef DEBUG
-	for (int i = 0; i < players.size(); ++i) {
+	for (int i = 0, playerNum = players.size(); i < playerNum; ++i) {
 		std::cout << "player: " << players[i]->getId() << ", degree: " << players[i]->getLinkedPlayers()->size() << "\n";
 	}
 	std::cout << std::endl;

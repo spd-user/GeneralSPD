@@ -10,6 +10,8 @@
 
 #include "../Topology.hpp"
 
+#include <cmath>
+
 namespace spd {
 namespace param {
 	class InitParameter;
@@ -43,6 +45,19 @@ public:
 	 * @param[in] space 空間
 	 */
 	virtual void accept(spd::output::OutputVisitor& visitor, spd::core::Space& space);
+
+	/**
+	 * 中心座標を取得する
+	 * @param playerNum 全プレイヤ数
+	 * @return 二次元平面で中心となるプレイヤの座標
+	 */
+	virtual int getCenterIndex(int playerNum) const {
+
+		// 中心座標
+		int centerIndex = std::floor(side / 2) * side + std::floor(side / 2);
+		return centerIndex;
+	};
+
 
 protected:
 	/**

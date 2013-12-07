@@ -10,6 +10,8 @@
 #include "../Topology.hpp"
 #include "CubeNeighborType.hpp"
 
+#include <cmath>
+
 namespace spd {
 namespace topology {
 
@@ -72,6 +74,21 @@ public:
 	 * @retval 近傍数+1
 	 */
 	int maxStrategyLength(int actionRadius);
+
+	/**
+	 * 中心座標を取得する
+	 * @param playerNum 全プレイヤ数
+	 * @return 立体格子で中心となるプレイヤの座標
+	 */
+	virtual int getCenterIndex(int playerNum) const {
+
+		// 中心座標
+		int centerIndex = std::floor(sideNum/2) * plateNum +
+				std::floor(sideNum / 2) * sideNum +
+				std::floor(sideNum / 2);
+		return centerIndex;
+	};
+
 
 	/**
 	 * 立方体用の出力を行う

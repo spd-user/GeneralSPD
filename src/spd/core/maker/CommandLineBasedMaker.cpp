@@ -105,12 +105,12 @@ void CommandLineBasedMaker::initPlayer(const AllPlayer& players, spd::core::Spac
 
 	// クラスタがある場合の初期化
 	if (parameter.getInitialParameter()->startsCluster()) {
-		int side = std::sqrt(parameter.getInitialParameter()->getPlayerNum());
+
+		auto topology = this->parameter.getNeighborhoodParameter()->getTopology();
 
 		// 中心座標
-		int centerIndex = std::floor(side / 2) * side + std::floor(side / 2);
+		int centerIndex = topology->getCenterIndex(players.size());
 
-		std::shared_ptr<spd::topology::Topology> topology = this->parameter.getNeighborhoodParameter()->getTopology();
 		auto clusters = topology->getNeighbors(players, centerIndex, parameter.getInitialParameter()->getStartClusterSize());
 
 		for (int r = 0, rMax = clusters->size(); r < rMax; ++r) {

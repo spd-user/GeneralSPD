@@ -67,6 +67,15 @@ public:
 	 */
 	int maxStrategyLength(int actionRadius);
 
+	/**
+	 * 中心座標を取得する
+	 * @param playerNum 全プレイヤ数
+	 * @return  全プレイヤの中央
+	 */
+	int getCenterIndex(int playerNum) const {
+		return playerNum / 2;
+	};
+
 private:
 
 	/**

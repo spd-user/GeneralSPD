@@ -94,6 +94,13 @@ public:
 	virtual int maxStrategyLength(int actionRadius) = 0;
 
 	/**
+	 * 中心座標を取得する
+	 * @param playerNum 全プレイヤ数
+	 * @return 中心となるプレイヤの座標
+	 */
+	virtual int getCenterIndex(int playerNum) const = 0;
+
+	/**
 	 * 出力方法に構造を知らせる
 	 * @param[in] visitor 構造に対する出力の処理方法
 	 * @param[in] space 空間
