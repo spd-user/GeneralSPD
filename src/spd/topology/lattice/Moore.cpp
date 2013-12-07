@@ -11,15 +11,14 @@
 #include <iostream>
 #include <string>
 
-#include "../core/OriginalType.hpp"
-#include "../core/Player.hpp"
-#include "../core/Space.hpp"
+#include "../../core/OriginalType.hpp"
+#include "../../core/Player.hpp"
+#include "../../core/Space.hpp"
 
-#include "../param/Parameter.hpp"
-#include "../param/InitParameter.hpp"
-#include "../param/NeighborhoodParameter.hpp"
+#include "../../param/Parameter.hpp"
+#include "../../param/InitParameter.hpp"
+#include "../../param/NeighborhoodParameter.hpp"
 
-#include "../output/OutputVisitor.hpp"
 
 namespace spd {
 namespace topology {
@@ -31,7 +30,7 @@ using spd::core::Player;
  */
 Moore::Moore() {
 	this->side = 0;
-};
+}
 
 /*
  * すべてのプレイヤに隣接接続を設定する
@@ -78,17 +77,20 @@ void Moore::connectPlayers(const spd::core::AllPlayer& players,
 	for (int i = 0; i < playerNum; ++i) {
 		auto player = players.at(i);
 
+		int x = i % side;
+		int y = i / side;
+
 		// 上側
-		player->linkTo(players.at(((i % side) - 1 +side)%side+((i / side) - 1 +side)%side*side));
-		player->linkTo(players.at(((i % side)     +side)%side+((i / side) - 1 +side)%side*side));
-		player->linkTo(players.at(((i % side) + 1 +side)%side+((i / side) - 1 +side)%side*side));
+		player->linkTo(players.at((x - 1 +side)%side+(y - 1 +side)%side*side));
+		player->linkTo(players.at((x     +side)%side+(y - 1 +side)%side*side));
+		player->linkTo(players.at((x + 1 +side)%side+(y - 1 +side)%side*side));
 		// 左右
-		player->linkTo(players.at(((i % side) - 1 +side)%side+((i / side)     +side)%side*side));
-		player->linkTo(players.at(((i % side) + 1 +side)%side+((i / side)     +side)%side*side));
+		player->linkTo(players.at((x - 1 +side)%side+(y     +side)%side*side));
+		player->linkTo(players.at((x + 1 +side)%side+(y     +side)%side*side));
 		// 下側
-		player->linkTo(players.at(((i % side) - 1 +side)%side+((i / side) + 1 +side)%side*side));
-		player->linkTo(players.at(((i % side)     +side)%side+((i / side) + 1 +side)%side*side));
-		player->linkTo(players.at(((i % side) + 1 +side)%side+((i / side) + 1 +side)%side*side));
+		player->linkTo(players.at((x - 1 +side)%side+(y + 1 +side)%side*side));
+		player->linkTo(players.at((x     +side)%side+(y + 1 +side)%side*side));
+		player->linkTo(players.at((x + 1 +side)%side+(y + 1 +side)%side*side));
 	}
 }
 
@@ -189,7 +191,7 @@ bool Moore::isCompliant(const std::shared_ptr<spd::param::InitParameter>& iniPar
  * @param radius 近傍半径
  * @return 自身を含めた近傍プレイヤ数
  */
-inline int Moore::calcNeighborsNum(int radius) {
+inline int Moore::calcNeighborsNum(int radius) const {
 	return (2 * radius + 1) * (2 * radius + 1);
 }
 

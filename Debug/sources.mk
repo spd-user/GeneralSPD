@@ -23,6 +23,9 @@ C_UPPER_DEPS :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
+src/spd/topology/network \
+src/spd/topology/lattice \
+src/spd/topology/cube \
 src/spd/topology \
 src/spd/rule/strategy \
 src/spd/rule/property \

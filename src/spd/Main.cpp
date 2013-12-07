@@ -41,7 +41,7 @@
 
 #include "core/Strategy.hpp"
 #include "param/Parameter.hpp"
-#include "topology/Moore.hpp"
+#include "topology/lattice/Moore.hpp"
 #include "core/Player.hpp"
 #include "output/ConsoleOutput.hpp"
 #include "core/Space.hpp"

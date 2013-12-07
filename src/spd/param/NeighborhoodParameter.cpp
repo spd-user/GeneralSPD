@@ -7,7 +7,7 @@
 
 #include "NeighborhoodParameter.hpp"
 
-#include "../topology/Moore.hpp"
+#include "../topology/lattice/Moore.hpp"
 
 namespace spd {
 namespace param {

@@ -9,12 +9,11 @@
 #ifndef ALLTOPOLOGY_H_
 #define ALLTOPOLOGY_H_
 
-#include "Moore.hpp"
-#include "Neumann.hpp"
-#include "Hexagon.hpp"
-#include "Network.hpp"
-#include "Random.hpp"
-#include "Regular.hpp"
-#include "Cube.hpp"
+#include "lattice/Moore.hpp"
+#include "lattice/Neumann.hpp"
+#include "lattice/Hexagon.hpp"
+#include "network/Random.hpp"
+#include "network/Regular.hpp"
+#include "cube/Cube.hpp"
 
 #endif /* ALLTOPOLOGY_H_ */

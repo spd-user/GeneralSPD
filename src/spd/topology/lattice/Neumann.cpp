@@ -11,15 +11,14 @@
 #include <iostream>
 #include <string>
 
-#include "../core/OriginalType.hpp"
-#include "../core/Player.hpp"
-#include "../core/Space.hpp"
+#include "../../core/OriginalType.hpp"
+#include "../../core/Player.hpp"
+#include "../../core/Space.hpp"
 
-#include "../param/Parameter.hpp"
-#include "../param/InitParameter.hpp"
-#include "../param/NeighborhoodParameter.hpp"
+#include "../../param/Parameter.hpp"
+#include "../../param/InitParameter.hpp"
+#include "../../param/NeighborhoodParameter.hpp"
 
-#include "../output/OutputVisitor.hpp"
 
 namespace spd {
 namespace topology {
@@ -116,10 +115,10 @@ spd::core::Neighbors Neumann::getNeighbors(const spd::core::AllPlayer& players,
 	for (int y = -1 * radius; y <= radius; ++y) {
 		for (int x = -1 * radius; x <= radius; ++x) {
 
-			int nSite = (x0+ x +side)%side+(y0 + y +side)%side*side;
-
 			int n = std::abs(y) + std::abs(x);
+
 			if (n <= radius) {
+				int nSite = (x0+ x +side)%side+(y0 + y +side)%side*side;
 				result->at(n)->push_back(players.at(nSite));
 			}
 		}
@@ -186,7 +185,7 @@ bool Neumann::isCompliant(const std::shared_ptr<spd::param::InitParameter>& iniP
  * @param radius 近傍半径
  * @return 自身を含めた近傍プレイヤ数
  */
-inline int Neumann::calcNeighborsNum(int radius) {
+inline int Neumann::calcNeighborsNum(int radius) const {
 	return (2 * radius * (1 + radius)) + 1;
 }
 

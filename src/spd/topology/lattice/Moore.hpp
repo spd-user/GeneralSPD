@@ -1,12 +1,12 @@
 /**
- * Neumann.hpp
+ * Moore.hpp
  *
  * @date 2012/10/03
  * @author katsumata
  */
 
-#ifndef NEUMANN_H_
-#define NEUMANN_H_
+#ifndef MOORE_H_
+#define MOORE_H_
 
 #include <memory>
 #include "Lattice.hpp"
@@ -15,15 +15,15 @@ namespace spd {
 namespace topology {
 
 /**
- * ノイマン近傍の空間構造を表すクラス
+ * ムーア近傍の空間構造を表すクラス
  */
-class Neumann: public spd::topology::Lattice {
+class Moore: public spd::topology::Lattice {
 public:
 
 	/**
 	 * コンストラクタ
 	 */
-	Neumann();
+	Moore();
 
 	/**
 	 * すべてのプレイヤの接続を作成する。
@@ -84,7 +84,7 @@ public:
 
 	/**
 	 * 空間構図構造名の出力
-	 * @return 空間構図構造名(Neumann)
+	 * @return 空間構図構造名(Moore)
 	 */
 	std::string toString() const;
 
@@ -102,15 +102,15 @@ protected:
 
 	/**
 	 * 指定した近傍半径の自身を含めたプレイヤ数を計算する
-	 * @param radius 近傍半径
+	 * @param[in] radius 近傍半径
 	 * @return 自身を含めた近傍プレイヤ数
 	 */
-	int calcNeighborsNum(int radius);
+	int calcNeighborsNum(int radius) const;
 
 private:
 
-	// 隣接プレイヤ数
-	static const int ADJACENCE = 4;
+	/** 隣接プレイヤ数 */
+	static const int ADJACENCE = 8;
 
 	/**
 	 * すべてのプレイヤに指定近傍タイプのプレイヤを設定する
@@ -127,8 +127,6 @@ private:
 
 };
 
-
-
 } /* namespace topology */
 } /* namespace spd */
-#endif /* NEUMANN_H_ */
+#endif /* MOORE_H_ */

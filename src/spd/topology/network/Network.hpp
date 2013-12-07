@@ -8,7 +8,7 @@
 #ifndef NETWORK_H_
 #define NETWORK_H_
 
-#include "Topology.hpp"
+#include "../Topology.hpp"
 
 namespace spd {
 namespace topology {

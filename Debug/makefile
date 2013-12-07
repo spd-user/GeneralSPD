@@ -8,6 +8,9 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include src/spd/topology/network/subdir.mk
+-include src/spd/topology/lattice/subdir.mk
+-include src/spd/topology/cube/subdir.mk
 -include src/spd/topology/subdir.mk
 -include src/spd/rule/strategy/subdir.mk
 -include src/spd/rule/property/subdir.mk

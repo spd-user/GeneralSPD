@@ -8,7 +8,7 @@
 #ifndef LATTICE_H_
 #define LATTICE_H_
 
-#include "Topology.hpp"
+#include "../Topology.hpp"
 
 namespace spd {
 namespace param {
@@ -58,12 +58,14 @@ protected:
 
 	/**
 	 * 指定した近傍半径の場合の近傍プレイヤ数を計算する
-	 * @param radius 近傍半径
+	 * @param[in] radius 近傍半径
 	 * @return 近傍プレイヤ数
 	 */
-	virtual int calcNeighborsNum(int radius) = 0;
+	virtual int calcNeighborsNum(int radius) const = 0;
 
-	// 辺の長さ
+	/**
+	 * 辺の長さ
+	 */
 	int side;
 };
 

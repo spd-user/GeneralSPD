@@ -12,16 +12,16 @@
 #include <iostream>
 #include <cmath>
 
-#include "../core/OriginalType.hpp"
-#include "../core/Player.hpp"
-#include "../core/Space.hpp"
+#include "../../core/OriginalType.hpp"
+#include "../../core/Player.hpp"
+#include "../../core/Space.hpp"
 
-#include "../param/Parameter.hpp"
-#include "../param/InitParameter.hpp"
-#include "../param/NeighborhoodParameter.hpp"
-#include "../param/RandomParameter.hpp"
+#include "../../param/Parameter.hpp"
+#include "../../param/InitParameter.hpp"
+#include "../../param/NeighborhoodParameter.hpp"
+#include "../../param/RandomParameter.hpp"
 
-#include "../output/OutputVisitor.hpp"
+#include "../../output/OutputVisitor.hpp"
 
 namespace spd {
 namespace topology {

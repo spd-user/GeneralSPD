@@ -1,29 +1,29 @@
 /**
- * Hexagon.hpp
+ * Cube.hpp
  *
- * @date 2012/12/19
+ * @date 2013/12/03
  * @author katsumata
  */
+#ifndef CUBE_HPP_
+#define CUBE_HPP_
 
-#ifndef HEXAGON_H_
-#define HEXAGON_H_
-
-#include <memory>
-#include "Lattice.hpp"
+#include "../Topology.hpp"
+#include "CubeNeighborType.hpp"
 
 namespace spd {
 namespace topology {
 
 /**
- * 六角格子の空間構造を表すクラス
+ * 立方体を表すクラス
  */
-class Hexagon: public spd::topology::Lattice {
+class Cube : public spd::topology::Topology {
+
 public:
 
 	/**
 	 * コンストラクタ
 	 */
-	Hexagon();
+	Cube();
 
 	/**
 	 * すべてのプレイヤの接続を作成する。
@@ -55,7 +55,7 @@ public:
 	 * @param[in] param パラメタ
 	 */
 	void reSetting(const spd::core::AllPlayer& players,
-			const spd::param::Parameter& param);
+			const spd::param::Parameter& param) {};
 
 	/**
 	 * 空間において必須の戦略の長さを求める
@@ -74,43 +74,69 @@ public:
 	int maxStrategyLength(int actionRadius);
 
 	/**
+	 * 立方体用の出力を行う
+	 * @param[in] visitor 構造に対する出力の処理方法
+	 * @param[in] space 空間
+	 */
+	void accept(spd::output::OutputVisitor& visitor, spd::core::Space& space);
+
+	/**
 	 * トポロジのプロパティを設定する
-	 * @note プロパティはないのでなにもしない
+	 * @note 一つ目のみ有効。また、"moore", "neumann" でなければ無効
 	 * @param[in] properties プロパティ
 	 */
-	void setProp(std::vector<std::string> properties) {
-		return;
+	void setProp(std::vector<std::string> properties);
+
+	/**
+	 * 対象プレイヤに対する、x, y, zの相対値から該当するプレイヤ位置座標を取得する
+	 * @param[in] i ベースのプレイヤ位置座標
+	 * @param[in] x xの相対値
+	 * @param[in] y yの相対値
+	 * @param[in] z zの相対値
+	 */
+	int getTarget(int i, int x, int y, int z) const {
+		int z0 = i / plateNum;
+		int y0 = (i - z0 * plateNum) / sideNum;
+		int x0 = (i - z0 * plateNum) % sideNum;
+
+		return ((z0 + z +sideNum) % sideNum) * plateNum +
+				((y0 + y +sideNum) % sideNum) * sideNum +
+				((x0 + x +sideNum) % sideNum);
 	};
 
 	/**
+	 * x, y, z座標を一意のプレイヤ位置座標へ変換する
+	 * @param[in] x x座標
+	 * @param[in] y y座標
+	 * @param[in] z z座標
+
+	 */
+	int xyz2i(int x, int y, int z) const {
+		return z * plateNum + y * sideNum + x;
+	}
+
+	/**
 	 * 空間構図構造名の出力
-	 * @return 空間構図構造名(Moore)
+	 * @return 空間構図構造名
 	 */
 	std::string toString() const;
 
-protected:
-
-	/**
-	 * 空間条件が適合しているか調べる
-	 * @param[in] initParam パラメタ
-	 * @param[out] errMsg エラーメッセージ
-	 * @return 各格子に適切なパラメタかどうか
-	 * @retval true 適切に扱える格子の場合
-	 * @retval false 適切に扱うことができない格子の場合、エラーメッセージは第2引数から取得
-	 */
-	bool isCompliant(const std::shared_ptr<spd::param::InitParameter>& initParam, std::string& errMsg);
-
-	/**
-	 * 指定した近傍半径の自身を含めたプレイヤ数を計算する
-	 * @param radius 近傍半径
-	 * @return 自身を含めた近傍プレイヤ数
-	 */
-	int calcNeighborsNum(int radius);
-
 private:
 
-	// 隣接プレイヤ数
-	static const int ADJACENCE = 6;
+	/**
+	 * 立方体で考慮する近傍
+	 */
+	std::unique_ptr<cube::CubeNeighborType> cubeNeighbor;
+
+	/**
+	 * 一層のプレイヤ数
+	 */
+	int plateNum;
+
+	/**
+	 * 一辺のプレイヤ数
+	 */
+	int sideNum;
 
 	/**
 	 * すべてのプレイヤに指定近傍タイプのプレイヤを設定する
@@ -129,4 +155,5 @@ private:
 
 } /* namespace topology */
 } /* namespace spd */
-#endif /* HEXAGON_H_ */
+
+#endif /* CUBE_HPP_ */

@@ -45,13 +45,19 @@ GenerateTopology::GenerateTopology() {
 	shared_ptr<spd::topology::Topology> regular = make_shared<spd::topology::Regular>();
 	auto regularName = "regular";
 
+	// 立方体
+	shared_ptr<spd::topology::Topology> cube = make_shared<spd::topology::Cube>();
+	auto cubeName = "cube";
+
+
 
 	map<string, shared_ptr<spd::topology::Topology>> m {
 		{mooreName, 	moore},
 		{neumannName, neumann},
 		{hexName, 		hex},
 		{randomName, 	random},
-		{regularName, regular}
+		{regularName, regular},
+		{cubeName, 	cube}
 	};
 
 	this->topologyMap = m;

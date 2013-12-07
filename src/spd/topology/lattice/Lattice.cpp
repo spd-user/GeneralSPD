@@ -9,8 +9,8 @@
 
 #include <cmath> //sqrt
 
-#include "../core/Space.hpp"
-#include "../output/OutputVisitor.hpp"
+#include "../../core/Space.hpp"
+#include "../../output/OutputVisitor.hpp"
 
 namespace spd {
 namespace topology {

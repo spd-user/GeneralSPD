@@ -12,15 +12,14 @@
 #include <iostream>
 #include <string>
 
-#include "../core/OriginalType.hpp"
-#include "../core/Player.hpp"
-#include "../core/Space.hpp"
+#include "../../core/OriginalType.hpp"
+#include "../../core/Player.hpp"
+#include "../../core/Space.hpp"
 
-#include "../param/Parameter.hpp"
-#include "../param/InitParameter.hpp"
-#include "../param/NeighborhoodParameter.hpp"
+#include "../../param/Parameter.hpp"
+#include "../../param/InitParameter.hpp"
+#include "../../param/NeighborhoodParameter.hpp"
 
-#include "../output/OutputVisitor.hpp"
 
 namespace spd {
 namespace topology {
@@ -208,7 +207,7 @@ bool Hexagon::isCompliant(const std::shared_ptr<spd::param::InitParameter>& iniP
  * @param radius 近傍半径
  * @return 自身を含めた近傍プレイヤ数
  */
-inline int Hexagon::calcNeighborsNum(int radius) {
+inline int Hexagon::calcNeighborsNum (int radius) const {
 	return (3 * radius * (1 + radius)) + 1;
 }
 
