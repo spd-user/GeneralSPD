@@ -41,7 +41,7 @@ ImageOutput::~ImageOutput() {
 void ImageOutput::output(const spd::topology::Lattice& topology, spd::core::Space& space) {
 
 	bool isHex = (typeid(topology) == typeid(spd::topology::Hexagon)) ? true : false;
-	createImageFile(topology, space, isHex);
+	create2DImageFile(space, topology.getSide(), -1, isHex);
 }
 
 /*
@@ -50,7 +50,13 @@ void ImageOutput::output(const spd::topology::Lattice& topology, spd::core::Spac
  * @param[in] space 空間状態
  */
 void ImageOutput::output(const spd::topology::Cube& topology, spd::core::Space& space) {
-	// TODO
+	int playerNum = space.getPlayers().size();
+	auto side = std::cbrt(playerNum);
+	side = (2.0 * side + playerNum / side / side) / 3.0; // ニュートン法の漸化式
+
+	for (int level = 0; level < side; ++level) {
+		create2DImageFile(space, side, level, false);
+	}
 
 }
 
@@ -92,13 +98,12 @@ void ImageOutput::init(spd::core::Space& space, spd::param::Parameter& param) {
 
 
 // 画像を生成する実体
-void ImageOutput::createImageFile(
-		const spd::topology::Lattice& lattice,
-		spd::core::Space& space,
-		bool isHexagonLattice) {
+void ImageOutput::create2DImageFile(
+		spd::core::Space& space, int side,
+		int level, bool isHexagonLattice) {
 
 	// 一辺の長さ
-	auto sideY = lattice.getSide() * cellSize;
+	auto sideY = side * cellSize;
 	auto sideX = sideY;
 
 	// 六角ならセルサイズをチェック
@@ -106,7 +111,7 @@ void ImageOutput::createImageFile(
 		// セルサイズを偶数にする
 		cellSize = (cellSize % 2 == 0) ? cellSize : cellSize + 1;
 
-		sideY = lattice.getSide() * cellSize;
+		sideY = side * cellSize;
 		sideX = sideY + (cellSize / 2);
 	}
 
@@ -115,7 +120,6 @@ void ImageOutput::createImageFile(
 	if (image != nullptr && imageSide != sideY) {
 		// 開放
 		freeImage();
-
 		image = nullptr;
 	}
 
@@ -132,26 +136,33 @@ void ImageOutput::createImageFile(
 	}
 
 	// 盤面のイメージ作成
-	writeSpace(lattice, space, isHexagonLattice);
+	writeSpace(space, side, level, isHexagonLattice);
 	
 	// 画像出力
-	outputPngFile(space, sideX, sideY);
+	outputPngFile(space, sideX, sideY, level);
 }
 
 // png ファイルの作成
 void ImageOutput::outputPngFile(
-		spd::core::Space& space, int sizeX, int sizeY) {
+		spd::core::Space& space, int sizeX, int sizeY, int level) {
 
 	auto& param = space.getParameter();
 
-	//(ディレクトリ)/image/spd_image_(3桁のsim)_(5桁のステップ数).png
-	std::ostringstream simCount, step;
+	//(ディレクトリ)/image/spd_image_(3桁のsim)_(5桁のステップ数)-(3桁の階層).png
+	std::ostringstream simCount, step, levelCount;
+
 	setZeroPadding(simCount, 3, space.getSimCount());
 
 	setZeroPadding(step, 5, space.getStep());
 
+	std::string levelString = "";
+	if (level != -1) {
+		setZeroPadding(levelCount, 4, level);
+		levelString = "-" + levelCount.str();
+	}
+
 	std::string filename (param.getOutputParameter()->getDirectory() +
-			PREFIX + simCount.str() + "_" + step.str() + SUFFIX);
+			PREFIX + simCount.str() + "_" + step.str() + levelString + SUFFIX);
 
 	// ファイルを開く
 	FILE *fp;
@@ -203,12 +214,13 @@ inline void ImageOutput::setZeroPadding(std::ostringstream& oss, int width, int 
 	oss.fill('0');
 	oss.width(width);
 	oss << val;
+
 }
 
 // 盤面状態のイメージ化
 void ImageOutput::writeSpace(
-		const spd::topology::Lattice& lattice,
 		spd::core::Space& space,
+		int side, int level,
 		bool isHexagonLattice) {
 	
 	auto& allPlayer = space.getPlayers();
@@ -234,15 +246,19 @@ void ImageOutput::writeSpace(
 
 	const png_byte* color;
 
-	for (int y = 0, side = lattice.getSide(); y < side; ++y) {
+
+	// z軸の値を構造座標へ変換
+	int zPos = (level == -1) ? 0 : level * side * side;
+
+	for (int y = 0; y < side; ++y) {
 
 		// 必ず、両端サイズ分は透過処理を行う
 		transparentPixel(0, cellSize, y * cellSize, (y + 1) * cellSize); // 左端
-		transparentPixel((imageSide - cellSize) * BYTE_PER_PIXEL, imageSide * BYTE_PER_PIXEL, y * cellSize, (y + 1) * cellSize); // 右端
+		transparentPixel(imageSide - cellSize, imageSide, y * cellSize, (y + 1) * cellSize); // 右端
 
 		for (int x = 0; x < side; ++x) {
-			
-			auto& player = allPlayer.at(y * side + x);
+
+			auto& player = allPlayer.at(zPos + y * side + x);
 
 			if (player->getStrategy()->isAll(Action::ACTION_C)) {
 				// allC 戦略
@@ -291,7 +307,6 @@ void ImageOutput::writePlayer(
 		}
 	}
 }
-
 
 
 } /* namespace output */

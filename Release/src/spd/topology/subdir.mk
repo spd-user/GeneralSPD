@@ -4,33 +4,12 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
-../src/spd/topology/Hexagon.cpp \
-../src/spd/topology/Lattice.cpp \
-../src/spd/topology/Moore.cpp \
-../src/spd/topology/Network.cpp \
-../src/spd/topology/Neumann.cpp \
-../src/spd/topology/Random.cpp \
-../src/spd/topology/Regular.cpp \
 ../src/spd/topology/Topology.cpp 
 
 OBJS += \
-./src/spd/topology/Hexagon.o \
-./src/spd/topology/Lattice.o \
-./src/spd/topology/Moore.o \
-./src/spd/topology/Network.o \
-./src/spd/topology/Neumann.o \
-./src/spd/topology/Random.o \
-./src/spd/topology/Regular.o \
 ./src/spd/topology/Topology.o 
 
 CPP_DEPS += \
-./src/spd/topology/Hexagon.d \
-./src/spd/topology/Lattice.d \
-./src/spd/topology/Moore.d \
-./src/spd/topology/Network.d \
-./src/spd/topology/Neumann.d \
-./src/spd/topology/Random.d \
-./src/spd/topology/Regular.d \
 ./src/spd/topology/Topology.d 
 
 

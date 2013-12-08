@@ -139,16 +139,23 @@ private:
 	 */
 	int cellSize;
 
-	// 画像の生成
-	void createImageFile(const spd::topology::Lattice& lattice, spd::core::Space& space, bool isHexagonLattice);
+	/**
+	 * 画像の生成
+	 * @param space 空間
+	 * @param side 一辺
+	 * @param level 階層(-1 は階層がない、二次元格子)
+	 * @param isHexagonLattice 六角格子かどうか
+	 */
+	void create2DImageFile(spd::core::Space& space, int side,
+			int level, bool isHexagonLattice);
 
 	// pngファイルの作成
-	void outputPngFile(spd::core::Space& space, int sizeX, int sizeY);
+	void outputPngFile(spd::core::Space& space, int sizeX, int sizeY, int level);
 
 	// 盤面状態のイメージ化
 	void writeSpace(
-			const spd::topology::Lattice& lattice,
 			spd::core::Space& space,
+			int side, int level,
 			bool isHexagonLattice);
 
 	// 1プレイヤ分を指定した色で書く

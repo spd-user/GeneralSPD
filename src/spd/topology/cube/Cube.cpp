@@ -44,7 +44,9 @@ void Cube::connectPlayers(const spd::core::AllPlayer& players,
 	int playerNum = players.size();
 
 	// 確認
-	int side = static_cast<int>(std::cbrt(playerNum));
+	auto side = std::cbrt(playerNum);
+	side = (2.0 * side + playerNum / side / side) / 3.0; // ニュートン法の漸化式
+
 	if (side * side * side != playerNum) {
 		std::string errMsg = "";
 		errMsg += "Please input a number that is able to compose a cube.";

@@ -58,7 +58,10 @@ void ConsoleOutput::output(const spd::topology::Lattice& lattice, spd::core::Spa
 void ConsoleOutput::output(const spd::topology::Cube& cube, spd::core::Space& space) {
 
 	auto& allPlayers = space.getPlayers();
-	auto side = std::cbrt(allPlayers.size());
+	int playerNum = allPlayers.size();
+	auto side = std::cbrt(playerNum);
+	side = (2.0 * side + playerNum / side / side) / 3.0; // ニュートン法の漸化式
+
 
 	std::cout << "step:" << space.getStep() << "\n";
 
