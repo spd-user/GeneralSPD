@@ -48,10 +48,19 @@ public:
 
 private:
 
-	// 接頭辞
-	const std::string PREFIX = "/dump/spd_dump_";
+	/**
+	 * 出力ディレクトリ名
+	 */
+	const std::string DIR = "/dump";
 
-	// 接尾辞
+	/**
+	 * ファイルの接頭辞
+	 */
+	const std::string PREFIX = "/spd_dump_";
+
+	/**
+	 * ファイルの接尾辞
+	 */
 	const std::string SUFFIX = ".mpac";
 
 	// マニピュレータの設定

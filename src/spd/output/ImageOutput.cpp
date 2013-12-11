@@ -18,6 +18,7 @@
 #include "../core/Player.hpp"
 #include "../core/Strategy.hpp"
 #include "../param/Parameter.hpp"
+#include "../param/InitParameter.hpp"
 #include "../param/OutputParameter.hpp"
 
 #include "FileSystemOperation.hpp"
@@ -84,12 +85,23 @@ void ImageOutput::output(const spd::topology::Network& topology, spd::core::Spac
  */
 void ImageOutput::init(spd::core::Space& space, spd::param::Parameter& param) {
 
-	std::string filename (param.getOutputParameter()->getDirectory() + PREFIX + SUFFIX);
+	int sim = param.getInitialParameter()->getSimCount();
 
-	// ディレクトリの作成
-	FileSystemOperation fso;
-	if (!fso.createDirectory(filename) ) {
-		throw std::runtime_error("Could not create a directory for Image Output.");
+	// 総シミュレーション数の桁数
+	int digit = (sim - 1) / 10 + 1;
+
+	for (int i = 0; i < sim; ++i) {
+		std::ostringstream simCount;
+		setZeroPadding(simCount, digit, i);
+
+		std::string filename (param.getOutputParameter()->getDirectory() +
+				DIR + "/sim" + simCount.str() +  PREFIX + SUFFIX);
+
+		// ディレクトリの作成
+		FileSystemOperation fso;
+		if (!fso.createDirectory(filename) ) {
+			throw std::runtime_error("Could not create a directory for Image Output.");
+		}
 	}
 
 	// セルサイズの設定
@@ -148,8 +160,13 @@ void ImageOutput::outputPngFile(
 
 	auto& param = space.getParameter();
 
-	//(ディレクトリ)/image/spd_image_(3桁のsim)_(5桁のステップ数)-(3桁の階層).png
-	std::ostringstream simCount, step, levelCount;
+	// 総シミュレーションの桁数
+	int simDigit = (param.getInitialParameter()->getSimCount() - 1) / 10 + 1;
+
+
+	//(ディレクトリ)/image/sim(総数による桁数のsim)/spd_image_(3桁のsim)_(5桁のステップ数)[-(3桁の階層)].png
+	std::ostringstream simDir, simCount, step, levelCount;
+	setZeroPadding(simDir, simDigit, space.getSimCount());
 
 	setZeroPadding(simCount, 3, space.getSimCount());
 
@@ -160,9 +177,8 @@ void ImageOutput::outputPngFile(
 		setZeroPadding(levelCount, 4, level);
 		levelString = "-" + levelCount.str();
 	}
-
 	std::string filename (param.getOutputParameter()->getDirectory() +
-			PREFIX + simCount.str() + "_" + step.str() + levelString + SUFFIX);
+			DIR + "/sim" + simDir.str() +  PREFIX + simCount.str() + "_" + step.str() + levelString + SUFFIX);
 
 	// ファイルを開く
 	FILE *fp;

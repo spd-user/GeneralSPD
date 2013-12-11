@@ -21,6 +21,7 @@
 #include "../core/Converter.hpp"
 
 #include "../param/Parameter.hpp"
+#include "../param/InitParameter.hpp"
 #include "../param/NeighborhoodParameter.hpp"
 #include "../param/RandomParameter.hpp"
 #include "../param/RuntimeParameter.hpp"
@@ -44,14 +45,19 @@ std::pair<std::string, bool> GEXFOutput::output(spd::core::Space& space) {
 	auto& param = space.getParameter();
 	auto& runtimeParam = param.getRuntimeParameter();
 
-	//(ディレクトリ)/gexf/spd_gexf_(3桁のsim)_(5桁のステップ数).gexf
-	std::ostringstream simCount, step;
+	// 総シミュレーションの桁数
+	int simDigit = (param.getInitialParameter()->getSimCount() - 1) / 10 + 1;
+
+	//(ディレクトリ)/gexf/sim(桁数を調整したsim)/spd_gexf_(3桁のsim)_(5桁のステップ数).gexf
+	std::ostringstream simDir, simCount, step;
+	setZeroPadding(simDir, simDigit, space.getSimCount());
+
 	setZeroPadding(simCount, 3, space.getSimCount());
 
 	setZeroPadding(step, 5, space.getStep());
 
 	std::string filename (param.getOutputParameter()->getDirectory() +
-			PREFIX + simCount.str() + "_" + step.str() + SUFFIX);
+			DIR + "/sim" + simDir.str() + PREFIX + simCount.str() + "_" + step.str() + SUFFIX);
 
 	std::ofstream outputfile (filename);
 
@@ -173,15 +179,28 @@ std::pair<std::string, bool> GEXFOutput::output(spd::core::Space& space) {
  */
 void GEXFOutput::init(spd::core::Space& space, spd::param::Parameter& param) {
 
-	std::string filename (param.getOutputParameter()->getDirectory() + PREFIX + "config.conf");
+	int sim = param.getInitialParameter()->getSimCount();
 
-	// ディレクトリの作成
-	FileSystemOperation fso;
-	if (!fso.createDirectory(filename) ) {
-		throw std::runtime_error("Could not create a directory for Gexf Output.");
+	// 総シミュレーションの桁数
+	int digit = (sim - 1) / 10 + 1;
+
+	for (int i = 0; i < sim; ++i) {
+		std::ostringstream simCount;
+		setZeroPadding(simCount, digit, i);
+
+		std::string filename (param.getOutputParameter()->getDirectory() +
+				DIR + "/sim" + simCount.str() + PREFIX + SUFFIX);
+
+		// ディレクトリの作成
+		FileSystemOperation fso;
+		if (!fso.createDirectory(filename) ) {
+			throw std::runtime_error("Could not create a directory for Gexf Output.");
+		}
 	}
 
-	std::ofstream confFile (filename);
+
+	std::ofstream confFile (param.getOutputParameter()->getDirectory() +
+			DIR + PREFIX + "config.conf");
 	if (confFile.fail()) {
 		throw std::runtime_error("Could not file open for gexf config file.");
 	}

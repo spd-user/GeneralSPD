@@ -49,10 +49,14 @@ public:
 
 private:
 
-	// 接頭辞
+	/**
+	 * 接頭辞
+	 */
 	const std::string PREFIX = "/number/spd_num_";
 
-	// 接尾辞
+	/**
+	 * 接尾辞
+	 */
 	const std::string SUFFIX = ".txt";
 
 	// 出力ファイル

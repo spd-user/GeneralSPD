@@ -116,9 +116,15 @@ private:
 
 
 	/*
-	 * 出力ディレクトリからの接頭辞
+	 * 出力ディレクトリ名
 	 */
-	const std::string PREFIX = "/image/spd_image_";
+	const std::string DIR = "/image";
+
+	/**
+	 * ファイルの接頭辞
+	 */
+	const std::string PREFIX = "/spd_image_";
+
 	/*
 	 * ファイルの接尾辞
 	 */

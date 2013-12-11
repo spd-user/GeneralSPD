@@ -49,9 +49,19 @@ public:
 
 private:
 
-	// 接頭辞
-	const std::string PREFIX = "/gexf/spd_gexf_";
-	// 接尾辞
+	/**
+	 * 出力ディレクトリ
+	 */
+	const std::string DIR  = "/gexf";
+
+	/**
+	 * ファイルの接頭辞
+	 */
+	const std::string PREFIX = "/spd_gexf_";
+
+	/**
+	 * ファイルの接尾辞
+	 */
 	const std::string SUFFIX = ".gexf";
 
 	// 属性idと、名前、種類の出力

@@ -11,6 +11,7 @@
 #include <fstream>
 #include "../core/Space.hpp"
 #include "../param/Parameter.hpp"
+#include "../param/InitParameter.hpp"
 #include "../param/OutputParameter.hpp"
 
 #include "FileSystemOperation.hpp"
@@ -26,13 +27,18 @@ namespace output {
 */
 std::pair<std::string, bool> BinaryOutput::output(spd::core::Space& space) {
 
-	//(ディレクトリ)/dump/spd_dump_(3桁のsim)_(5桁のステップ数).mpac
-	std::ostringstream simCount, step;
+
+	// 総シミュレーションの桁数
+	int simDigit = (space.getParameter().getInitialParameter()->getSimCount() - 1) / 10 + 1;
+
+	//(ディレクトリ)/dump/sim(桁数を調整したsim)/spd_dump_(3桁のsim)_(5桁のステップ数).mpac
+	std::ostringstream simDir, simCount, step;
+	setZeroPadding(simDir, simDigit, space.getSimCount());
 	setZeroPadding(simCount, 3, space.getSimCount());
 	setZeroPadding(step, 5, space.getStep());
 
 	std::string filename (space.getParameter().getOutputParameter()->getDirectory() +
-			PREFIX + simCount.str() + "_" + step.str() + SUFFIX);
+			DIR + "/sim" + simDir.str() + PREFIX + simCount.str() + "_" + step.str() + SUFFIX);
 
 	std::ofstream outputfile (filename);
 
@@ -54,15 +60,28 @@ std::pair<std::string, bool> BinaryOutput::output(spd::core::Space& space) {
 */
 void BinaryOutput::init(spd::core::Space& space, spd::param::Parameter& param) {
 
-	std::string filename (param.getOutputParameter()->getDirectory() + PREFIX + "config.conf");
+	int sim = param.getInitialParameter()->getSimCount();
 
-	// ディレクトリの作成
-	FileSystemOperation fso;
-	if (!fso.createDirectory(filename) ) {
-		throw std::runtime_error("Could not create a directory for Gexf Output.");
+	// 総シミュレーション数の桁数
+	int digit = (sim - 1) / 10 + 1;
+
+	for (int i = 0; i < sim; ++i) {
+		std::ostringstream simCount;
+		setZeroPadding(simCount, digit, i);
+
+		std::string filename (param.getOutputParameter()->getDirectory() +
+				DIR + "/sim" + simCount.str() +  PREFIX + SUFFIX);
+
+		// ディレクトリの作成
+		FileSystemOperation fso;
+		if (!fso.createDirectory(filename) ) {
+			throw std::runtime_error("Could not create a directory for Gexf Output.");
+		}
 	}
 
-	std::ofstream confFile (filename);
+
+	std::ofstream confFile (param.getOutputParameter()->getDirectory() +
+			DIR + PREFIX + "config.conf");
 	if (confFile.fail()) {
 		throw std::runtime_error("Could not file open for dump config file.");
 	}
