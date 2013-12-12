@@ -140,6 +140,12 @@ void ParseParam::parse(int argc, char* argv[], Parameter& param) const {
 		// 状態を読み込まないときのみ
 		if (!vm.count("state")) {
 
+			if (vm.count("config")) {
+				std::string filename = vm["config"].as<std::string>();
+				std::ifstream ifs(filename);
+				po::store(po::parse_config_file(ifs, generalOpt), vm);
+			}
+
 			// 戦略の読み込み
 			if (!vm.count("strategy")) {
 				throw po::required_option("strategy");
