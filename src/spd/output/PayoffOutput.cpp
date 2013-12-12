@@ -53,14 +53,16 @@ std::pair<std::string, bool> PayoffOutput::output(spd::core::Space& space) {
 
 	// 出力
 	*(this->outputFile.get()) << std::setw(5) << std::setfill('0') << space.getStep() << ":<" <<
-			strategyList.front().first->getShortStrategy() << "-C:" << countList.front() << ">,<" <<
-			strategyList.front().first->getShortStrategy() << "-D:" << countList.at(1) << ">";
+			strategyList.front().first->getShortStrategy() << "-C:" <<
+			std::fixed << countList.front() << ">,<" <<
+			strategyList.front().first->getShortStrategy() << "-D:" <<
+			std::fixed << countList.at(1) << ">";
 
 	for (int i = 1; i < strategyListSize; ++i) {
 		*(this->outputFile.get()) << ",<" <<
-				strategyList.at(i).first->getShortStrategy() << "-C:" <<
+				strategyList.at(i).first->getShortStrategy() << "-C:" << std::fixed <<
 				countList.at(i * 2 +  static_cast<int>(Action::ACTION_C)) << ">,<" <<
-				strategyList.at(i).first->getShortStrategy() << "-D:" <<
+				strategyList.at(i).first->getShortStrategy() << "-D:" << std::fixed <<
 				countList.at(i * 2 +  static_cast<int>(Action::ACTION_D)) << ">";
 	}
 	*(this->outputFile.get()) << std::endl;
