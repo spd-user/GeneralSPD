@@ -31,7 +31,7 @@ public:
 
 
 	std::string toString() const {
-		return "repair";
+		return "selfRepair";
 	}
 };
 
