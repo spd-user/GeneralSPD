@@ -67,7 +67,6 @@ std::to_string
 value が string だと、数えるのは、無理だろうが、、その他はできる。
 てか、boolean ってのをわすれてたね。
 
-* output option の説明文 (help 文) の対応
 
 //* そのとき、maker, gexfOutput をチェック
 
@@ -76,21 +75,17 @@ value が string だと、数えるのは、無理だろうが、、その他は
 
 //* Neumann の作成
 //* Hexagon の作成
-//ここまで作った。まだ未確認(たぶんOK)
 
-* Network の作成
+//* Network の作成
 * HauertRule の作成(名前をかんがえる、確率的遷移)
 
 * const とか、doxygen のチェック
 
 * auto hoge = space.getPlayer()
 　と
-  auto& hoge = space.getPlayer では 後者のほうがかなりはやい
+  auto& hoge = space.getPlayer では 後者のほうがはやい
   
 //* 対戦のとき、両方をいっぺんにけいさんする??
 // あんまり変わらないのでやめる。ソースがきたなかったし。
 
  
-
-//* OpenGL での高速化???
-// (thread したからいいか)

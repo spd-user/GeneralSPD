@@ -28,6 +28,7 @@ src/spd/topology/lattice \
 src/spd/topology/cube \
 src/spd/topology \
 src/spd/rule/strategy \
+src/spd/rule/selfRepair \
 src/spd/rule/property \
 src/spd/rule/game \
 src/spd/rule/action \
