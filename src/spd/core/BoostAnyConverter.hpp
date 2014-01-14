@@ -26,18 +26,6 @@ namespace core {
 namespace converter {
 
 /**
- * 型名、型名の文字列と string と boost::any の相互変換の組み合わせ
- *
- * @par
- * 1つ目は、typeidの name 関数要素。
- * 2つ目は、それを表す文字列　gexf などで使う独自の型名。
- * 3つ目は、文字列を boost::any にするための変換式。
- * 4つ目は、boost::any を文字列にする変換式。
- */
-typedef std::tuple<std::string, std::string, std::function<boost::any(std::string)>,
-		std::function<std::string(boost::any)>> AnyTypeTuple;
-
-/**
  * 組み合わせ一覧
  */
 const std::vector<std::shared_ptr<spd::core::converter::BoostAnyMapping>> CONVERTER_MAP =
