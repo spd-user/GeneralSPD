@@ -8,6 +8,8 @@
 #ifndef BOOSTANYCONVERTER_HPP_
 #define BOOSTANYCONVERTER_HPP_
 
+
+#include <memory>
 #include <typeinfo>
 #include <tuple>
 #include <string>
@@ -16,6 +18,8 @@
 #include <stdexcept>
 
 #include <boost/any.hpp>
+
+#include "boostAnyConverter/allAnyConverter.hpp"
 
 namespace spd {
 namespace core {
@@ -36,23 +40,12 @@ typedef std::tuple<std::string, std::string, std::function<boost::any(std::strin
 /**
  * 組み合わせ一覧
  */
-const std::vector<AnyTypeTuple> CONVERTER_MAP =
+const std::vector<std::shared_ptr<spd::core::converter::BoostAnyMapping>> CONVERTER_MAP =
 {
-		std::make_tuple(typeid(int).name(), 		"integer",
-				[](std::string val) { return std::stoi(val);},
-				[](boost::any val) { return std::to_string( boost::any_cast<int>(val)); } ),
-
-		std::make_tuple(typeid(double).name(), 	"double",
-				[](std::string val) { return std::stod(val); },
-				[](boost::any val) { return std::to_string(boost::any_cast<double>(val)); }),
-
-		std::make_tuple(typeid(bool).name(), 		"boolean",
-				[](std::string val) { return (val == "true")? true : false; },
-				[](boost::any val) { return boost::any_cast<bool>(val) ? "true" : "false" ;}),
-
-		std::make_tuple(typeid(std::string).name(), "string",
-				[](std::string val) { return val; },
-				[](boost::any val) { return boost::any_cast<std::string>(val); })
+		std::shared_ptr<spd::core::converter::BoostAnyMapping>(new spd::core::converter::IntAny()),
+		std::shared_ptr<spd::core::converter::BoostAnyMapping>(new spd::core::converter::DoubleAny()),
+		std::shared_ptr<spd::core::converter::BoostAnyMapping>(new spd::core::converter::BoolAny()),
+		std::shared_ptr<spd::core::converter::BoostAnyMapping>(new spd::core::converter::StringAny())
 };
 
 /**
@@ -64,14 +57,16 @@ const std::vector<AnyTypeTuple> CONVERTER_MAP =
 inline std::string getTypeName(const std::type_info& type) {
 	std::string typeName (type.name());
 
-	for (const AnyTypeTuple tuple : CONVERTER_MAP) {
-		if (std::get<0>(tuple) == typeName) {
-			return std::get<1>(tuple);
+	for (auto& anyConverter : CONVERTER_MAP) {
+		if (anyConverter->getTypeName() == typeName) {
+			return anyConverter->getStringName();
 		}
 	}
-
 	return "object";
 };
+
+
+
 
 /**
  * 独自の型名から文字列を対応する boost::any に変換する
@@ -81,11 +76,13 @@ inline std::string getTypeName(const std::type_info& type) {
  * @throw invalid_argument 独自型名から変換できない場合
  */
 inline boost::any stringToBoostAny(const std::string& typeName, const std::string& val) {
-	for (const AnyTypeTuple tuple : CONVERTER_MAP) {
-		if (std::get<1>(tuple) == typeName) {
-			return std::get<2>(tuple)(val);
+
+	for (auto& anyConverter : CONVERTER_MAP) {
+		if (anyConverter->getStringName() == typeName) {
+			return anyConverter->stringToAny(val);
 		}
 	}
+
 	throw std::invalid_argument("Could not convert to a boost::any.");
 }
 
@@ -97,9 +94,9 @@ inline boost::any stringToBoostAny(const std::string& typeName, const std::strin
 inline std::string booostAnyToString(const boost::any& val) {
 	std::string typeName (val.type().name());
 
-	for (const AnyTypeTuple tuple : CONVERTER_MAP) {
-		if (std::get<0>(tuple) == typeName) {
-			return std::get<3>(tuple)(val);
+	for (auto& anyConverter : CONVERTER_MAP) {
+		if (anyConverter->getStringName() == typeName) {
+			return anyConverter->anyToString(val);
 		}
 	}
 
@@ -109,6 +106,5 @@ inline std::string booostAnyToString(const boost::any& val) {
 }
 }
 }
-
 
 #endif /* BOOSTANYCONVERTER_HPP_ */

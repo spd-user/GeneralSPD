@@ -61,7 +61,7 @@ all: General_SPD
 General_SPD: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	g++  -o "General_SPD" $(OBJS) $(USER_OBJS) $(LIBS)
+	g++ -std=c++0x -o "General_SPD" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
