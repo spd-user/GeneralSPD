@@ -56,6 +56,7 @@ public:
 
 	/**
 	 * ルール情報の文字出力
+	 * @return "SimpleActionUpdate"
 	 */
 	std::string toString() const {
 		return "SimpleActionUpdate";

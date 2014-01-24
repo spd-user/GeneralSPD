@@ -58,6 +58,7 @@ public:
 
 	/**
 	 * ルール情報の文字出力
+	 * @return "Store"
 	 */
 	std::string toString() const {
 		return "Store";

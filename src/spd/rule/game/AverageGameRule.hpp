@@ -48,6 +48,7 @@ public:
 
 	/**
 	 * ルール情報の文字出力
+	 * @return "AverageGame"
 	 */
 	std::string toString() const {
 		return "AverageGame";

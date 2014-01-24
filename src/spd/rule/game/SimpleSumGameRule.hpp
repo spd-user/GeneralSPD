@@ -51,6 +51,7 @@ public:
 
 	/**
 	 * ルール情報の文字出力
+	 * @return "SimpleSumGame";
 	 */
 	std::string toString() const {
 		return "SimpleSumGame";
