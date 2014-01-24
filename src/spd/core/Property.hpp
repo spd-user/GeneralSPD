@@ -98,7 +98,7 @@ public:
 	 * 型の名前を文字列にする
 	 *
 	 * @par
-	 * BoostAnyConverter の一覧にしたがう
+	 * BoostAnyConverter の一覧に従う
 	 * @return 型の名前
 	 */
 	std::string valueType() const {
@@ -114,7 +114,7 @@ public:
 
 		std::string result;
 		try {
-			result =  converter::booostAnyToString(value);
+			result =  converter::boostAnyToString(value);
 		} catch (std::exception& e) {
 			throw std::runtime_error("Could not express a value as a string");
 		}

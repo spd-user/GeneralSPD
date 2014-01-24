@@ -79,7 +79,7 @@ inline boost::any stringToBoostAny(const std::string& typeName, const std::strin
  * boost の値を文字列に変換する
  * @param[in] val boost::any の値
  */
-inline std::string booostAnyToString(const boost::any& val) {
+inline std::string boostAnyToString(const boost::any& val) {
 	std::string typeName (val.type().name());
 
 	for (auto& anyConverter : CONVERTER_MAP) {
