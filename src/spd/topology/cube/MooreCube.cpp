@@ -20,9 +20,9 @@ namespace cube {
 
 /*
  * 立方体中の指定プレイヤの隣接を設定する
- * @param[in] x プレイヤのx座標
- * @param[in] y プレイヤのy座標
- * @param[in] z プレイヤのz座標
+ * @param[in] x0 プレイヤのx座標
+ * @param[in] y0 プレイヤのy座標
+ * @param[in] z0 プレイヤのz座標
  * @param[in] allPlayers すべてのプレイヤ
  * @param[in] cube 呼び出し元の立体クラス
  */
@@ -44,11 +44,11 @@ void MooreCube::connect(int x0, int y0, int z0,
 	}
 }
 
-/**
+/*
  * 立方体の指定プレイヤの近傍となるプレイヤの取得
- * @param[in] x プレイヤのx座標
- * @param[in] y プレイヤのy座標
- * @param[in] z プレイヤのz座標
+ * @param[in] x0 プレイヤのx座標
+ * @param[in] y0 プレイヤのy座標
+ * @param[in] z0 プレイヤのz座標
  * @param[in] allPlayers すべてのプレイヤ
  * @param[in] radius 近傍半径
  * @param[in, out] result 指定プレイヤの近傍
