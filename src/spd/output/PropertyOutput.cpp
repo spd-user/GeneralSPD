@@ -40,14 +40,15 @@ std::pair<std::string, bool> PropertyOutput::output(spd::core::Space& space) {
 
 		// プロパティ別に数える
 		for (int i = 0, propNum = properties.size(); i < propNum; ++i) {
+			auto& firstProp = properties.at(i);
 			// 出力するもののみ
-			if (properties.at(i).getType() != core::Property::OutputType::NOT) {
+			if (firstProp.getType() != core::Property::OutputType::NOT) {
 
 				// プロパティの情報
 				std::map<std::string, int> propertyMap;
 
 				// 分類するプロパティ
-				if (properties.at(i).getType() == core::Property::OutputType::CLASSIFIABLE) {
+				if (firstProp.getType() == core::Property::OutputType::CLASSIFIABLE) {
 
 					for (auto player : allPlayers) {
 
@@ -60,6 +61,13 @@ std::pair<std::string, bool> PropertyOutput::output(spd::core::Space& space) {
 							propertyMap[propertyVal] += 1;
 						}
 					}
+				} else if (firstProp.getType() == core::Property::OutputType::SPECIAL) {
+					propertyMap = firstProp.getCountingMethod()->propOutput(allPlayers, i);
+				}
+
+				// 表示するものが無い場合は飛ばす
+				if (propertyMap.size() <= 0) {
+					continue;
 				}
 
 				auto& outputFile = *(outputFiles.at(outputFileIndex).get());

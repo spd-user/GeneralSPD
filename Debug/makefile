@@ -14,6 +14,7 @@ RM := rm -rf
 -include src/spd/topology/subdir.mk
 -include src/spd/rule/strategy/subdir.mk
 -include src/spd/rule/selfRepair/subdir.mk
+-include src/spd/rule/property/countingRule/subdir.mk
 -include src/spd/rule/property/subdir.mk
 -include src/spd/rule/game/subdir.mk
 -include src/spd/rule/action/subdir.mk

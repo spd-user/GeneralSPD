@@ -45,10 +45,28 @@ GenerateSpdRule::GenerateSpdRule() {
 
 	transform(aveRuleName.begin(), aveRuleName.end(), aveRuleName.begin(), ::tolower);
 
+
+
+	// ルールを設定
+	// 膜チェックを行う、シンプルルール
+	string memRuleName = "MemCheckRule";
+	auto memRule = make_shared<spd::rule::SpdRule>(bestRuleName);
+	memRule->addRuleBeforeOutput(make_shared<spd::rule::SimpleActionRule>());
+	memRule->addRuleBeforeOutput(make_shared<spd::rule::SimpleSumGameRule>());
+	memRule->addRuleBeforeOutput(make_shared<spd::rule::PromoteStateRule>());
+	memRule->addRuleBeforeOutput(make_shared<spd::rule::MembraneDetectRule>());
+
+	memRule->addRuleAfterOutput(make_shared<spd::rule::BestStrategyRule>());
+
+
+	transform(memRuleName.begin(), memRuleName.end(), memRuleName.begin(), ::tolower);
+
+
 	// ルールの追加
 	map<string, shared_ptr<spd::rule::SpdRule>> m {
 		{bestRuleName, bestRule},
-		{aveRuleName, aveRule}
+		{aveRuleName, aveRule},
+		{memRuleName, memRule}
 	};
 
 	this->spdRuleMap = m;

@@ -21,8 +21,9 @@
 // 戦略ルール
 #include "strategy/BestStrategyRule.hpp"
 
-
-// TODO プロパティのテスト
+// プロパティ
+#include "property/MembraneDetectRule.hpp"
+// TODO テストルール
 #include "property/PropertyTest.hpp"
 
 #endif /* ALLRULES_H_ */

@@ -17,6 +17,8 @@ namespace output {
 
 /**
 * バイナリシリアライズを行うクラス
+*
+* @note プロパティをしようしたプレイヤについては未確認です
 */
 class BinaryOutput : public Output {
 public:

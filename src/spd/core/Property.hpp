@@ -8,12 +8,14 @@
 #ifndef PROPERTY_H_
 #define PROPERTY_H_
 
+#include <memory>
 #include <iostream>
 #include <string>
 #include <stdexcept>
 #include <boost/any.hpp>
 
 #include "BoostAnyConverter.hpp"
+#include "PropertyCounting.hpp"
 
 namespace spd {
 namespace core {
@@ -31,6 +33,7 @@ public:
 	enum class OutputType { // 種類が2桁を越えるようになると、gexfOutput とかでエラーが起こる
 		NOT, /**< 出力しない */
 		CLASSIFIABLE, /**< それぞれの値で分類し、それプレイヤ全体での数を求める */
+		SPECIAL, /**< 特別な数え上げを行う */
 	};
 
 	/**
@@ -39,7 +42,8 @@ public:
 	 * @param[in] val 値
 	 * @param[in] outputType 出力のタイプ
 	 */
-	Property(std::string name, boost::any val, OutputType outputType) : name(name), value(val), type(outputType) {}
+	Property(std::string name, boost::any val, OutputType outputType, const std::shared_ptr<PropertyCounting>& countingMethod = nullptr) :
+		name(name), value(val), type(outputType), counting(countingMethod) {}
 
 	/**
 	 * プロパティの名前を取得
@@ -55,6 +59,22 @@ public:
 	 */
 	OutputType getType() const {
 		return type;
+	}
+
+	/**
+	 * 数え上げ方法を設定
+	 * @param cm 設定する数え上げ方法
+	 */
+	void setCountingMethod(std::shared_ptr<PropertyCounting> cm) {
+		counting = cm;
+	}
+
+	/**
+	 * 数え上げ方法を取得
+	 * @return 数え上げ方法
+	 */
+	std::shared_ptr<PropertyCounting> getCountingMethod() const {
+		return counting;
 	}
 
 	/**
@@ -131,6 +151,9 @@ private:
 
 	// 出力情報
 	OutputType type;
+
+	// 数え上げ方法
+	std::shared_ptr<PropertyCounting> counting;
 };
 
 } /* namespace core */

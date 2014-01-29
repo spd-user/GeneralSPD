@@ -18,6 +18,8 @@ namespace output {
 
 /**
  * 盤面のGEXF v1.2 の出力を行うクラス
+ *
+ * @note プロパティを扱うルールへの対応は未確認
  */
 class GEXFOutput : public Output {
 public:
