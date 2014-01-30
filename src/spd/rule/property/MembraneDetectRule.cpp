@@ -188,7 +188,7 @@ void MembraneDetectRule::grouping(const std::shared_ptr<Player> player,
 
 			if (playerStrategyId == opponent->getStrategy()->getId()) {
 				// same strategy
-				if (player->getAction() == opponent->getAction()) {
+				if (playerAction == opponent->getAction()) {
 					// same action
 					ss = true;
 				} else {
@@ -223,7 +223,9 @@ void MembraneDetectRule::grouping(const std::shared_ptr<Player> player,
 		group = 0;
 	}
 
+	// 現在と未来を設定
 	player->getProperty(PROP_NAMES[0]).setValue(group);
+	player->getProperty(PROP_NAMES[1]).setValue(group);
 }
 
 /**
@@ -338,12 +340,6 @@ void MembraneDetectRule::groupOneTwoBehavior(const std::shared_ptr<Player> playe
 	// 移動ポイント
 	int minMove = INT_MAX;
 
-	// 最低限次もキープ
-	player->getProperty(PROP_NAMES[1]).setValue(thisGroup);
-	player->getProperty(PROP_NAMES[3]).setValue(
-			player->getProperty(PROP_NAMES[2]).getValueAs<int>());
-
-
 	// 自分は考えない
 	for (int r = 1, rMax = neighbors->size(); r < rMax; ++r) {
 		// 同じ近傍距離のプレイヤ
@@ -387,14 +383,12 @@ void MembraneDetectRule::groupOneTwoBehavior(const std::shared_ptr<Player> playe
  */
 bool MembraneDetectRule::changesStatus(const std::shared_ptr<Player> player) {
 
-
-
 	if (player->getProperty(PROP_NAMES[0]).getValueAs<int>() ==
 			player->getProperty(PROP_NAMES[1]).getValueAs<int>()) {
 
 		return false;
 	}
-	// コピー
+	// 未来を現在へコピーする
 	// group id
 	player->getProperty(PROP_NAMES[0]).setValue(
 			player->getProperty(PROP_NAMES[1]).getValueAs<int>());
