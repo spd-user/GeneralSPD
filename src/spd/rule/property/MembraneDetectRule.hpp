@@ -85,9 +85,11 @@ private:
 	 * 3 -> 同戦略"異"行動 + "異"戦略同行動 + [同戦略同行動 | "異"戦略"異"行動] と接しているプレイヤ
 	 * @param player プレイヤ
 	 * @param type 考える膜のタイプ
+	 * @param filter 膜になり得るかどうかのフィルタ
 	 */
 	void grouping(const std::shared_ptr<Player> player,
-			NeighborhoodType type);
+			NeighborhoodType type,
+			std::vector<bool>& filter);
 
 	/**
 	 * 膜判定が広がる
@@ -134,6 +136,9 @@ private:
 	 */
 	void groupOneTwoBehavior(const std::shared_ptr<Player> player,
 			Neighbors& neighbors);
+
+
+	std::vector<bool> filtering(const spd::param::Parameter& param);
 
 
 };

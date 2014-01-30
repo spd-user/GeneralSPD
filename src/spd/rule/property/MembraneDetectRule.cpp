@@ -74,8 +74,10 @@ void MembraneDetectRule::runRule(
 			int from = breadth * i;
 			int to = (i + 1 < core) ? breadth * (i + 1) : playerNum;
 
+			auto filter = filtering(param);
+
 			for (int id = from; id < to; ++id) {
-				grouping(allPlayers[id], neiType);
+				grouping(allPlayers[id], neiType, filter);
 			}
 		}
 		);
@@ -146,14 +148,85 @@ void MembraneDetectRule::runRule(
 	for (std::thread& t : thr) {
 		t.join();
 	}
+}
 
+std::vector<bool> MembraneDetectRule::filtering(const spd::param::Parameter& param){
+
+	auto strategies = param.getStrategyList();
+	// それが膜になり得るかどうかのフィルタ
+	std::vector<bool> filter(strategies.size() * 2, false);
+
+	// それが存在するかどうかの可能性
+	std::vector<bool> potential(strategies.size() * 2, false);
+	for (int i = 0, size = strategies.size(); i < size; ++i) {
+		std::string shortStrategy = (strategies[i].first)->getShortStrategy();
+
+		// C が含まれている
+		if (shortStrategy.find("C") != std::string::npos) {
+			potential[2 * i] = true;
+		}
+
+		// D が含まれている
+		if (shortStrategy.find("D") != std::string::npos) {
+			potential[2 * i + 1] = true;
+		}
+	}
+
+	int probabilityC = 0;
+	int probabilityD = 0;
+
+
+	for (int i = 0, size = strategies.size(); i < size; ++i) {
+		// C, D 両方あるか
+		if (potential[2 * i] && potential[2 * i + 1]) {
+			filter[2 * i] = true;
+			filter[2 * i + 1] = true;
+		}
+		// どのぐらい、それぞれがそんざいするか
+		if (potential[2 * i]) {
+			probabilityC++;
+		}
+		if (potential[2 * i + 1]) {
+			probabilityD++;
+		}
+	}
+
+	for (int i = 0, size = strategies.size(); i < size; ++i) {
+
+		// 他にCがいないなら、その戦略のCは膜にならない
+		if (probabilityC < 2) {
+			filter[2 * i] = false;
+		}
+
+		if (probabilityD < 2) {
+			filter[2 * i + 1] = false;
+		}
+	}
+
+	return filter;
 }
 
 /*
  * 初期のグループ分け
  */
 void MembraneDetectRule::grouping(const std::shared_ptr<Player> player,
-			NeighborhoodType type) {
+			NeighborhoodType type,
+			std::vector<bool>& filter) {
+
+	auto playerStrategyId = player->getStrategy()->getId();
+	auto playerAction = player->getAction();
+
+	// フィルタリング
+	int actionInt = 0;
+	if (spd::core::converter::actionToChar(playerAction) == 'D') {
+		actionInt = 1;
+	}
+	if (!(filter.at(2 * playerStrategyId + actionInt))) {
+		player->getProperty(PROP_NAMES[0]).setValue(-2);
+		player->getProperty(PROP_NAMES[1]).setValue(-2);
+		return;
+	}
+
 
 	auto& neighbors = player->getNeighbors(type);
 
@@ -170,8 +243,6 @@ void MembraneDetectRule::grouping(const std::shared_ptr<Player> player,
 	bool dd = false;
 
 
-	auto playerStrategyId = player->getStrategy()->getId();
-	auto playerAction = player->getAction();
 
 	// 自分は考えない
 	for (int r = 1, rMax = neighbors->size(); r < rMax; ++r) {
@@ -337,6 +408,8 @@ void MembraneDetectRule::groupOneTwoBehavior(const std::shared_ptr<Player> playe
 	// 対のグループ番号
 	auto oppositeGroup = (thisGroup != 1) ? 1 : 2;
 
+	// 次に膜になる
+	bool becomesMembrane = false;
 	// 移動ポイント
 	int minMove = INT_MAX;
 
@@ -360,21 +433,26 @@ void MembraneDetectRule::groupOneTwoBehavior(const std::shared_ptr<Player> playe
 
 				// グループ4の場合は、移動ポイントが必要
 				if ((opponentGroup == 4) && (opponentMovePoint > 0)) {
-					minMove = std::min(minMove, opponentMovePoint - 1);
-
+					// 終わりでよい
 					player->getProperty(PROP_NAMES[1]).setValue(4);
-					player->getProperty(PROP_NAMES[3]).setValue(minMove);
+					player->getProperty(PROP_NAMES[3]).setValue(opponentMovePoint - 1);
+					return;
+
 				} else if (opponentGroup == oppositeGroup) {
 					// 相手側グループの場合、現在のポイントと比較
-
 					minMove = std::min(minMove, player->getProperty(PROP_NAMES[2]).getValueAs<int>());
+					becomesMembrane = true;
 
-					player->getProperty(PROP_NAMES[1]).setValue(4);
-					player->getProperty(PROP_NAMES[3]).setValue(minMove);
 				}
 			}
 		}
 	}
+
+	if (becomesMembrane) {
+		player->getProperty(PROP_NAMES[1]).setValue(4);
+		player->getProperty(PROP_NAMES[3]).setValue(minMove);
+	}
+
 }
 
 
