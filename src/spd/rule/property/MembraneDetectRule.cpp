@@ -148,6 +148,25 @@ void MembraneDetectRule::runRule(
 	for (std::thread& t : thr) {
 		t.join();
 	}
+	// 最終結果を合算
+	for (int i = 0, size = thr.size(); i < size; ++i) {
+		thr[i] = std::thread(
+				[&, i]{
+			bool result = false;
+
+			int from = breadth * i;
+			int to = (i + 1 < core) ? breadth * (i + 1) : playerNum;
+
+			for (int id = from; id < to; ++id) {
+				changesStatus(allPlayers[id]) || result;
+			}
+		}
+		);
+	}
+	for (int i = 0, size = thr.size(); i < size; ++i) {
+		thr[i].join();
+	}
+
 }
 
 std::vector<bool> MembraneDetectRule::filtering(const spd::param::Parameter& param){
@@ -216,18 +235,6 @@ void MembraneDetectRule::grouping(const std::shared_ptr<Player> player,
 	auto playerStrategyId = player->getStrategy()->getId();
 	auto playerAction = player->getAction();
 
-	// フィルタリング
-	int actionInt = 0;
-	if (spd::core::converter::actionToChar(playerAction) == 'D') {
-		actionInt = 1;
-	}
-	if (!(filter.at(2 * playerStrategyId + actionInt))) {
-		player->getProperty(PROP_NAMES[0]).setValue(-2);
-		player->getProperty(PROP_NAMES[1]).setValue(-2);
-		return;
-	}
-
-
 	auto& neighbors = player->getNeighbors(type);
 
 	// same strategy, same action
@@ -292,6 +299,19 @@ void MembraneDetectRule::grouping(const std::shared_ptr<Player> player,
 	} else if (ss && !sd && !ds && !dd) {
 		// 同じ組み合わせのプレイヤとだけ
 		group = 0;
+	}
+
+
+	// フィルタリング
+	int actionInt = 0;
+	if (spd::core::converter::actionToChar(playerAction) == 'D') {
+		actionInt = 1;
+	}
+	// 0-4でなく、膜になり得ないプレイヤは飛ばす
+	if (!(filter.at(2 * playerStrategyId + actionInt)) && (group != -1)) {
+		player->getProperty(PROP_NAMES[0]).setValue(-2);
+		player->getProperty(PROP_NAMES[1]).setValue(-2);
+		return;
 	}
 
 	// 現在と未来を設定
@@ -504,11 +524,12 @@ void MembraneDetectRule::postHandling(const std::shared_ptr<Player> player,
 				throw std::runtime_error("Could not find a neighbor of a player (mem detect rule - zero).");
 			}
 
+			// 同じ戦略で、異なる行動のプレイヤがどうなっているかで判断
 			if ((playerStrategyId == opponent->getStrategy()->getId()) &&
-					(playerAction == opponent->getAction()) &&
+					(playerAction != opponent->getAction()) &&
 					(opponent->getProperty(PROP_NAMES[0]).getValueAs<int>() == -1)) {
 
-				player->getProperty(PROP_NAMES[0]).setValue(-1);
+				player->getProperty(PROP_NAMES[1]).setValue(-1);
 				return;
 			}
 		}
