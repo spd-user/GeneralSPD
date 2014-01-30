@@ -10,6 +10,7 @@
 #include <algorithm>
 #include "GenerateOutput.hpp"
 #include "../output/AllOutput.hpp"
+#include "../output/color/AllColor.hpp"
 
 namespace spd {
 namespace param {
@@ -21,52 +22,63 @@ using namespace std;
  */
 GenerateOutput::GenerateOutput() {
 
+	using namespace spd::output;
+
 	// 出力の作成
 
 	// コンソール
-	shared_ptr<spd::output::Output> console = make_shared<spd::output::ConsoleOutput>();
+	shared_ptr<Output> console = make_shared<ConsoleOutput>();
 	auto consoleName = console->toString();
 	transform(consoleName.begin(), consoleName.end(), consoleName.begin(), ::tolower);
 
 	// プレイヤ数を数える
-	shared_ptr<spd::output::Output> number = make_shared<spd::output::NumberOutput>();
+	shared_ptr<Output> number = make_shared<NumberOutput>();
 	auto numberName = number->toString();
 	transform(numberName.begin(), numberName.end(), numberName.begin(), ::tolower);
 
 	// 利得を合計
-	shared_ptr<spd::output::Output> payoff = make_shared<spd::output::PayoffOutput>();
+	shared_ptr<Output> payoff = make_shared<PayoffOutput>();
 	auto payoffName = payoff->toString();
 	transform(payoffName.begin(), payoffName.end(), payoffName.begin(), ::tolower);
 
-	// Image の出力
-	shared_ptr<spd::output::Output> image = make_shared<spd::output::ImageOutput>();
+	// Image 系統の出力
+	shared_ptr<color::ColorChooser> standard = make_shared<color::StandardColor>();
+	shared_ptr<Output> image = make_shared<ImageOutput>(standard);
 	auto imageName = image->toString();
 	transform(imageName.begin(), imageName.end(), imageName.begin(), ::tolower);
 
+
+	shared_ptr<color::ColorChooser> mem = make_shared<color::MembraneColor>();
+	shared_ptr<Output> memimage = make_shared<ImageOutput>(mem);
+	std::string memImageName = "mImage";
+	transform(memImageName.begin(), memImageName.end(), memImageName.begin(), ::tolower);
+
+
 	// binary の出力
-	shared_ptr<spd::output::Output> binary = make_shared<spd::output::BinaryOutput>();
+	shared_ptr<Output> binary = make_shared<BinaryOutput>();
 	auto binaryName = binary->toString();
 	transform(binaryName.begin(), binaryName.end(), binaryName.begin(), ::tolower);
 
 	// GEXF の出力
-	shared_ptr<spd::output::Output> gexf = make_shared<spd::output::GEXFOutput>();
+	shared_ptr<Output> gexf = make_shared<GEXFOutput>();
 	auto gexfName = gexf->toString();
 	transform(gexfName.begin(), gexfName.end(), gexfName.begin(), ::tolower);
 
 	// Property の出力
-	shared_ptr<spd::output::Output> property = make_shared<spd::output::PropertyOutput>();
+	shared_ptr<Output> property = make_shared<PropertyOutput>();
 	auto propertyName = property->toString();
 	transform(propertyName.begin(), propertyName.end(), propertyName.begin(), ::tolower);
 
 
 
-	map<string, shared_ptr<spd::output::Output>> m {
-		{consoleName, console},
-		{numberName, 	number},
-		{payoffName, 	payoff},
-		{imageName, 	image},
-		{binaryName, 	binary},
-		{gexfName, 	gexf},
+	map<string, shared_ptr<Output>> m {
+		{consoleName, 	console},
+		{numberName, 		number},
+		{payoffName, 		payoff},
+		{imageName, 		image},
+		{memImageName, 	memimage},
+		{binaryName, 		binary},
+		{gexfName, 		gexf},
 		{propertyName, 	property}
 	};
 

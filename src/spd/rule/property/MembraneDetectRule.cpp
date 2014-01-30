@@ -362,6 +362,11 @@ void MembraneDetectRule::groupOneTwoBehavior(const std::shared_ptr<Player> playe
 	// 移動ポイント
 	int minMove = INT_MAX;
 
+	// 最低限次もキープ
+	player->getProperty(PROP_NAMES[1]).setValue(thisGroup);
+	player->getProperty(PROP_NAMES[3]).setValue(
+			player->getProperty(PROP_NAMES[2]).getValueAs<int>());
+
 
 	// 自分は考えない
 	for (int r = 1, rMax = neighbors->size(); r < rMax; ++r) {
@@ -468,7 +473,7 @@ void MembraneDetectRule::postHandling(const std::shared_ptr<Player> player,
  */
 void MembraneDetectRule::initProp(const std::shared_ptr<Player>& player) {
 
-	for (int i = 0; i < PROP_NAMES.size(); ++i) {
+	for (int i = 0, max = PROP_NAMES.size(); i < max; ++i) {
 		try {
 
 			auto propName = PROP_NAMES.at(i);

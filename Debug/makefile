@@ -21,6 +21,7 @@ RM := rm -rf
 -include src/spd/rule/subdir.mk
 -include src/spd/param/parser/subdir.mk
 -include src/spd/param/subdir.mk
+-include src/spd/output/color/subdir.mk
 -include src/spd/output/subdir.mk
 -include src/spd/core/maker/subdir.mk
 -include src/spd/core/subdir.mk

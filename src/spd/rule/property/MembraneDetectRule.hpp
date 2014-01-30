@@ -16,7 +16,6 @@ namespace rule {
 /**
  * 膜の検知ルールを表すクラス
  *
- * @note 設計の都合上、マルチスレッドに対応しません。シングルスレッドで実行されます。
  */
 class MembraneDetectRule : public spd::rule::Rule {
 

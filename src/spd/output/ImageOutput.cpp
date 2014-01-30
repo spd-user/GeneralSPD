@@ -26,7 +26,10 @@
 namespace spd {
 namespace output {
 
-ImageOutput::ImageOutput() : image(nullptr), imageSide(0), cellSize(DEFAULT_CELL_SIZE) {}
+ImageOutput::ImageOutput(std::shared_ptr<color::ColorChooser> c) : image(nullptr), imageSide(0), cellSize(DEFAULT_CELL_SIZE) {
+	color = c;
+	colorName = c->colorTypeNmae();
+}
 
 ImageOutput::~ImageOutput() {
 
@@ -95,7 +98,7 @@ void ImageOutput::init(spd::core::Space& space, spd::param::Parameter& param) {
 		setZeroPadding(simCount, digit, i);
 
 		std::string filename (param.getOutputParameter()->getDirectory() +
-				DIR + "/sim" + simCount.str() +  PREFIX + SUFFIX);
+				DIR + "/" + colorName + "/sim" + simCount.str() +  PREFIX + SUFFIX);
 
 		// ディレクトリの作成
 		FileSystemOperation fso;
@@ -149,7 +152,7 @@ void ImageOutput::create2DImageFile(
 
 	// 盤面のイメージ作成
 	writeSpace(space, side, level, isHexagonLattice);
-	
+
 	// 画像出力
 	outputPngFile(space, sideX, sideY, level);
 }
@@ -178,7 +181,7 @@ void ImageOutput::outputPngFile(
 		levelString = "-" + levelCount.str();
 	}
 	std::string filename (param.getOutputParameter()->getDirectory() +
-			DIR + "/sim" + simDir.str() +  PREFIX + simCount.str() + "_" + step.str() + levelString + SUFFIX);
+			DIR + "/" + colorName + "/sim" + simDir.str() +  PREFIX + simCount.str() + "_" + step.str() + levelString + SUFFIX);
 
 	// ファイルを開く
 	FILE *fp;
@@ -238,9 +241,9 @@ void ImageOutput::writeSpace(
 		spd::core::Space& space,
 		int side, int level,
 		bool isHexagonLattice) {
-	
+
 	auto& allPlayer = space.getPlayers();
-	
+
 
 	// 指定したピクセル範囲を透過処理する
 	auto transparentPixel = [this](int x0, int x1, int y0, int y1){
@@ -276,19 +279,7 @@ void ImageOutput::writeSpace(
 
 			auto& player = allPlayer.at(zPos + y * side + x);
 
-			if (player->getStrategy()->isAll(Action::ACTION_C)) {
-				// allC 戦略
-				color = ALLC_COLOR;
-			} else if (player->getStrategy()->isAll(Action::ACTION_D)) {
-				// allD 戦略
-				color = ALLD_COLOR;
-			} else if (player->getAction() == Action::ACTION_C) {
-				// c
-				color = C_COLOR;
-			} else {
-				// membarane
-				color = D_COLOR;
-			}
+			color = this->color->chooseColor(player, COLOR_TYPE);
 
 			writePlayer(x, y, color, isHexagonLattice);
 		}
@@ -306,7 +297,7 @@ void ImageOutput::writePlayer(
 		// 六角のときは既に偶数のセルサイズにしてある
 		dx = (cellSize / 2) * BYTE_PER_PIXEL;
 	}
-	
+
 	// 1セルを描く
 	for (int y0 = y * cellSize, yMax = y * cellSize + cellSize; y0 < yMax; ++y0) {
 		for (int x0 = x * cellSize * BYTE_PER_PIXEL, xMax = (x * cellSize  + cellSize) * BYTE_PER_PIXEL; x0 < xMax; x0 += BYTE_PER_PIXEL) {

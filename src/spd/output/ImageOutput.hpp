@@ -11,6 +11,7 @@
 #include <png.h>
 
 #include "OutputVisitor.hpp"
+#include "color/ColorChooser.hpp"
 
 namespace spd {
 namespace output {
@@ -30,7 +31,7 @@ public:
 	/**
 	 * コンストラクタ
 	 */
-	ImageOutput();
+	ImageOutput(std::shared_ptr<color::ColorChooser> c);
 
 	/**
 	 * デストラクタ
@@ -92,33 +93,19 @@ private:
 	static const int BYTE_PER_PIXEL = (COLOR_TYPE == PNG_COLOR_TYPE_RGB_ALPHA) ? 4 : 2;
 
 	/**
-	 * RGBAに必要な情報の種類
+	 * 色の選択
 	 */
-	static constexpr int RGBA = 4;
-
-	// 色指定
-	const png_byte BLACK[RGBA] = {0, 0, 0, 0xFF}; /**< 黒色 */
-	const png_byte GRAY[RGBA] = {0x80, 0x80, 0x80, 0xFF}; /**< 灰色 */
-	const png_byte WHITE[RGBA] = {0xFF, 0xFF, 0xFF, 0xFF}; /**< 白色 */
-
-	const png_byte DARK_GRAY[RGBA] = {0xA9, 0xA9, 0xA9, 0xFF}; /**< 濃い灰色 */
-	const png_byte LIGHT_GRAY[RGBA] = {0xD3, 0xD3, 0xD3, 0xFF}; /**< 薄い灰色 */
-
-	const png_byte MAGENTA[RGBA] = {0xFF, 0x00, 0xFF, 0xFF}; /**< マゼンタ */
-	const png_byte GREEN[RGBA] = {0x00, 0x80, 0x00, 0xFF}; /**< 緑 */
-
-
-	// 配色定義
-	const png_byte *ALLD_COLOR = BLACK; /**< All-Dを表す色 */
-	const png_byte *ALLC_COLOR = WHITE; /**< All-Cを表す色 */
-	const png_byte *D_COLOR = (COLOR_TYPE == PNG_COLOR_TYPE_RGB_ALPHA) ? MAGENTA : DARK_GRAY; /**< All-DでないDプレイヤを表す色 */
-	const png_byte *C_COLOR = (COLOR_TYPE == PNG_COLOR_TYPE_RGB_ALPHA) ? GREEN : LIGHT_GRAY; /**< All-CでないCプレイヤを表す色 */
-
+	std::shared_ptr<color::ColorChooser> color;
 
 	/*
 	 * 出力ディレクトリ名
 	 */
 	const std::string DIR = "/image";
+
+	/**
+	 * 色選択名
+	 */
+	std::string colorName;
 
 	/**
 	 * ファイルの接頭辞
