@@ -88,30 +88,6 @@ void MembraneDetectRule::runRule(
 	std::vector<bool> changes(core);
 	do {
 
-		// TODO
-#ifdef DEBUG
-		for (auto& player : allPlayers) {
-			std::cout << "-------------\nid=" << player->getId() << "\n";
-			try {
-				std::cout << spd::core::converter::actionToChar(player->getAction()) <<
-							"-" << spd::core::converter::actionToChar(player->getPreAction()) << ": ";
-			} catch (std::invalid_argument& e) {
-				std::cout << "\n[id: " << player->getId() << "]'s action is undefined.\n";
-			}
-
-			std::cout << player->getStrategy()->getShortStrategy() << "-" <<
-					player->getPreStrategy()->getShortStrategy() << ">\n";
-			for (int i = 0; i < 4; ++i) {
-				std::cout << player->getProperties().at(i).getName() << ":" << player->getProperties().at(i).getValueAs<int>() << "\n";
-			}
-
-
-		}
-		std::cout << std::endl;
-
-
-#endif
-
 		// 調べる(1ステップ)
 		for (int i = 0, size = thr.size(); i < size; ++i) {
 			thr[i] = std::thread(
