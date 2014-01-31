@@ -69,6 +69,7 @@ private:
 	 *
 	 * プロパティが無い、若しくはあっても数え上げが設定されていない場合(先頭プレイヤに限る)
 	 * プロパティを初期化する
+	 * @param player プレイヤ
 	 */
 	void initProp(const std::shared_ptr<Player>& player);
 
@@ -138,7 +139,12 @@ private:
 			Neighbors& neighbors);
 
 
-	std::vector<bool> filtering(const spd::param::Parameter& param);
+	/**
+	 * 現在の状態をみて膜になるのかどうかのフィルタを作る
+	 * @param[in] allPlayers 全てのプレイヤ
+	 * @param[in] param パラメタ
+	 */
+	std::vector<bool> filtering(const AllPlayer& allPlayers, const spd::param::Parameter& param);
 
 
 };

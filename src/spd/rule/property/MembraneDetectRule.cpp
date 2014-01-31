@@ -49,7 +49,7 @@ void MembraneDetectRule::runRule(
 
 	bool notStable;
 
-	// 初めだけ
+	// 初のプレイヤの時だけ
 	if (frontPlayer->getId() != 0) {
 		return;
 	}
@@ -58,6 +58,8 @@ void MembraneDetectRule::runRule(
 	for (auto& player : allPlayers) {
 		initProp(player);
 	}
+
+	auto filter = filtering(allPlayers, param);
 
 	int core = param.getCore();
 
@@ -73,8 +75,6 @@ void MembraneDetectRule::runRule(
 
 			int from = breadth * i;
 			int to = (i + 1 < core) ? breadth * (i + 1) : playerNum;
-
-			auto filter = filtering(param);
 
 			for (int id = from; id < to; ++id) {
 				grouping(allPlayers[id], neiType, filter);
@@ -169,43 +169,59 @@ void MembraneDetectRule::runRule(
 
 }
 
-std::vector<bool> MembraneDetectRule::filtering(const spd::param::Parameter& param){
+std::vector<bool> MembraneDetectRule::filtering(const AllPlayer& allPlayers, const spd::param::Parameter& param){
 
 	auto strategies = param.getStrategyList();
 	// それが膜になり得るかどうかのフィルタ
 	std::vector<bool> filter(strategies.size() * 2, false);
 
-	// それが存在するかどうかの可能性
-	std::vector<bool> potential(strategies.size() * 2, false);
+	// どれぐらいの strategy x action が存在するのか
+	int potential = 0;
+	//存在するかどうかの可能性
+
 	for (int i = 0, size = strategies.size(); i < size; ++i) {
 		std::string shortStrategy = (strategies[i].first)->getShortStrategy();
 
 		// C が含まれている
 		if (shortStrategy.find("C") != std::string::npos) {
-			potential[2 * i] = true;
+			potential++;
 		}
 
 		// D が含まれている
 		if (shortStrategy.find("D") != std::string::npos) {
-			potential[2 * i + 1] = true;
+			potential++;
+		}
+	}
+
+	// 現実にどれぐらいあるのか
+	std::vector<bool> existence(strategies.size() * 2, false);
+	for (auto& p : allPlayers) {
+		// C = 0; D = 1
+		int actionInt = spd::core::converter::actionToChar(p->getAction()) - 'C';
+		if (!(existence[2 * (p->getStrategy()->getId()) + actionInt])) {
+			existence[2 * (p->getStrategy()->getId()) + actionInt] = true;
+			potential--;
+		}
+		// 全パターンでたら抜ける
+		if (potential == 0) {
+			break;
 		}
 	}
 
 	int probabilityC = 0;
 	int probabilityD = 0;
 
-
 	for (int i = 0, size = strategies.size(); i < size; ++i) {
 		// C, D 両方あるか
-		if (potential[2 * i] && potential[2 * i + 1]) {
+		if (existence[2 * i] && existence[2 * i + 1]) {
 			filter[2 * i] = true;
 			filter[2 * i + 1] = true;
 		}
 		// どのぐらい、それぞれがそんざいするか
-		if (potential[2 * i]) {
+		if (existence[2 * i]) {
 			probabilityC++;
 		}
-		if (potential[2 * i + 1]) {
+		if (existence[2 * i + 1]) {
 			probabilityD++;
 		}
 	}
