@@ -12,8 +12,11 @@
 #include "lattice/Moore.hpp"
 #include "lattice/Neumann.hpp"
 #include "lattice/Hexagon.hpp"
+
 #include "network/Random.hpp"
 #include "network/Regular.hpp"
+#include "network/Ring.hpp"
+
 #include "cube/Cube.hpp"
 
 #endif /* ALLTOPOLOGY_H_ */

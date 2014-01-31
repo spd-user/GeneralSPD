@@ -38,7 +38,7 @@ public:
 	 * @param[in] target 対象プレイヤの空間位置
 	 * @param[in] radius 近傍半径
 	 */
-	spd::core::Neighbors getNeighbors(
+	virtual spd::core::Neighbors getNeighbors(
 			const spd::core::AllPlayer& players,
 			int target,
 			int radius);
@@ -48,7 +48,7 @@ public:
 	 * @param[in] players すべてのプレイヤ
 	 * @param[in] param パラメタ
 	 */
-	void reSetting(const spd::core::AllPlayer& players,
+	virtual void reSetting(const spd::core::AllPlayer& players,
 			const spd::param::Parameter& param);
 
 	/**
@@ -57,7 +57,7 @@ public:
 	 * @return 最低限必要な長さ
 	 * @retval 最低長はないので0
 	 */
-	int minStrategyLength(int actionRadius);
+	virtual int minStrategyLength(int actionRadius);
 
 	/**
 	 * 空間において最大の戦略の長さを求める
@@ -65,7 +65,7 @@ public:
 	 * @return 最大の戦略長
 	 * @retval 最大の戦略長はないので0
 	 */
-	int maxStrategyLength(int actionRadius);
+	virtual int maxStrategyLength(int actionRadius);
 
 	/**
 	 * 中心座標を取得する

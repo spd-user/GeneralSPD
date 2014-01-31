@@ -45,6 +45,10 @@ GenerateTopology::GenerateTopology() {
 	shared_ptr<spd::topology::Topology> regular = make_shared<spd::topology::Regular>();
 	auto regularName = "regular";
 
+	// 環
+	shared_ptr<spd::topology::Topology> ring = make_shared<spd::topology::Ring>();
+	auto ringName = "ring";
+
 	// 立方体
 	shared_ptr<spd::topology::Topology> cube = make_shared<spd::topology::Cube>();
 	auto cubeName = "cube";
@@ -57,6 +61,7 @@ GenerateTopology::GenerateTopology() {
 		{hexName, 		hex},
 		{randomName, 	random},
 		{regularName, regular},
+		{ringName, ring},
 		{cubeName, 	cube}
 	};
 
