@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>GEXF GENERATOR</title>
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
+	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/redmond/jquery-ui.css">
+	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/i18n/jquery-ui-i18n.min.js"></script>
+	
+	<script src="./js/lib/jquery.validate.min.js"></script>
+	<script src="./js/lib/jquery.stepy.min.js"></script>
+	<script src="./js/lib/addInputAreas/jquery.addInputArea.4.4.js"></script>
+	
+	<script src="./js/lib/handlebars.js"></script>
+	
+</head>
+
+<body>
+	
+	<!-- 環境 -->
+	<div id="environment">
+		<div>Simulation environment</div>
+		<div id="environment-contents">
+			
+			<label for="unit">Unit :</label>
+			<input id="unit" class="environment-element" name="unit_val" type="number" min="1" required/>
+			<br>
+			
+			<label for="step">Step :</label>
+			<input id="step" class="environment-element" name="step_val" type="number" min="1" required/>
+			<br>
+			
+			<label for="s_cycle">Strategy update cycle :</label>
+			<input id="s_cycle" class="environment-element" name="s_cycle" type="number" min="1" required />
+			<br>
+			
+			<label for="topology">Topology :</label>
+			<select id="topology" class="environment-element" name="topology">
+				<option value="Moore" selected>Moore</option>
+			</select>
+			<br>
+
+			Payoff :
+			<table border=2 id="payoff">
+				<tr>
+					<th>自分＼相手</th>
+					<th>C</th>
+					<th>D</th>
+				</tr>
+				<tr>
+					<th>C</th>
+					<th><input id="payoff_r" class="environment-element" name="payoff_r" type="number" required /></th>
+					<th><input id="payoff_s" class="environment-element" name="payoff_s" type="number" required /></th>
+				</tr>
+				<tr>
+					<th>D</th>
+					<th><input id="payoff_t" class="environment-element" name="payoff_t" type="number" required /></th>
+					<th><input id="payoff_p" class="environment-element" name="payoff_p" type="number" required /></th>
+				</tr>
+			</table>
+			
+			<p>
+				<label id="self_interaction_label" for="self_interaction">Self interaction : OFF</label>
+				<input id="self_interaction" class="environment-element" type="checkbox" name="self_interaction" />
+			</p>
+
+			<fieldset>
+			<legend>Strategies</legend>
+			<ol id="strategy_list">
+				<li class="strategy_list_var">
+					<input type="text" class="environment-element strategy" size="40" />
+					<span class='strategy_list_del ui-icon ui-icon-closethick' style="display: inline-block"></span>
+			</ol>
+			<button id="strategy_add" class="environment-element strategy_list_add">Add</button>
+			</fieldset>
+			
+			<p>
+				<label for="genRand">Generated random number :</label>
+				<input id="genRand" class="environment-element" name="genRand" type="number" min="0" required />
+				<br><br>
+			</p>
+			
+			<!-- エラーの警告領域 -->
+			<p>
+			<div id="environment_alert_area" class="ui-state-error ui-corner-all">
+				<p>
+					<span class="ui-icon ui-icon-alert"
+						style="float: left; margin-right: .3em;"></span> <strong>Error</strong>
+				</p>
+				<ul>
+					<li></li>
+				</ul>
+			</div>
+			</p>
+
+			<button id="apply_environment_btn">Apply</button>
+			
+			<button id="edit_environment_btn" disabled="disabled">Edit</button> 
+		</div>
+	</div>
+	<hr>
+	
+	<!-- デフォルト設定 -->
+	<div id="player_default">
+		<div id="player_default_title">Player Default</div>
+		<div id="player_default_contents">
+
+			<label for="default_pre_action">Pre action :</label>
+			<select id="default_pre_action">
+				<option value="C" selected>C</option>
+				<option value="D">D</option>
+			</select>
+			<br>
+			
+			<label for="default_action">Action :</label>
+			<select id="default_action">
+				<option value="C" selected>C</option>
+				<option value="D">D</option>
+			</select>
+			<br>
+			<hr>
+
+			<label for="default_pre_score">Pre score :</label>
+			<input id="default_pre_score" type="number" />
+			<br>
+			
+			<label for="default_score">Score :</label>
+			<input id="default_score" type="number" />
+			<br>
+			<hr>
+			
+			<label for="default_pre_strategy">Pre strategy :</label>
+			<select id="default_pre_strategy" class="strategy">
+				<option value="-1" class="null">null</option>
+			</select>
+			<br>
+			
+			<label for="default_strategy">Strategy :</label>
+			<select id="default_strategy" class="strategy">
+				<option value="-1" class="null">null</option>
+			</select>
+			
+		</div>
+	</div>
+	<hr>
+	
+	<!-- 個別設定 -->
+	<div id="player_settings">
+		<div class="player_settings_var">
+			<div class="player_settings_title">
+				Setting
+				<span class='player_settings_del ui-icon ui-icon-closethick accordion-del-btn'></span>
+			</div>
+			<div class="player_settings_contens">
+			
+				<label for="target_range">Target unit</label>
+				<input id="target_range" type="text" placeholder=" input the target unit numbers(ex. 1, 3, 5 -9)" size="100" />
+				<br>
+				<hr>
+			
+				<label for="pre_action">Pre action :</label>
+				<select id="pre_action">
+					<option value="C" selected>C</option>
+					<option value="D">D</option>
+				</select>
+				<br>
+			
+				<label for="action">Action :</label>
+				<select id="action">
+					<option value="C" selected>C</option>
+					<option value="D">D</option>
+				</select>
+				<br>
+				<hr>
+
+				<label for="pre_score">Pre score :</label>
+				<input id="pre_score" type="number" />
+				<br>
+			
+				<label for="score">Score :</label>
+				<input id="score" type="number" />
+				<br>
+				<hr>
+			
+				<label for="pre_strategy">Pre strategy :</label>
+				<select id="pre_strategy" class="strategy">
+					<option>null</option>
+				</select>
+				<br>
+			
+				<label for="strategy">Strategy :</label>
+				<select id="strategy" class="strategy">
+					<option>null</option>
+				</select>
+			</div>
+		</div>
+	</div>
+	<button id="enable_settings" disabled="disabled">Enable settings</button>
+	<button id="player_settings_add" class="player_settings_add" disabled="disabled">Add</button>
+	
+<hr>
+
+	<button id="create_btn">Create GEXF</button>
+	<br />
+
+	<!-- 何かしたときの情報領域 -->
+	<div id="info_area" class="ui-state-highlight ui-corner-all">
+		<p>
+			<span class="ui-icon ui-icon-info"
+				style="float: left; margin-right: .3em;"></span> <strong>Info</strong>
+		</p>
+		<ul id="info_reasons">
+			<li></li>
+		</ul>
+	</div>
+
+	<!-- エラーがある場合の警告領域 -->
+	<div id="alert_area" class="ui-state-error ui-corner-all">
+		<p>
+			<span class="ui-icon ui-icon-alert"
+				style="float: left; margin-right: .3em;"></span> <strong>Error</strong>
+		</p>
+		<ul id="alert_reasons">
+			<li></li>
+		</ul>
+	</div>
+
+	<a id="download_btn">Download</a>
+
+	<script id="result" type="text/x-handlebars-template">
+<?xml version="1.0" encoding="UTF-8"?>
+<gexf xmlns="http://www.gexf.net/1.2draft" version="1.2">
+	<meta>{{! meta datas }}
+		<keywords>topology={{topology}}</keywords>
+		{{#each strategies}}
+		<keywords>strategy={{strategy}}</keywords>
+		{{/each}}
+		<keywords>payoff-R={{rVal}}</keywords>
+		<keywords>payoff-S={{sVal}}</keywords>
+		<keywords>payoff-T={{tVal}}</keywords>
+		<keywords>payoff-P={{pVal}}</keywords>
+		<keywords>strategy-update-cycle={{SUC}}</keywords>
+		<keywords>self-interaction={{SI}}</keywords>
+		<keywords>step={{step}}</keywords>
+		<keywords>generated-rand={{rand}}</keywords>
+	</meta>
+	<graph mode="static" defaultedgetype="undirected">{{! graph data }}
+		<attributes class="node" mode="static">
+			<attribute id="0" title="pre-action" type="string"/>
+			<attribute id="1" title="action" type="string"/>
+			<attribute id="2" title="pre-score" type="double"/>
+			<attribute id="3" title="score" type="double"/>
+			<attribute id="4" title="pre-strategy" type="string"/>
+			<attribute id="5" title="strategy" type="string"/>
+		</attributes>
+		<nodes>{{! nodes }}
+		{{#each nodes}}
+		<node id="{{id}}">
+			<attvalues>
+				<attvalue for="0" value="{{preAction}}"/>
+				<attvalue for="1" value="{{action}}"/>
+				<attvalue for="2" value="{{preScore}}"/>
+				<attvalue for="3" value="{{score}}"/>
+				<attvalue for="4" value="{{preStrategy}}"/>
+				<attvalue for="5" value="{{strategy}}"/>
+			</attvalues>
+		{{/each}}
+		</node>
+		<edges>{{! edges }}
+			{{#each edges}}
+			<edge id="{{id}}" source="{{source}}" target="{{dest}}" />
+			{{/each}}
+		</edges>
+	</graph>
+</gexf>
+	</script>
+
+	<script src="./js/topology.js"></script>
+	<script src="./js/generator.js"></script>
+	<link rel="stylesheet" href="./css/generator.css" type="text/css">
+	
+</body>
+
+
+</html>
