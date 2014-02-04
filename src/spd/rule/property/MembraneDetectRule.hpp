@@ -55,6 +55,19 @@ class MembraneDetectRule : public spd::rule::Rule {
 private:
 
 	/**
+	 * 膜グループ
+	 */
+	enum class Group {
+		BLANK, /** 情報がない */
+		INNER, /**< 内側に接触 */
+		OUTER, /**< 外側に接触 */
+		COMBINE, /**< 内外が */
+		BOTH_SIDE, /**< 内外に接触 */
+		DIRECT, /**< 共通の、戦略または行動を持たない相手と接触 */
+		IGNORE, /**< 膜にならならないので無視 */
+	};
+
+	/**
 	 * プロパティ名
 	 */
 	const std::vector<std::string> PROP_NAMES = {"MemGroup", "_NextMemGroup", "_MovePoint", "_NextMovePoint"};
@@ -62,7 +75,10 @@ private:
 	/**
 	 * プロパティの初期値
 	 */
-	const std::vector<int> INIT_VALS = {0, 0, 0, 0};
+	const std::vector<int> INIT_VALS = {
+			static_cast<int>(Group::BLANK),
+			static_cast<int>(Group::BLANK),
+			0, 0};
 
 	/**
 	 * プロパティの確認と初期化
@@ -78,12 +94,13 @@ private:
 	/**
 	 * 初期のグルーピングを行う
 	 *
-	 * 初期のプレイヤを-1, 0, 1, 2, 3 に分ける
-	 * -1 -> 膜にはなりえないプレイヤ(0-3 以外)
-	 * 0 -> 同戦略同行動のプレイヤとしか接続していないプレイヤ
-	 * 1 -> 同戦略同行動 + 同戦略"異"行動 と接続しているプレイヤ
-	 * 2 -> 同戦略同行動 + "異"戦略同行動 + ["異"行動"異"戦略] と接しているプレイヤ
-	 * 3 -> 同戦略"異"行動 + "異"戦略同行動 + [同戦略同行動 | "異"戦略"異"行動] と接しているプレイヤ
+	 * プレイヤにEnum Groupをつける に分ける
+	 * IGNORE -> 膜にはなりえないプレイヤ
+	 * DIRECT -> 極の相手と対戦している
+	 * BLANK -> 同戦略同行動のプレイヤとしか接続していないプレイヤ
+	 * INNER -> 同戦略同行動 + 同戦略"異"行動 と接続しているプレイヤ
+	 * OUTER -> 同戦略同行動 + "異"戦略同行動 + ["異"行動"異"戦略] と接しているプレイヤ
+	 * BOTH_SIDE -> 同戦略"異"行動 + "異"戦略同行動 + [同戦略同行動 | "異"戦略"異"行動] と接しているプレイヤ
 	 * @param player プレイヤ
 	 * @param type 考える膜のタイプ
 	 * @param filter 膜になり得るかどうかのフィルタ
@@ -121,21 +138,22 @@ private:
 			NeighborhoodType type);
 
 	/**
-	 * グループ0に分類されたプレイヤの動き
-	 * 1 と 2 がくっついたら、4となる。この4は、1と2へ広がる
+	 * 空グループに分類されたプレイヤの動き
+	 * inner と outer がくっついたら、combine となる。
+	 * このcombineは、innerとouterへ広がる
 	 *
 	 * @param player プレイヤ
 	 * @param neighbors 近傍
 	 */
-	void groupZeroBehavior(const std::shared_ptr<Player> player,
+	void blankGroupBehavior(const std::shared_ptr<Player> player,
 			Neighbors& neighbors);
 
 	/**
-	 * グループ1, 2に分類されたプレイヤの動き
+	 * InnerグループとOuterグループの動き
 	 * @param player プレイヤ
 	 * @param neighbors 近傍
 	 */
-	void groupOneTwoBehavior(const std::shared_ptr<Player> player,
+	void inOutGroupBehavior(const std::shared_ptr<Player> player,
 			Neighbors& neighbors);
 
 

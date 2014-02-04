@@ -303,18 +303,21 @@ void MembraneDetectRule::grouping(const std::shared_ptr<Player> player,
 
 
 	// 場合分け
-	int group = -1;
+	Group group = Group::DIRECT;
 	if (ss && sd && !ds && !dd) {
-		group = 1;
+		group = Group::INNER;
 	} else if (ss && !sd && ds ) {
 		// dd はどっちでもいい
-		group = 2;
+		group = Group::OUTER;
 	} else if (sd && ds) {
 		// ss, dd はどっちでもいい
-		group = 3;
+		group = Group::BOTH_SIDE;
 	} else if (ss && !sd && !ds && !dd) {
-		// 同じ組み合わせのプレイヤとだけ
-		group = 0;
+		// ss とだけ
+		group = Group::BLANK;
+	} else if (!ss && sd && !ds && !dd){
+		// sd とだけは膜になり得ないので無視
+		group = Group::IGNORE;
 	}
 
 
@@ -323,16 +326,15 @@ void MembraneDetectRule::grouping(const std::shared_ptr<Player> player,
 	if (spd::core::converter::actionToChar(playerAction) == 'D') {
 		actionInt = 1;
 	}
-	// 0-4でなく、膜になり得ないプレイヤは飛ばす
-	if (!(filter.at(2 * playerStrategyId + actionInt)) && (group != -1)) {
-		player->getProperty(PROP_NAMES[0]).setValue(-2);
-		player->getProperty(PROP_NAMES[1]).setValue(-2);
-		return;
+	// Direct でなく、膜になり得ないプレイヤは飛ばす
+	if (!(filter.at(2 * playerStrategyId + actionInt)) && (group != Group::DIRECT)) {
+		group = Group::IGNORE;
 	}
 
 	// 現在と未来を設定
-	player->getProperty(PROP_NAMES[0]).setValue(group);
-	player->getProperty(PROP_NAMES[1]).setValue(group);
+	int iGroup = static_cast<int>(group);
+	player->getProperty(PROP_NAMES[0]).setValue(iGroup);
+	player->getProperty(PROP_NAMES[1]).setValue(iGroup);
 }
 
 /**
@@ -346,40 +348,40 @@ void MembraneDetectRule::spreadMembraneDetect(const std::shared_ptr<Player> play
 	auto& neighbors = player->getNeighbors(type);
 
 	// グループ番号
-	auto thisGroup = player->getProperty(PROP_NAMES[0]).getValueAs<int>();
+	auto thisGroup = static_cast<Group>(player->getProperty(PROP_NAMES[0]).getValueAs<int>());
 
 	switch (thisGroup) {
-		case 0:
-			groupZeroBehavior(player, neighbors);
+		case Group::BLANK:
+			blankGroupBehavior(player, neighbors);
 			break;
 
-		case 1:
-		case 2:
-			groupOneTwoBehavior(player, neighbors);
+		case Group::INNER:
+		case Group::OUTER:
+			inOutGroupBehavior(player, neighbors);
 			break;
 		default:
-			// -1 や 4 がくるけど何もしない
+			// それ以外のグループがくるけど無視
 			break;
 	}
 }
 
 
 /*
- * グループ0の動き
+ * Blankグループの動き
  * 同戦略同行動とのみ接続
  * @param player プレイヤ
  * @param neighbors 近傍
  */
-void MembraneDetectRule::groupZeroBehavior(const std::shared_ptr<Player> player,
+void MembraneDetectRule::blankGroupBehavior(const std::shared_ptr<Player> player,
 		Neighbors& neighbors) {
 
 
 	// 移動ポイント
 	int minMove = INT_MAX;
 
-	// グループ1, 2と接しているか
-	bool hasGroup1 = false;
-	bool hasGroup2 = false;
+	// グループInner, Outerと接しているか
+	bool hasInnerGroup = false;
+	bool hasOuterGroup = false;
 
 
 	// 自分は考えない
@@ -395,15 +397,16 @@ void MembraneDetectRule::groupZeroBehavior(const std::shared_ptr<Player> player,
 				throw std::runtime_error("Could not find a neighbor of a player (mem detect rule - zero).");
 			}
 
-			int oppGroup = opponent->getProperty(PROP_NAMES[0]).getValueAs<int>();
+			auto oppGroup = static_cast<Group>(
+					opponent->getProperty(PROP_NAMES[0]).getValueAs<int>());
 
-			if ((oppGroup == 1) || (oppGroup == 2)) {
+			if ((oppGroup == Group::INNER) || (oppGroup == Group::OUTER)) {
 				// 小さいmove point へ
 				minMove = std::min(opponent->getProperty(PROP_NAMES[2]).getValueAs<int>(), minMove);
-				if (oppGroup == 1) {
-					hasGroup1 = true;
+				if (oppGroup == Group::INNER) {
+					hasInnerGroup = true;
 				} else {
-					hasGroup2 = true;
+					hasOuterGroup = true;
 				}
 			}
 		}
@@ -412,26 +415,27 @@ void MembraneDetectRule::groupZeroBehavior(const std::shared_ptr<Player> player,
 	// 動きポイントを1 増やす
 	minMove++;
 
-	if (hasGroup1 && hasGroup2) {
-		// 1, 2がくっついた -> 4 になる
-		player->getProperty(PROP_NAMES[1]).setValue(4);
+	if (hasInnerGroup && hasOuterGroup) {
+		// inner, outerがくっついた -> combine になる
+		player->getProperty(PROP_NAMES[1]).setValue(
+				static_cast<int>(Group::COMBINE));
 		player->getProperty(PROP_NAMES[3]).setValue(minMove);
 
-	} else if (hasGroup1 || hasGroup2){
+	} else if (hasInnerGroup || hasOuterGroup){
 		// それぞれが広がる
-		int groupVal = (hasGroup1) ? 1 : 2;
+		auto groupVal = (hasInnerGroup) ? Group::INNER : Group::OUTER;
 
-		player->getProperty(PROP_NAMES[1]).setValue(groupVal);
+		player->getProperty(PROP_NAMES[1]).setValue(static_cast<int>(groupVal));
 		player->getProperty(PROP_NAMES[3]).setValue(minMove);
 	}
 }
 
 /*
- * グループ1と2の動き
+ * InnerグループとOuterグループの動き
  * @param player プレイヤ
  * @param neighbors 近傍
  */
-void MembraneDetectRule::groupOneTwoBehavior(const std::shared_ptr<Player> player,
+void MembraneDetectRule::inOutGroupBehavior(const std::shared_ptr<Player> player,
 		Neighbors& neighbors) {
 
 	// 自分の戦略と行動
@@ -439,10 +443,11 @@ void MembraneDetectRule::groupOneTwoBehavior(const std::shared_ptr<Player> playe
 	auto playerAction = player->getAction();
 
 	// グループ番号
-	auto thisGroup = player->getProperty(PROP_NAMES[0]).getValueAs<int>();
+	auto thisGroup = static_cast<Group>(
+			player->getProperty(PROP_NAMES[0]).getValueAs<int>());
 
 	// 対のグループ番号
-	auto oppositeGroup = (thisGroup != 1) ? 1 : 2;
+	auto oppositeGroup = (thisGroup != Group::INNER) ? Group::INNER : Group::OUTER;
 
 	// 次に膜になる
 	bool becomesMembrane = false;
@@ -464,13 +469,14 @@ void MembraneDetectRule::groupOneTwoBehavior(const std::shared_ptr<Player> playe
 			if ((playerStrategyId == opponent->getStrategy()->getId()) &&
 					(playerAction == opponent->getAction())) {
 
-				auto opponentGroup = opponent->getProperty(PROP_NAMES[0]).getValueAs<int>();
+				auto opponentGroup = static_cast<Group>(
+						opponent->getProperty(PROP_NAMES[0]).getValueAs<int>());
 				auto opponentMovePoint = opponent->getProperty(PROP_NAMES[2]).getValueAs<int>();
 
-				// グループ4の場合は、移動ポイントが必要
-				if ((opponentGroup == 4) && (opponentMovePoint > 0)) {
+				// Combineグループの場合は、移動ポイントが必要
+				if ((opponentGroup == Group::COMBINE) && (opponentMovePoint > 0)) {
 					// 終わりでよい
-					player->getProperty(PROP_NAMES[1]).setValue(4);
+					player->getProperty(PROP_NAMES[1]).setValue(static_cast<int>(Group::COMBINE));
 					player->getProperty(PROP_NAMES[3]).setValue(opponentMovePoint - 1);
 					return;
 
@@ -485,7 +491,7 @@ void MembraneDetectRule::groupOneTwoBehavior(const std::shared_ptr<Player> playe
 	}
 
 	if (becomesMembrane) {
-		player->getProperty(PROP_NAMES[1]).setValue(4);
+		player->getProperty(PROP_NAMES[1]).setValue(static_cast<int>(Group::COMBINE));
 		player->getProperty(PROP_NAMES[3]).setValue(minMove);
 	}
 
@@ -523,10 +529,15 @@ void MembraneDetectRule::postHandling(const std::shared_ptr<Player> player,
 
 	auto& neighbors = player->getNeighbors(type);
 
+	// Direct Player でなければ飛ばす
+	if (static_cast<Group>(player->getProperty(PROP_NAMES[0]).getValueAs<int>())
+			!= Group::DIRECT) {
+		return;
+	}
+
 	// 自分の戦略と行動
 	auto playerStrategyId = player->getStrategy()->getId();
 	auto playerAction = player->getAction();
-
 
 	// 自分は考えない
 	for (int r = 1, rMax = neighbors->size(); r < rMax; ++r) {
@@ -540,12 +551,12 @@ void MembraneDetectRule::postHandling(const std::shared_ptr<Player> player,
 				throw std::runtime_error("Could not find a neighbor of a player (mem detect rule - zero).");
 			}
 
-			// 同じ戦略で、異なる行動のプレイヤがどうなっているかで判断
+			// 同じ戦略で、異なる行動のプレイヤならば、膜でなくす
 			if ((playerStrategyId == opponent->getStrategy()->getId()) &&
-					(playerAction != opponent->getAction()) &&
-					(opponent->getProperty(PROP_NAMES[0]).getValueAs<int>() == -1)) {
+					(playerAction != opponent->getAction())) {
 
-				player->getProperty(PROP_NAMES[1]).setValue(-1);
+				opponent->getProperty(PROP_NAMES[1]).setValue(
+						static_cast<int>(Group::IGNORE));
 				return;
 			}
 		}
