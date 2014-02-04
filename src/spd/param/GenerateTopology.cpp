@@ -107,7 +107,7 @@ shared_ptr<spd::topology::Topology> GenerateTopology::generate(const string& top
 		err += " " + m.first;
 	}
 	throw std::invalid_argument("Could not generate topology for " + topology + ".\n"
-			"Settable rule(s): [" + err + " ]");
+			"Settable topologies: [" + err + " ]");
 }
 
 /*
