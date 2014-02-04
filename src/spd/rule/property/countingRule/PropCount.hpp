@@ -4,8 +4,8 @@
  * @date 2014/01/27
  * @author katsumata
  */
-#ifndef MEMBRANEPROPCOUNT_HPP_
-#define MEMBRANEPROPCOUNT_HPP_
+#ifndef PROPCOUNT_HPP_
+#define PROPCOUNT_HPP_
 
 #include "../../../core/PropertyCounting.hpp"
 
@@ -16,10 +16,10 @@ namespace counting {
 /**
  * 膜用のプロパティカウントを表すクラス
  */
-class MembranePropCount : public spd::core::PropertyCounting {
+class PropCount : public spd::core::PropertyCounting {
 public :
 
-	~MembranePropCount(){};
+	~PropCount(){};
 
 	/**
 	 * 膜検知プロパティのカウンティングに燗する特殊ルール
@@ -36,4 +36,4 @@ public :
 } /* namespace rule */
 } /* namespace spd */
 
-#endif /* MEMBRANEPROPCOUNT_HPP_ */
+#endif /* PROPCOUNT_HPP_ */

@@ -4,7 +4,7 @@
  * @date 2014/01/27
  * @author katsumata
  */
-#include "MembranePropCount.hpp"
+#include "PropCount.hpp"
 
 #include <stdexcept>
 
@@ -22,7 +22,7 @@ namespace counting {
  * @param[in] propPos プレイヤの持つプロパティの中で、対象とするプロパティの位置
  * @return 出力に回す結果
  */
-std::map<std::string, int> MembranePropCount::propOutput(
+std::map<std::string, int> PropCount::propOutput(
 			const spd::core::AllPlayer& allPlayers,
 			int propPos) {
 

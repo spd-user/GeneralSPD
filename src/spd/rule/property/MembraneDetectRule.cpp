@@ -17,7 +17,7 @@
 #include "../../param/Parameter.hpp"
 #include "../../param/InitParameter.hpp"
 
-#include "countingRule/MembranePropCount.hpp"
+#include "countingRule/PropCount.hpp"
 
 namespace spd {
 namespace rule {
@@ -580,7 +580,7 @@ void MembraneDetectRule::initProp(const std::shared_ptr<Player>& player) {
 			if ((player->getId() == 0) && (propName.front() != '_') &&
 					(prop.getCountingMethod() == nullptr)) {
 				std::shared_ptr<spd::core::PropertyCounting> counting =
-						std::make_shared<spd::rule::counting::MembranePropCount>();
+						std::make_shared<spd::rule::counting::PropCount>();
 
 				prop.setCountingMethod(counting);
 			}
@@ -597,7 +597,7 @@ void MembraneDetectRule::initProp(const std::shared_ptr<Player>& player) {
 			// 先頭プレイヤであり、"_"で始まらないプロパティでは必要なのを設定
 			if ((player->getId() == 0) && (propName.front() != '_')) {
 				propType = spd::core::Property::OutputType::SPECIAL;
-				counting = std::make_shared<spd::rule::counting::MembranePropCount>();
+				counting = std::make_shared<spd::rule::counting::PropCount>();
 			}
 
 			spd::core::Property p (PROP_NAMES.at(i), INIT_VALS.at(i), propType, counting);
