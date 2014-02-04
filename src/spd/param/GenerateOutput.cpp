@@ -53,6 +53,11 @@ GenerateOutput::GenerateOutput() {
 	std::string memImageName = "mImage";
 	transform(memImageName.begin(), memImageName.end(), memImageName.begin(), ::tolower);
 
+	shared_ptr<color::ColorChooser> aff = make_shared<color::AffectColor>();
+	shared_ptr<Output> affImage = make_shared<ImageOutput>(aff);
+	std::string affImageName = "aImage";
+	transform(affImageName.begin(), affImageName.end(), affImageName.begin(), ::tolower);
+
 
 	// binary の出力
 	shared_ptr<Output> binary = make_shared<BinaryOutput>();
@@ -77,6 +82,7 @@ GenerateOutput::GenerateOutput() {
 		{payoffName, 		payoff},
 		{imageName, 		image},
 		{memImageName, 	memimage},
+		{affImageName, 	affImage},
 		{binaryName, 		binary},
 		{gexfName, 		gexf},
 		{propertyName, 	property}

@@ -23,6 +23,8 @@
 
 // プロパティ
 #include "property/MembraneDetectRule.hpp"
+#include "property/AffectedPlayerRule.hpp"
+
 // TODO テストルール
 #include "property/PropertyTest.hpp"
 

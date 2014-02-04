@@ -348,15 +348,20 @@ void MembraneDetectRule::spreadMembraneDetect(const std::shared_ptr<Player> play
 	// グループ番号
 	auto thisGroup = static_cast<Group>(player->getProperty(PROP_NAMES[0]).getValueAs<int>());
 
+	if ((thisGroup != Group::BLANK) &&
+			(thisGroup != Group::INNER) &&
+			(thisGroup != Group::OUTER)) {
+		return;
+	}
+	auto& neighbors = player->getNeighbors(type);
 	switch (thisGroup) {
 		case Group::BLANK:
-			auto& neighbors = player->getNeighbors(type);
+
 			blankGroupBehavior(player, neighbors);
 			break;
 
 		case Group::INNER:
 		case Group::OUTER:
-			auto& neighbors = player->getNeighbors(type);
 			inOutGroupBehavior(player, neighbors);
 			break;
 		default:

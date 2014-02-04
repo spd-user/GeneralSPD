@@ -48,7 +48,7 @@ GenerateSpdRule::GenerateSpdRule() {
 
 
 	// ルールを設定
-	// 膜チェックを行う、シンプルルール
+	// 膜チェックだけを行う、シンプルルール
 	string memRuleName = "MemCheckRule";
 	auto memRule = make_shared<spd::rule::SpdRule>(bestRuleName);
 	memRule->addRuleBeforeOutput(make_shared<spd::rule::SimpleActionRule>());
@@ -62,11 +62,27 @@ GenerateSpdRule::GenerateSpdRule() {
 	transform(memRuleName.begin(), memRuleName.end(), memRuleName.begin(), ::tolower);
 
 
+	// 膜チェックと、影響を調べる、シンプルルール
+	string fullRuleName = "FullCheckRule";
+	auto fullRule = make_shared<spd::rule::SpdRule>(bestRuleName);
+	fullRule->addRuleBeforeOutput(make_shared<spd::rule::SimpleActionRule>());
+	fullRule->addRuleBeforeOutput(make_shared<spd::rule::SimpleSumGameRule>());
+	fullRule->addRuleBeforeOutput(make_shared<spd::rule::PromoteStateRule>());
+	fullRule->addRuleBeforeOutput(make_shared<spd::rule::MembraneDetectRule>());
+	fullRule->addRuleBeforeOutput(make_shared<spd::rule::AffectedPlayerRule>());
+
+	fullRule->addRuleAfterOutput(make_shared<spd::rule::BestStrategyRule>());
+
+
+	transform(fullRuleName.begin(), fullRuleName.end(), fullRuleName.begin(), ::tolower);
+
+
 	// ルールの追加
 	map<string, shared_ptr<spd::rule::SpdRule>> m {
 		{bestRuleName, bestRule},
 		{aveRuleName, aveRule},
-		{memRuleName, memRule}
+		{memRuleName, memRule},
+		{fullRuleName, fullRule}
 	};
 
 	this->spdRuleMap = m;

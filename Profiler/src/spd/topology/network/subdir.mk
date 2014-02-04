@@ -6,17 +6,20 @@
 CPP_SRCS += \
 ../src/spd/topology/network/Network.cpp \
 ../src/spd/topology/network/Random.cpp \
-../src/spd/topology/network/Regular.cpp 
+../src/spd/topology/network/Regular.cpp \
+../src/spd/topology/network/Ring.cpp 
 
 OBJS += \
 ./src/spd/topology/network/Network.o \
 ./src/spd/topology/network/Random.o \
-./src/spd/topology/network/Regular.o 
+./src/spd/topology/network/Regular.o \
+./src/spd/topology/network/Ring.o 
 
 CPP_DEPS += \
 ./src/spd/topology/network/Network.d \
 ./src/spd/topology/network/Random.d \
-./src/spd/topology/network/Regular.d 
+./src/spd/topology/network/Regular.d \
+./src/spd/topology/network/Ring.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

@@ -4,14 +4,17 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
+../src/spd/rule/property/AffectedPlayerRule.cpp \
 ../src/spd/rule/property/MembraneDetectRule.cpp \
 ../src/spd/rule/property/PropertyTest.cpp 
 
 OBJS += \
+./src/spd/rule/property/AffectedPlayerRule.o \
 ./src/spd/rule/property/MembraneDetectRule.o \
 ./src/spd/rule/property/PropertyTest.o 
 
 CPP_DEPS += \
+./src/spd/rule/property/AffectedPlayerRule.d \
 ./src/spd/rule/property/MembraneDetectRule.d \
 ./src/spd/rule/property/PropertyTest.d 
 

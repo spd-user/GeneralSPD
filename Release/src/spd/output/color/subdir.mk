@@ -4,14 +4,17 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
+../src/spd/output/color/AffectColor.cpp \
 ../src/spd/output/color/MembraneColor.cpp \
 ../src/spd/output/color/StandardColor.cpp 
 
 OBJS += \
+./src/spd/output/color/AffectColor.o \
 ./src/spd/output/color/MembraneColor.o \
 ./src/spd/output/color/StandardColor.o 
 
 CPP_DEPS += \
+./src/spd/output/color/AffectColor.d \
 ./src/spd/output/color/MembraneColor.d \
 ./src/spd/output/color/StandardColor.d 
 

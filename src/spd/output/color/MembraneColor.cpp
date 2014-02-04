@@ -12,6 +12,8 @@
 #include "../../core/Strategy.hpp"
 #include "../../core/Property.hpp"
 
+#include "../../rule/property/MembraneDetectRule.hpp"
+
 namespace spd {
 namespace output {
 namespace color {
@@ -44,11 +46,15 @@ const png_byte* MembraneColor::chooseColor(
 	try {
 		propertyVal = player->getProperty("MemGroup").getValueAs<int>();
 	} catch (std::invalid_argument& e) {
-		throw std::runtime_error("Could not find MemGroup property.");
+		throw std::runtime_error("Could not find MemGroup property.(mc)");
 	}
 
-	if (propertyVal == 3 || propertyVal == 4) {
+	if (propertyVal == static_cast<int>(
+			spd::rule::MembraneDetectRule::Group::COMBINE) ||
+			propertyVal == static_cast<int>(
+					spd::rule::MembraneDetectRule::Group::BOTH_SIDE)) {
 		result =  MEMBRANE_COLOR;
+
 	} else if (player->getStrategy()->isAll(Action::ACTION_C)) {
 		// allC 戦略
 		result = ALLC_COLOR;

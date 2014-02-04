@@ -9,6 +9,6 @@
 
 #include "StandardColor.hpp"
 #include "MembraneColor.hpp"
-
+#include "AffectColor.hpp"
 
 #endif /* ALLCOLOR_HPP_ */

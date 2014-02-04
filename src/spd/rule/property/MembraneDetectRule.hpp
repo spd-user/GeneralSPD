@@ -19,6 +19,20 @@ namespace rule {
  */
 class MembraneDetectRule : public spd::rule::Rule {
 
+public:
+	/**
+	 * 膜グループ
+	 */
+	enum class Group {
+		BLANK, /** 情報がない */
+		INNER, /**< 内側に接触 */
+		OUTER, /**< 外側に接触 */
+		COMBINE, /**< 内外が */
+		BOTH_SIDE, /**< 内外に接触 */
+		DIRECT, /**< 共通の、戦略または行動を持たない相手と接触 */
+		IGNORE, /**< 膜にならならないので無視 */
+	};
+
 	/**
 	 * プロパティを設定する
 	 * @param[in, out] player 対象プレイヤ
@@ -53,19 +67,6 @@ class MembraneDetectRule : public spd::rule::Rule {
 	}
 
 private:
-
-	/**
-	 * 膜グループ
-	 */
-	enum class Group {
-		BLANK, /** 情報がない */
-		INNER, /**< 内側に接触 */
-		OUTER, /**< 外側に接触 */
-		COMBINE, /**< 内外が */
-		BOTH_SIDE, /**< 内外に接触 */
-		DIRECT, /**< 共通の、戦略または行動を持たない相手と接触 */
-		IGNORE, /**< 膜にならならないので無視 */
-	};
 
 	/**
 	 * プロパティ名

@@ -4,13 +4,13 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
-../src/spd/rule/property/countingRule/MembranePropCount.cpp 
+../src/spd/rule/property/countingRule/PropCount.cpp 
 
 OBJS += \
-./src/spd/rule/property/countingRule/MembranePropCount.o 
+./src/spd/rule/property/countingRule/PropCount.o 
 
 CPP_DEPS += \
-./src/spd/rule/property/countingRule/MembranePropCount.d 
+./src/spd/rule/property/countingRule/PropCount.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
