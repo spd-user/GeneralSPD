@@ -345,18 +345,18 @@ void MembraneDetectRule::grouping(const std::shared_ptr<Player> player,
 void MembraneDetectRule::spreadMembraneDetect(const std::shared_ptr<Player> player,
 		NeighborhoodType type) {
 
-	auto& neighbors = player->getNeighbors(type);
-
 	// グループ番号
 	auto thisGroup = static_cast<Group>(player->getProperty(PROP_NAMES[0]).getValueAs<int>());
 
 	switch (thisGroup) {
 		case Group::BLANK:
+			auto& neighbors = player->getNeighbors(type);
 			blankGroupBehavior(player, neighbors);
 			break;
 
 		case Group::INNER:
 		case Group::OUTER:
+			auto& neighbors = player->getNeighbors(type);
 			inOutGroupBehavior(player, neighbors);
 			break;
 		default:

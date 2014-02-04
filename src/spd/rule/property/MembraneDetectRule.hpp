@@ -116,6 +116,7 @@ private:
 	 */
 	void spreadMembraneDetect(const std::shared_ptr<Player> player,
 			NeighborhoodType type);
+
 	/**
 	 * next を current に更新する
 	 *
