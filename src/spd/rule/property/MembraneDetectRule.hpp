@@ -31,7 +31,7 @@ class MembraneDetectRule : public spd::rule::Rule {
 				const spd::param::Parameter& param);
 
 	/**
-	 * プレイヤの初期化ルール
+	 * 膜を検知する
 	 * @param[in, out] player 対象プレイヤ
 	 * @param[in] allPlayers 全てのプレイヤ
 	 * @param[in] param パラメタ
