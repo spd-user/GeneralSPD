@@ -7,6 +7,7 @@
 #ifndef COLORCHOOSER_HPP_
 #define COLORCHOOSER_HPP_
 
+#include <string>
 #include <png.h>
 #include <memory>
 
