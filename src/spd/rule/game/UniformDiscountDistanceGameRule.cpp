@@ -58,7 +58,7 @@ void UniformDiscountDistance::runRule(
 	for (int r = startRadius, rMax = neighbors->size(); r < rMax; ++r) {
 
 		// 割引率
-		double discoutRatio = (-r/(rMax + static_cast<double>(1.0)) + 1.0);
+		double discoutRatio = (-r/(rMax -1 + static_cast<double>(1.0)) + 1.0);
 
 		for (auto& opponentWP : *(neighbors->at(r))) {
 
