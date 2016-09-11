@@ -17,6 +17,8 @@
 // ゲームルール
 #include "game/SimpleSumGameRule.hpp"
 #include "game/AverageGameRule.hpp"
+#include "game/UniformDiscountDistanceGameRule.hpp"
+#include "game/InverseSquareDiscountDistanceGameRule.hpp"
 
 // 戦略ルール
 #include "strategy/BestStrategyRule.hpp"

@@ -46,6 +46,28 @@ GenerateSpdRule::GenerateSpdRule() {
 	transform(aveRuleName.begin(), aveRuleName.end(), aveRuleName.begin(), ::tolower);
 
 
+	// 距離均等割引ゲーム
+	string uniDiscoutRuleName = "uniformDiscountRule";
+	auto uniDiscountRule = make_shared<spd::rule::SpdRule>(uniDiscoutRuleName);
+	uniDiscountRule->addRuleBeforeOutput(make_shared<spd::rule::SimpleActionRule>());
+	uniDiscountRule->addRuleBeforeOutput(make_shared<spd::rule::UniformDiscountDistance>());
+	uniDiscountRule->addRuleBeforeOutput(make_shared<spd::rule::PromoteStateRule>());
+
+	uniDiscountRule->addRuleAfterOutput(make_shared<spd::rule::BestStrategyRule>());
+
+	transform(uniDiscoutRuleName.begin(), uniDiscoutRuleName.end(), uniDiscoutRuleName.begin(), ::tolower);
+
+
+	// 距離逆二乗割引ゲーム
+	string inverseSquareDiscoutRuleName = "uniformDiscountRule";
+	auto inverseSquareDiscoutRule = make_shared<spd::rule::SpdRule>(inverseSquareDiscoutRuleName);
+	inverseSquareDiscoutRule->addRuleBeforeOutput(make_shared<spd::rule::SimpleActionRule>());
+	inverseSquareDiscoutRule->addRuleBeforeOutput(make_shared<spd::rule::InverseSquareDiscountDistance>());
+	inverseSquareDiscoutRule->addRuleBeforeOutput(make_shared<spd::rule::PromoteStateRule>());
+
+	uniDiscountRule->addRuleAfterOutput(make_shared<spd::rule::BestStrategyRule>());
+
+	transform(inverseSquareDiscoutRuleName.begin(), inverseSquareDiscoutRuleName.end(), inverseSquareDiscoutRuleName.begin(), ::tolower);
 
 	// ルールを設定
 	// 膜チェックだけを行う、シンプルルール
@@ -81,6 +103,8 @@ GenerateSpdRule::GenerateSpdRule() {
 	map<string, shared_ptr<spd::rule::SpdRule>> m {
 		{bestRuleName, bestRule},
 		{aveRuleName, aveRule},
+		{uniDiscoutRuleName, uniDiscountRule},
+		{inverseSquareDiscoutRuleName, inverseSquareDiscoutRule},
 		{memRuleName, memRule},
 		{fullRuleName, fullRule}
 	};
