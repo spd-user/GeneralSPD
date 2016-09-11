@@ -20,7 +20,7 @@ GenerateSpdRule::GenerateSpdRule() {
 
 	// ルールを設定
 	// シンプルな総和・最高利得ゲーム
-	string bestRuleName = "SimpleBestRule";
+	string bestRuleName = "simple_best_rule";
 	auto bestRule = make_shared<spd::rule::SpdRule>(bestRuleName);
 	bestRule->addRuleBeforeOutput(make_shared<spd::rule::SimpleActionRule>());
 	bestRule->addRuleBeforeOutput(make_shared<spd::rule::SimpleSumGameRule>());
@@ -35,7 +35,7 @@ GenerateSpdRule::GenerateSpdRule() {
 
 
 	// 平均・最高利得ゲーム
-	string aveRuleName = "AveRule";
+	string aveRuleName = "average_rule";
 	auto aveRule = make_shared<spd::rule::SpdRule>(aveRuleName);
 	aveRule->addRuleBeforeOutput(make_shared<spd::rule::SimpleActionRule>());
 	aveRule->addRuleBeforeOutput(make_shared<spd::rule::AverageGameRule>());
@@ -47,7 +47,7 @@ GenerateSpdRule::GenerateSpdRule() {
 
 
 	// 距離均等割引ゲーム
-	string uniDiscoutRuleName = "uniformDiscountRule";
+	string uniDiscoutRuleName = "uniform_discount_rule";
 	auto uniDiscountRule = make_shared<spd::rule::SpdRule>(uniDiscoutRuleName);
 	uniDiscountRule->addRuleBeforeOutput(make_shared<spd::rule::SimpleActionRule>());
 	uniDiscountRule->addRuleBeforeOutput(make_shared<spd::rule::UniformDiscountDistance>());
@@ -59,7 +59,7 @@ GenerateSpdRule::GenerateSpdRule() {
 
 
 	// 距離逆二乗割引ゲーム
-	string inverseSquareDiscoutRuleName = "uniformDiscountRule";
+	string inverseSquareDiscoutRuleName = "inverse_square_rule";
 	auto inverseSquareDiscoutRule = make_shared<spd::rule::SpdRule>(inverseSquareDiscoutRuleName);
 	inverseSquareDiscoutRule->addRuleBeforeOutput(make_shared<spd::rule::SimpleActionRule>());
 	inverseSquareDiscoutRule->addRuleBeforeOutput(make_shared<spd::rule::InverseSquareDiscountDistance>());
@@ -71,7 +71,7 @@ GenerateSpdRule::GenerateSpdRule() {
 
 	// ルールを設定
 	// 膜チェックだけを行う、シンプルルール
-	string memRuleName = "MemCheckRule";
+	string memRuleName = "membrane_check_simple_rule";
 	auto memRule = make_shared<spd::rule::SpdRule>(bestRuleName);
 	memRule->addRuleBeforeOutput(make_shared<spd::rule::SimpleActionRule>());
 	memRule->addRuleBeforeOutput(make_shared<spd::rule::SimpleSumGameRule>());
@@ -85,7 +85,7 @@ GenerateSpdRule::GenerateSpdRule() {
 
 
 	// 膜チェックと、影響を調べる、シンプルルール
-	string fullRuleName = "FullCheckRule";
+	string fullRuleName = "membrane_and_effect_check_simple_rule";
 	auto fullRule = make_shared<spd::rule::SpdRule>(bestRuleName);
 	fullRule->addRuleBeforeOutput(make_shared<spd::rule::SimpleActionRule>());
 	fullRule->addRuleBeforeOutput(make_shared<spd::rule::SimpleSumGameRule>());
