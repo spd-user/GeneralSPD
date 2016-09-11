@@ -28,7 +28,7 @@ InitParameter::InitParameter() :
 		memory(DEFAULT_MEMORY) {
 
 	GenerateSpdRule g;
-	std::string defaultRule = "SimpleBestRule";
+	std::string defaultRule = "simple_best_rule";
 	auto rule = g.generate(defaultRule);
 	if (rule == nullptr) {
 		throw std::runtime_error("Could not generate a rule and initialize a initParameter.");
