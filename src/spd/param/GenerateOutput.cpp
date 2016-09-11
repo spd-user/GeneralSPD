@@ -50,12 +50,12 @@ GenerateOutput::GenerateOutput() {
 
 	shared_ptr<color::ColorChooser> mem = make_shared<color::MembraneColor>();
 	shared_ptr<Output> memimage = make_shared<ImageOutput>(mem);
-	std::string memImageName = "mImage";
+	std::string memImageName = "membrane_image";
 	transform(memImageName.begin(), memImageName.end(), memImageName.begin(), ::tolower);
 
 	shared_ptr<color::ColorChooser> aff = make_shared<color::AffectColor>();
 	shared_ptr<Output> affImage = make_shared<ImageOutput>(aff);
-	std::string affImageName = "aImage";
+	std::string affImageName = "effect_image";
 	transform(affImageName.begin(), affImageName.end(), affImageName.begin(), ::tolower);
 
 
