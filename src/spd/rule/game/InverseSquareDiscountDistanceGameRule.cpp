@@ -46,8 +46,6 @@ void InverseSquareDiscountDistance::runRule(
 
 	double payoffSum = 0.0;
 
-	int neighborsCount = 0;
-
 	// 自身の利得行を取得
 	auto payoffRow = param.getRuntimeParameter()->getPayoffRow(player->getAction());
 
