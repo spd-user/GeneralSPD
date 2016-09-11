@@ -6,7 +6,7 @@
  */
 
 #include <stdexcept>
-#include "UniformDiscountDistance.hpp"
+#include "UniformDiscountDistanceGameRule.hpp"
 
 #include "../../core/Player.hpp"
 #include "../../param/Parameter.hpp"

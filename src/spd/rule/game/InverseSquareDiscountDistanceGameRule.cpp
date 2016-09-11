@@ -6,7 +6,7 @@
  */
 
 #include <stdexcept>
-#include "InverseSquareDiscountDistance.hpp"
+#include "InverseSquareDiscountDistanceGameRule.hpp"
 
 #include "../../core/Player.hpp"
 #include "../../param/Parameter.hpp"
