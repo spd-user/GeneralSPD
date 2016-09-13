@@ -65,7 +65,7 @@ GenerateSpdRule::GenerateSpdRule() {
 	inverseSquareDiscoutRule->addRuleBeforeOutput(make_shared<spd::rule::InverseSquareDiscountDistance>());
 	inverseSquareDiscoutRule->addRuleBeforeOutput(make_shared<spd::rule::PromoteStateRule>());
 
-	uniDiscountRule->addRuleAfterOutput(make_shared<spd::rule::BestStrategyRule>());
+	inverseSquareDiscoutRule->addRuleAfterOutput(make_shared<spd::rule::BestStrategyRule>());
 
 	transform(inverseSquareDiscoutRuleName.begin(), inverseSquareDiscoutRuleName.end(), inverseSquareDiscoutRuleName.begin(), ::tolower);
 
